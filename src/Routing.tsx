@@ -1,5 +1,3 @@
-// src/Routing.tsx hola
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./Components/Home/Home";
 import ExtraPage from "./Components/Extra/Extra";

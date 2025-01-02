@@ -1,0 +1,95 @@
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+.header {
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.contact-info span {
+  color: #95999e;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.contact-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.contact-info span img {
+  width: 20px; /* Tamaño de los iconos */
+  height: 20px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-login,
+.btn-register {
+  background-color: #00b0f0;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 15px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.logo {
+  height: 4.6rem;
+}
+
+.logo img {
+  height: 100%;
+}
+
+.logo-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #fff;
+}
+
+.nav-menu {
+  display: flex;
+}
+
+hr {
+  border: none;
+  height: 2px;
+  background-color: #cbced1;
+  margin: 0px;
+}
+
+.nav-menu-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-menu-flex a {
+  margin-right: 1rem;
+  text-decoration: none;
+  color: #8c9298;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nav-menu-flex a.active {
+  color: #0c58a8;
+  border-bottom: 0.2rem solid #fed222;
+  padding-bottom: 2px;
+}
