@@ -1,0 +1,119 @@
+/* Carousel Container */
+.cards-carousel {
+  width: 80%;
+  overflow: hidden;
+  position: relative; /* Contenedor relativo para posicionamiento absoluto de los botones */
+  margin: auto; /* Centrar el carrusel horizontalmente */
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+.card-content h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+  line-height: 1.2;
+  min-height: 2.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.card-content .price {
+  font-size: 24px;
+  color: #00aaff;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.card-content .duration {
+  font-size: 14px;
+  color: #888;
+}
+
+/* Promo Badge */
+.card .promo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ff6347;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Navigation Arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  position: absolute; /* Posicionamiento relativo al contenedor principal */
+  top: 50%; /* Centrados verticalmente */
+  transform: translateY(-50%);
+  z-index: 10; /* Asegura que estén sobre otros elementos */
+  color: #5380f7;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: #4369c7;
+}
+
+.swiper-button-next {
+  right: 10px; /* Ajustado dentro del contenedor */
+}
+
+.swiper-button-prev {
+  left: 10px; /* Ajustado dentro del contenedor */
+}
+
+/* Pagination Dots */
+.swiper-pagination-bullet {
+  background: #5380f7;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+/* Ocultar paginación (si no se necesita) */
+.swiper-pagination {
+  display: none;
+}

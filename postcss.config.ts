@@ -8,7 +8,7 @@ export default {
       defaultExtractor: (content: string) =>
         content.match(/[\w-/:]+(?<!:)/g) || [], // Extrae todas las clases utilizadas
       safelist: {
-        standard: [/^btn-/, /^alert-/], // Excluye clases dinámicas si usas patrones específicos
+        standard: [/^swiper-/, /^bootstrap-/, /^btn-/, /^alert-/], // Excluye clases dinámicas si usas patrones específicos
       },
     }),
   ],

@@ -3,6 +3,7 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import ExtraPage from "../Extra/Extra";
 import React, { useEffect, useState } from "react";
+import CardsCarrusel from "../CardsCarrusel/CardsCarrusel";
 
 // Interfaz para tipar los datos
 interface Producto {
@@ -72,6 +73,7 @@ const Home: React.FC = () => {
         </div>
       </div>
       <ExtraPage />
+      <CardsCarrusel />
       <Footer />
     </>
   );
