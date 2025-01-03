@@ -1,4 +1,4 @@
-// src/components/ExtraPage.tsx
+// src/components/ExtraPage.tsx s
 import React from "react";
 import "./Extra.css";
 

@@ -11,7 +11,7 @@ interface Producto {
   TourInfo: string;
 }
 
-// Estilos en línea
+// Estilos en líneas
 const styles = {
   cardsContainer: {
     display: "flex",
