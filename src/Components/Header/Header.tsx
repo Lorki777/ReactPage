@@ -5,6 +5,17 @@ import whatsappIcon from "./telefono.svg";
 import telefonoIcon from "./telefono.svg";
 import tiktokIcon from "./tiktok.png";
 import mailIcon from "./mail.svg";
+import { NavLink } from "react-router-dom";
+
+const links = [
+  { path: "/", label: "INICIO" },
+  { path: "/Paquetes", label: "PAQUETES" },
+  { path: "/Tours", label: "TOURS" },
+  { path: "/Grupales", label: "GRUPALES" },
+  { path: "/Blog", label: "BLOG" },
+  { path: "/Conocenos", label: "CONÓCENOS" },
+  { path: "/Expertos", label: "EXPERTOS" },
+];
 
 const Header = () => {
   return (
@@ -41,15 +52,15 @@ const Header = () => {
         </div>
         <nav className="nav-menu">
           <div className="nav-menu-flex">
-            <a href="#inicio" className="active">
-              INICIO
-            </a>
-            <a href="#paquetes">PAQUETES</a>
-            <a href="#tours">TOURS</a>
-            <a href="#grupales">GRUPALES</a>
-            <a href="#blog">BLOG</a>
-            <a href="#conocenos">CONÓCENOS</a>
-            <a href="#expertos">EXPERTOS</a>
+            {links.map((link) => (
+              <NavLink
+                key={link.path}
+                to={link.path}
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                {link.label}
+              </NavLink>
+            ))}
           </div>
         </nav>
       </div>
