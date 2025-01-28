@@ -1,0 +1,100 @@
+.inicio {
+  background-image: url("TourslandBannerSobreNosotros.webp");
+  text-align: center;
+}
+
+.experiencia {
+  display: flex;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+  height: 20em ;
+  
+}
+
+.experiencia1 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.experiencia1 img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.experiencia2 {
+  background-color: #ffd400;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*------------------------------------------*/
+.valores-profesionales {
+  display: flex;
+  justify-content: space-between;
+}
+
+.valores {
+  width: 50%;
+  background-color: #f7f7f7;
+  padding-left: 15%;
+  padding-right: 15%;
+}
+
+.profesionales {
+  width: 50%;
+  background-color: #00aff1;
+  padding-left: 15%;
+  padding-right: 15%;
+}
+
+/*-------------------------------------------*/
+.mision-vision {
+  display: flex;
+  justify-content: space-between;
+  background-image: url(fondo-nosotros-mapa.webp);
+}
+
+.mision {
+  width: 50%;
+  text-align: center;
+}
+
+.vision {
+  width: 50%;
+  text-align: center;
+}
+
+/*Nuestro Equipo*/
+.nuestro-equipo{
+  padding-left: 25%;
+  padding-right: 25%;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 15px;
+}
