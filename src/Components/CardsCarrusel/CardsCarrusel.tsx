@@ -16,7 +16,7 @@ interface Producto {
 }
 
 const CardsCarrusel: React.FC = () => {
-  const [productos, setProductos] = useState<Producto[]>([]); // Estado para los datos
+  const [productos, setProductos] = useState<Producto[]>([]); // Estado para los dato
   const [error, setError] = useState<string | null>(null); // Estado para manejar errores
 
   // Función para obtener los datos del backend
