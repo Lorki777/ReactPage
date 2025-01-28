@@ -5,6 +5,7 @@ import Tours from "./Components/Tours/Tours";
 import Paquetes from "./Components/PaquetesPage/Paquetes";
 import ToursPage from "./Components/ToursPage/Tours";
 import Grupales from "./Components/GrupalesPage/Grupales";
+import CardsPagination from "./Components/CardsWithPagination/CardsWithPagination";
 
 const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
       <Route path="/Paquetes" element={<Paquetes />} />
       <Route path="/Tours" element={<ToursPage />} />
       <Route path="/Grupales" element={<Grupales />} />
+      <Route path="/:Type/:Param" element={<CardsPagination />} />
     </Routes>
   );
 };

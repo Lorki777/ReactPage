@@ -1,4 +1,4 @@
-import http from "http";
+import * as http from "http";
 //import fs from "fs";
 import app from "./app"; // Usa `app` desde `app.ts`
 

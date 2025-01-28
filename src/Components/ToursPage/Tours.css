@@ -1,0 +1,8 @@
+.tourspageheader {
+  background-image: url("./portada-larga-webp.webp");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 10rem 2rem;
+}

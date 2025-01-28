@@ -288,8 +288,9 @@
 }
 
 .tour-carrusel .swiper-slide img {
+  height: 100%;
   width: 100%;
-  height: auto;
+  object-fit: contain;
   display: block;
   border-radius: 10px;
 }
@@ -308,6 +309,27 @@
 
 .swiper-pagination-bullet-active {
   opacity: 1;
+}
+
+.swiper-pagination {
+  width: 20%;
+  height: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper {
+  max-height: 70vh;
+  height: 50vh;
+  height: auto; /* Mantén las proporciones originales */
+}
+
+.swiper-wrapper,
+.swiper-slide {
+  max-height: 70vh;
+  height: 50vh;
+  height: auto; /* Mantén las proporciones originales */
 }
 
 /* Map */

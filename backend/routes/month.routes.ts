@@ -1,6 +1,7 @@
 import { Router } from "express";
-import mysql from "mysql2/promise";
+import * as mysql from "mysql2/promise";
 import * as dotenv from "dotenv";
+import { authenticateToken } from "../middlewares/auth.middleware";
 dotenv.config();
 
 const router = Router();
@@ -30,7 +31,7 @@ export const executeQuery = async (sql: string) => {
 };
 
 // Endpoint para obtener los meses de la base de datos
-router.get("/", async (_req, res) => {
+router.get("/", authenticateToken, async (_req, res) => {
   try {
     let sql = "SELECT * FROM months";
     let rows = await executeQuery(sql);

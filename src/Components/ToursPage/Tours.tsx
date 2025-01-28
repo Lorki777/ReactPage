@@ -7,6 +7,9 @@ const ToursPage: React.FC = () => {
   return (
     <>
       <Header />
+      <div className="tourspageheader">
+        <h1>Tours </h1>
+      </div>
       <p>esto es la pagina de tourspage</p>
       <Footer />
     </>

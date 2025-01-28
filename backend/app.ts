@@ -1,15 +1,17 @@
-import express from "express";
-import compression from "compression";
+import express = require("express");
+import compression = require("compression");
+import path = require("path");
 import helmet from "helmet";
-import path from "path";
 import exampleRoutes from "./routes/example.routes";
 import productRoutes from "./routes/product.routes";
 import monthRoutes from "./routes/month.routes";
+import guestTokenRoutes from "./routes/guest-token.routes";
 import * as dotenv from "dotenv";
 dotenv.config();
-import mysql from "mysql2/promise";
+import * as mysql from "mysql2/promise";
+import cors = require("cors");
 
-const app = express();
+const app: express.Application = express();
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -33,6 +35,15 @@ const pool = mysql.createPool({
   }
 })();
 
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Origen permitido (el frontend)
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+    credentials: true, // Permitir cookies
+  })
+);
+
 // Middleware para seguridad y compresión
 app.use(
   helmet({
@@ -46,6 +57,7 @@ app.use(
           "https://www.google.com/maps",
         ],
         imgSrc: ["'self'", "data:", "https://maps.googleapis.com"],
+        connectSrc: ["'self'", "http://localhost:5173"], // Permite solicitudes al frontend
       },
     },
   })
@@ -59,6 +71,7 @@ app.use(express.json());
 app.use("/api/example", exampleRoutes);
 app.use("/api/productos", productRoutes);
 app.use("/api/meses", monthRoutes);
+app.use("/api/guest-token", guestTokenRoutes);
 
 // Ruta para servir archivos comprimidos
 const frontendPath = path.join(__dirname, "../dist");

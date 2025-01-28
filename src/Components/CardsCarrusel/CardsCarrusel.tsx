@@ -22,16 +22,51 @@ const CardsCarrusel: React.FC = () => {
   // Función para obtener los datos del backend
   const fetchProductos = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/productos/carrusel"
-      );
-      if (!response.ok) throw new Error("Error al obtener los datos");
+      let token = localStorage.getItem("authToken"); // Obtén el token del localStorage
 
-      const data: Producto[] = await response.json(); // Tipar los datos
-      setProductos(data); // Actualizar el estado con los datos
+      // Si no hay token, genera uno de invitado
+      if (!token) {
+        const guestTokenResponse = await fetch(
+          "http://localhost:8080/api/guest-token"
+        );
+        if (!guestTokenResponse.ok)
+          throw new Error("Error al generar token de invitado");
+
+        const guestTokenData = await guestTokenResponse.json();
+        token = guestTokenData.token;
+        if (token) {
+          localStorage.setItem("authToken", token); // Guarda el token de invitado en localStorage
+        } else {
+          throw new Error("Token de invitado no válido");
+        }
+      }
+
+      // Usa el token (ya sea existente o de invitado) para la solicitud
+      const response = await fetch(
+        "http://localhost:8080/api/productos/carrusel",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Incluye el token en el encabezado
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Si el token es inválido, intenta generar uno de invitado
+          localStorage.removeItem("authToken"); // Borra el token inválido
+          return fetchProductos(); // Intenta nuevamente generando un token de invitado
+        }
+        throw new Error("Error al obtener los datos");
+      }
+
+      const data: Producto[] = await response.json();
+      setProductos(data); // Actualiza los datos
     } catch (err) {
       console.error("Error:", err);
-      setError("Error al obtener los datos del servidor.");
+      setError(
+        (err as Error).message || "Error al obtener los datos del servidor."
+      );
     }
   };
 

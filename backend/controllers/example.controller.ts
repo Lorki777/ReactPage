@@ -1,4 +1,4 @@
-import express from "express";
+import express = require("express");
 
 export const getExample = (_: express.Request, res: express.Response) => {
   try {

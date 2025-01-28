@@ -33,34 +33,192 @@ interface Product {
   BreadcrumbPath: string;
 }
 
+interface Title {
+  list_title: string;
+  list_titletxt: string;
+}
+
+interface Item {
+  list_title: string;
+  list_item: string;
+}
+
+interface ListData {
+  titles: Title[];
+  items: Item[];
+}
+interface Itinerary {
+  TourName: string;
+  TourInfo: string;
+  TourSlug: string;
+}
+
 const Tours: React.FC = () => {
   //logica para solicitud de productos
 
   const { tourName } = useParams();
-  const formattedTourName = (tourName || "").replace(/-/g, " ");
+  //const formattedTourName = (tourName || "").replace(/-/g, " ");
 
-  const [error, setError] = useState<string | null>(null); // Estado para manejar errores
+  const [error, setError] = useState<string | null>(null);
 
   const [product, setProduct] = useState<Product | null>(null); // Cambiar a un solo producto
 
-  const fetchProductos = async () => {
+  const fetchProduct = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/productos/tour/${tourName}`
-      );
-      if (!response.ok) throw new Error("Error al obtener los datos");
+      let token = localStorage.getItem("authToken");
 
-      const data: Product = await response.json(); // Suponiendo que la API devuelve un solo producto
-      setProduct(data); // Guardar el producto único
+      if (!token) {
+        const guestTokenResponse = await fetch(
+          "http://localhost:8080/api/guest-token"
+        );
+        if (!guestTokenResponse.ok)
+          throw new Error("Error al generar token de invitado");
+
+        const guestTokenData = await guestTokenResponse.json();
+        token = guestTokenData.token;
+        if (token) {
+          localStorage.setItem("authToken", token);
+        } else {
+          throw new Error("Token de invitado no válido");
+        }
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/api/productos/tour/${tourName}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("authToken");
+          return fetchProduct();
+        }
+        throw new Error("Error al obtener los datos");
+      }
+
+      const data: Product = await response.json();
+      setProduct(data);
     } catch (err) {
       console.error("Error:", err);
-      setError("Error al obtener los datos del servidor.");
+      setError(
+        (err as Error).message || "Error al obtener los datos del servidor."
+      );
+    }
+  };
+
+  //logica para solicitud de listas
+
+  const [titles, setTitles] = useState<Title[]>([]); // Estado para los títulos
+  const [items, setItems] = useState<Item[]>([]); // Estado para los ítems
+
+  const fetchListData = async () => {
+    try {
+      let token = localStorage.getItem("authToken");
+
+      if (!token) {
+        const guestTokenResponse = await fetch(
+          "http://localhost:8080/api/guest-token"
+        );
+        if (!guestTokenResponse.ok)
+          throw new Error("Error al generar token de invitado");
+
+        const guestTokenData = await guestTokenResponse.json();
+        token = guestTokenData.token;
+        if (token) {
+          localStorage.setItem("authToken", token);
+        } else {
+          throw new Error("Token de invitado no válido");
+        }
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/api/productos/tourlist/${tourName}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("authToken");
+          return fetchListData();
+        }
+        throw new Error("Error al obtener los datos");
+      }
+
+      const data: ListData = await response.json();
+      setTitles(data.titles);
+      setItems(data.items);
+    } catch (err) {
+      console.error("Error:", err);
+      setError(
+        (err as Error).message || "Error al obtener los datos del servidor."
+      );
+    }
+  };
+
+  //logica para solicitud de itinerarios
+
+  const [_pointItinerary, setItinerary] = useState<Itinerary[]>([]); // Estado para los datos
+
+  const fetchItinerary = async () => {
+    try {
+      let token = localStorage.getItem("authToken");
+
+      if (!token) {
+        const guestTokenResponse = await fetch(
+          "http://localhost:8080/api/guest-token"
+        );
+        if (!guestTokenResponse.ok)
+          throw new Error("Error al generar token de invitado");
+
+        const guestTokenData = await guestTokenResponse.json();
+        token = guestTokenData.token;
+        if (token) {
+          localStorage.setItem("authToken", token);
+        } else {
+          throw new Error("Token de invitado no válido");
+        }
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/api/productos/touritinerary/${tourName}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("authToken");
+          return fetchItinerary();
+        }
+        throw new Error("Error al obtener los datos");
+      }
+
+      const data: Itinerary[] = await response.json();
+      setItinerary(data);
+    } catch (err) {
+      console.error("Error:", err);
+      setError(
+        (err as Error).message || "Error al obtener los datos del servidor."
+      );
     }
   };
 
   // Hook useEffect: Llama a la función al montar el componente
   useEffect(() => {
-    fetchProductos();
+    fetchProduct();
+    fetchListData();
+    fetchItinerary();
   }, []);
 
   //logica para sidebar
@@ -117,28 +275,38 @@ const Tours: React.FC = () => {
   };
   return (
     <>
-      {/* Mostrar error si ocurre */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
       {product && (
         <>
           <HelmetReact>
             {/* Meta etiquetas dinámicas */}
             <title>{product.MetaTitle}</title>
+            <meta charSet="UTF-8" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
+            <meta name="author" content="Toursland" />
+            <meta
+              name="copyright"
+              content="© Toursland. Todos los derechos reservados."
+            />
             <meta name="description" content={product.MetaDescription} />
             <meta name="keywords" content={product.MetaKeywords} />
             <link rel="canonical" href={product.CanonicalUrl} />
             <meta name="robots" content={product.MetaRobots} />
 
-            {/* Open Graph dinámico */}
+            {/* Meta etiquetas dinámicas para redes sociales */}
             <meta property="og:title" content={product.OgTitle} />
             <meta property="og:description" content={product.OgDescription} />
             <meta property="og:image" content={product.OgImage} />
             <meta property="og:url" content={product.CanonicalUrl} />
             <meta property="og:type" content="website" />
+            <meta property="og:site_name" content="Toursland" />
+            <meta property="og:image:alt" content="Descripción de la imagen" />
           </HelmetReact>
           <Header />
           <div className="tourheader">
-            <h1>{decodeURIComponent(formattedTourName || "")}</h1>
+            <h1>{product.TourName}</h1>
           </div>
 
           <div className="tour-details-bar">
@@ -147,7 +315,7 @@ const Tours: React.FC = () => {
                 <span role="img" aria-label="clock">
                   🕒
                 </span>
-                <span>5 Días</span>
+                <span>{product.TourDuration + "Días"}</span>
               </div>
               <div className="detail-item">
                 <span role="img" aria-label="plane">
@@ -210,50 +378,22 @@ const Tours: React.FC = () => {
           <div id="tourdetails-section" className="tourinfo-container">
             <section className="tourdetails-section">
               <h2>Detalles del Paquete</h2>
-              <p>
-                Explora dos joyas de Oriente con nuestro paquete de viaje a
-                Turquía y Dubái. Vive una experiencia inolvidable.
-              </p>
-
-              <hr />
-              <h2>Incluye:</h2>
-              <ul>
-                <li>
-                  ✈️ <span>Vuelos redondos</span>
-                </li>
-                <li>
-                  🚌 <span>Transporte durante todo el recorrido</span>
-                </li>
-                <li>
-                  👨‍🏫 <span>Guías de habla hispana</span>
-                </li>
-                <li>
-                  🏨 <span>Desayunos incluidos</span>
-                </li>
-                <li>
-                  👜 <span>Equipaje documentado</span>
-                </li>
-                <li>
-                  🏜️ <span>Safari por el desierto</span>
-                </li>
-              </ul>
-
-              <h2>Destinos a Visitar:</h2>
-              <ul>
-                <li>
-                  📍 <span>Estambul</span>
-                </li>
-                <li>
-                  📍 <span>Ankara</span>
-                </li>
-                <li>
-                  📍 <span>Dubái</span>
-                </li>
-                <li>
-                  📍 <span>Abu Dhabi</span>
-                </li>
-              </ul>
-
+              <p>{product.TourDescription}</p>
+              {titles.map((title) => (
+                <div key={title.list_title}>
+                  <hr />
+                  <h2>{title.list_titletxt}</h2>
+                  <ul>
+                    {items
+                      .filter((item) => item.list_title === title.list_title)
+                      .map((item, index) => (
+                        <li key={index}>
+                          📍 <span>{item.list_item}</span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              ))}
               <hr />
 
               <section className="touritinerary">

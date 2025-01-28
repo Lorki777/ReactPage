@@ -1,0 +1,250 @@
+.homeheader {
+  color: white;
+  text-align: center;
+}
+
+.homeheader img {
+  width: 100%;
+}
+
+.Continentes-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr); /* 12 columnas */
+  grid-gap: 1.5rem;
+  padding: 4% 10%;
+  grid-template-areas:
+    "europa europa europa europa europa europa asia asia asia asia asia asia"
+    "latinoamerica latinoamerica latinoamerica latinoamerica mexico mexico mexico mexico playas playas playas playas"
+    ". . . norteamerica norteamerica norteamerica norteamerica norteamerica norteamerica . . .";
+}
+
+.Continentes-card {
+  aspect-ratio: 16 / 9; /* Relación de aspecto más amplia */
+  background-size: cover;
+
+  object-fit: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.Continentes-name {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.Continentes-name h3 {
+  z-index: 10;
+}
+
+.Continentes-card:hover {
+  transform: scale(1.05);
+}
+
+.Continentes-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.2rem; /* Aumenta un poco el tamaño del texto */
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.653), rgba(0, 0, 0, 0));
+}
+
+.Continentes-tours {
+  background: rgba(26, 175, 230, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1rem; /* Tamaño de texto más balanceado */
+}
+
+.Continentes-tours-vertodo {
+  display: none;
+  color: #4692e7;
+  width: 100%;
+  height: 100%;
+}
+
+.Continentes-card:hover::after {
+  content: "";
+  position: absolute;
+  top: 60%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background-size: cover;
+  transition: opacity 0.3s ease-in-out;
+  background: url("tour-hover.svg") no-repeat center center;
+}
+
+/* Responsivo para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .Continentes-container {
+    grid-template-columns: 1fr; /* Una tarjeta por fila */
+  }
+}
+
+/* Asignación de las áreas específicas */
+/* Clases para grid-area */
+.europa {
+  grid-area: europa;
+}
+
+.asia {
+  grid-area: asia;
+}
+
+.latinoamerica {
+  grid-area: latinoamerica;
+}
+
+.mexico {
+  grid-area: mexico;
+}
+
+.playasdemexico {
+  grid-area: playas;
+}
+
+.norteamerica {
+  grid-area: norteamerica;
+}
+
+/* Responsivo para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .Continentes-container {
+    grid-template-columns: 1fr; /* Una tarjeta por fila */
+    grid-template-areas:
+      "europa"
+      "asia"
+      "latinoamerica"
+      "mexico"
+      "playas"
+      "norteamerica";
+  }
+}
+
+.search-bar-container {
+  background-color: #00a9e0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  padding: 1rem 10%;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.search-input {
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  width: 25%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-icon-button {
+  background: #f5f5f5;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.search-icon-button i {
+  font-size: 16px;
+  color: #00a9e0;
+}
+
+.search-dropdown {
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  background: #f5f5f5;
+  width: 25%;
+}
+
+.search-button {
+  background: #ffd700;
+  padding: 10px 20px;
+  width: 10%;
+  border: none;
+  border-radius: 25px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.info-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 2rem;
+  padding: 10px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-item {
+  background: none;
+  padding: 0;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.info-item h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #00a9e0;
+}
+
+.info-item p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #00a9e0;
+}
+
+.icon-placeholder img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 5px;
+}
+
+.icon-placeholder {
+  margin-right: 10px;
+}
+
+.azuloscuro-placeholder {
+  color: #0e59a9;
+}

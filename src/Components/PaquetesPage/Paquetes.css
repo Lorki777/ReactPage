@@ -1,31 +1,51 @@
+.paquetesheader {
+  background-image: url("./BannerPaquetes.webp");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 10rem 2rem;
+}
+
 .PaquetesCard-container {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(250px, 1fr)
-  ); /* Diseño responsivo con columnas dinámicas */
-  gap: 2rem; /* Espaciado entre tarjetas */
-  justify-content: center; /* Centra las tarjetas horizontalmente */
-  padding: 2rem; /* Espaciado interno para el contenedor */
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 2rem;
+  padding: 4% 15%;
+}
+
+.PaquetesCard-content .NumPaquetes-tours {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  background-color: #1aafe6;
+  border-radius: 1rem;
+  padding: 0.5rem;
 }
 
 .PaquetesCard {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Asegura que el contenido se distribuya verticalmente */
-  width: 100%;
-  max-width: 300px; /* Tamaño máximo */
-  aspect-ratio: 4 / 4; /* Mantiene la proporción */
-  background-size: cover; /* Imagen de fondo cubre toda la tarjeta */
+  aspect-ratio: 4 / 4;
+  background-size: cover;
   background-position: center;
-  border-radius: 1rem; /* Bordes redondeados */
+  border-radius: 0.5rem;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out; /* Efecto de animación */
+  transition: transform 0.3s ease-in-out;
+  position: relative;
 }
 
 .PaquetesCard:hover {
   transform: scale(1.05); /* Escala la tarjeta ligeramente al pasar el cursor */
+}
+
+.PaquetesCard-content:hover {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0));
+}
+
+.PaquetesCard:hover .PaquetesCard-tours {
+  display: block;
 }
 
 .PaquetesCard-content {
@@ -33,42 +53,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   padding: 1rem;
   color: white;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Sombra para que el texto sea legible */
-  font-size: 1rem; /* Tamaño del texto relativo */
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.7),
-    rgba(0, 0, 0, 0)
-  ); /* Fondo degradado para destacar el texto */
-  border-radius: 0 0 1rem 1rem; /* Bordes redondeados para la parte inferior */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  font-size: 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
 
-.PaquetesCard-counter {
-  align-self: flex-end; /* Mueve el contador al final horizontalmente */
-  margin: 1rem; /* Margen para posicionar dentro del contenedor */
-  background-color: rgba(0, 123, 255, 0.8); /* Fondo semitransparente */
-  color: white;
-  padding: 0.5rem 1rem; /* Espaciado interno */
-  border-radius: 1rem; /* Bordes redondeados */
-  font-size: 0.9rem; /* Tamaño del texto */
-  font-weight: bold;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra para destacar */
+.PaquetesCard-tours {
+  display: none;
+  color: #4692e7;
 }
 
-/* Responsive para pantallas medianas y pequeñas */
-@media (max-width: 992px) {
-  .PaquetesCard-container {
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(250px, 1fr)
-    ); /* Ajusta columnas automáticamente */
-  }
-}
-
-@media (max-width: 576px) {
-  .PaquetesCard-container {
-    grid-template-columns: 1fr; /* Una tarjeta por fila en pantallas pequeñas */
-  }
+.PaquetesCard-content:hover::after {
+  content: "";
+  position: absolute;
+  top: 60%;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  background-size: cover;
+  transition: opacity 0.3s ease-in-out;
+  background: url("tour-hover.svg") no-repeat center center;
 }
