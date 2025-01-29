@@ -1,7 +1,8 @@
 import React from "react";
-import "./Expertos.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
+import { Helmet as HelmetReact } from "react-helmet-async";
+import "./Expertos.css";
 import Portada from "./PORTADA GENTE VIAJANDO WEB.webp";
 import Empresarial from "./VIAJE EMPRESARIAL WEB.webp";
 import Familiar from "./VIAJE EN FAMILIA WEB.webp";
@@ -56,10 +57,12 @@ const Expertos: React.FC = () => {
             Organizamos viajes que promuevan los valores de la empresa y hacemos
             sinergia con dinámicas de liderazgo, aprendizaje y trabajo en
             equipo.
-          </p><br />
-          <p>Lo diseñamos a la medida en base a la experiencia o mensaje
-            que los directivos de la empresa quieran brindar a sus
-            colaboradores.</p>
+          </p>
+          <br />
+          <p>
+            Lo diseñamos a la medida en base a la experiencia o mensaje que los
+            directivos de la empresa quieran brindar a sus colaboradores.
+          </p>
         </div>
         <div className="ServicioImagen">
           <img src={Empresarial} alt="Viaje Empresarial" />
@@ -120,7 +123,8 @@ const Expertos: React.FC = () => {
           <h3>¡Solicita tu Cotización!</h3>
         </div>
         <div className="InfoContacto">
-          <p>833-334-40-42</p><br />
+          <p>833-334-40-42</p>
+          <br />
           <p>contacto@toursland.mx</p>
         </div>
       </div>
