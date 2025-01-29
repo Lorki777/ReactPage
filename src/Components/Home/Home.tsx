@@ -13,6 +13,8 @@ import PlayasMexico from "./PLAYASMEXICO.webp";
 import Icono1 from "./Recurso-1.svg";
 import Icono2 from "./Recurso-2.svg";
 import Icono3 from "./Recurso-3.svg";
+import IconoTodosLosTours from "./TODOS LOS TOURS.svg";
+import { Helmet as HelmetReact } from "react-helmet-async";
 
 const continentes = [
   { nombre: "Europa", tours: 7, imagen: Europa, area: "europa" },
@@ -41,6 +43,30 @@ const continentes = [
 const Home: React.FC = () => {
   return (
     <>
+      <HelmetReact>
+        {/* Meta etiquetas dinámicas */}
+        <title>Tours</title>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="author" content="Toursland" />
+        <meta
+          name="copyright"
+          content="© Toursland. Todos los derechos reservados."
+        />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <link rel="canonical" href="" />
+        <meta name="robots" content="" />
+
+        {/* Meta etiquetas dinámicas para redes sociales */}
+        <meta property="og:title" content="" />
+        <meta property="og:description" content="" />
+        <meta property="og:image" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Toursland" />
+        <meta property="og:image:alt" content="Descripción de la imagen" />
+      </HelmetReact>
       <Header />
 
       <div className="homeheader">
@@ -99,30 +125,44 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <h2>Ofertas de viajes</h2>
+      <div className="divisiongeneralhomesecciones">
+        <div className="TodosTours">
+          <h2>&#128205;Ofertas de viajes</h2>
 
-      <CardsCarrusel />
+          <img src={IconoTodosLosTours} alt="" />
+        </div>
 
-      <h2>Mejores destinos para viajar</h2>
-
-      <div className="Continentes-container">
-        {continentes.map((continente) => (
-          <div
-            key={continente.nombre}
-            className={`Continentes-card ${continente.area}`}
-            style={{ backgroundImage: `url(${continente.imagen})` }}
-          >
-            <div className="Continentes-name">
-              <h3>{continente.nombre}</h3>
-            </div>
-            <div className="Continentes-content">
-              <p className="Continentes-tours">{continente.tours} tours</p>
-            </div>
-            <p className="Continentes-tours-vertodo">Ver todos los tours</p>
-          </div>
-        ))}
+        <CardsCarrusel />
       </div>
-      <CardsCarrusel />
+      <hr />
+      <div className="divisiongeneralhomesecciones">
+        <div className="TodosTours">
+          <h2>&#128205;Mejores destinos para viajar</h2>
+
+          <img src={IconoTodosLosTours} alt="" />
+        </div>
+
+        <div className="Continentes-container">
+          {continentes.map((continente) => (
+            <div
+              key={continente.nombre}
+              className={`Continentes-card ${continente.area}`}
+              style={{ backgroundImage: `url(${continente.imagen})` }}
+            >
+              <div className="Continentes-name">
+                <h3>{continente.nombre}</h3>
+              </div>
+              <div className="Continentes-content">
+                <p className="Continentes-tours">{continente.tours} tours</p>
+              </div>
+              <p className="Continentes-tours-vertodo">Ver todos los tours</p>
+            </div>
+          ))}
+        </div>
+        <CardsCarrusel />
+      </div>
+
+      <hr />
 
       <h2>Galería de fotos</h2>
       <Footer />

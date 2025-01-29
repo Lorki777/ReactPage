@@ -12,46 +12,7 @@ import placeHolderImg2 from "./placeholder-image2.webp";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { Helmet as HelmetReact } from "react-helmet-async";
-
-interface Product {
-  id: number;
-  TourName: string;
-  TourPrice: number;
-  TourDescription: string;
-  TourSlug: string;
-  TourDuration: number | null;
-  ProductType: string;
-  MetaTitle: string;
-  MetaKeywords: string;
-  MetaDescription: string;
-  CanonicalUrl: string;
-  MetaRobots: string;
-  OgTitle: string;
-  OgDescription: string;
-  OgImage: string;
-  SchemaMarkup: string | null;
-  BreadcrumbPath: string;
-}
-
-interface Title {
-  list_title: string;
-  list_titletxt: string;
-}
-
-interface Item {
-  list_title: string;
-  list_item: string;
-}
-
-interface ListData {
-  titles: Title[];
-  items: Item[];
-}
-interface Itinerary {
-  TourName: string;
-  TourInfo: string;
-  TourSlug: string;
-}
+import { Product, Title, Item, Itinerary, ListData } from "../Interfaces";
 
 const Tours: React.FC = () => {
   //logica para solicitud de productos
