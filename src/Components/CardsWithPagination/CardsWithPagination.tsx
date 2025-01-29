@@ -2,18 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ResponsivePagination from "react-responsive-pagination";
 import { useNavigate } from "react-router-dom";
-
-interface Producto {
-  TourName: string;
-  TourInfo: string;
-  TourSlug: string;
-}
+import { Product } from "../Interfaces";
 
 const CardsCarrusel: React.FC = () => {
   const { Type, Param } = useParams(); // Captura los parámetros de la URL
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, _setTotalPages] = useState(1);
-  const [productos, setProductos] = useState<Producto[]>([]); // Estado para los datos
+  const [productos, setProductos] = useState<Product[]>([]); // Estado para los datos
   const [error, setError] = useState<string | null>(null); // Estado para manejar errores
 
   // Función para obtener los datos del backend
@@ -57,7 +52,7 @@ const CardsCarrusel: React.FC = () => {
         throw new Error("Error al obtener los datos");
       }
 
-      const data: Producto[] = await response.json();
+      const data: Product[] = await response.json();
       setProductos(data);
     } catch (err) {
       console.error("Error:", err);

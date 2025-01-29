@@ -16,16 +16,19 @@
 }
 
 .travel-card {
-  width: 300px;
+  margin: 1rem 5rem;
+  display: flex;
+  height: fit-content;
+  justify-content: space-between;
   border: 1px solid #ddd;
   border-radius: 10px;
-  overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background: #fff;
 }
 
 .image-container {
   position: relative;
+  width: 100%;
 }
 
 .travel-image {
@@ -36,21 +39,34 @@
 
 .highlight {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: blue;
+  top: 3%;
+  left: -3%;
+  background-color: #467be7;
   color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 10px 15px;
   font-size: 14px;
+  font-weight: bold;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.highlighted {
-  background-color: orange;
+.highlight::after {
+  content: "";
+  position: absolute;
+  bottom: -31%;
+  left: 6%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 0.8rem solid transparent;
+  border-top: 0.8rem solid #233e74;
 }
 
 .card-details {
   padding: 15px;
+  width: 100%;
 }
 
 .title {
@@ -68,7 +84,9 @@
 
 .price-container {
   padding: 15px;
+  width: 100%;
   border-top: 1px solid #ddd;
+  border-left: 0.1rem solid #e1e1e1;
   text-align: center;
 }
 
@@ -92,6 +110,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: bold;
 }
 
 .details-button:hover {

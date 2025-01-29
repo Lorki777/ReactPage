@@ -13,7 +13,7 @@
   grid-gap: 1.5rem;
   padding: 4% 10%;
   grid-template-areas:
-    "europa europa europa europa europa europa asia asia asia asia asia asia"
+    "europa europa europa europa europa europa europa europa asia asia asia asia"
     "latinoamerica latinoamerica latinoamerica latinoamerica mexico mexico mexico mexico playas playas playas playas"
     ". . . norteamerica norteamerica norteamerica norteamerica norteamerica norteamerica . . .";
 }
@@ -102,26 +102,38 @@
 /* Clases para grid-area */
 .europa {
   grid-area: europa;
+  height: 100%;
+  width: 100%;
 }
 
 .asia {
   grid-area: asia;
+  height: 100%;
+  width: 100%;
 }
 
 .latinoamerica {
   grid-area: latinoamerica;
+  height: 100%;
+  width: 100%;
 }
 
 .mexico {
   grid-area: mexico;
+  height: 100%;
+  width: 100%;
 }
 
 .playasdemexico {
   grid-area: playas;
+  height: 100%;
+  width: 100%;
 }
 
 .norteamerica {
   grid-area: norteamerica;
+  height: 100%;
+  width: 100%;
 }
 
 /* Responsivo para pantallas más pequeñas */
@@ -247,4 +259,24 @@
 
 .azuloscuro-placeholder {
   color: #0e59a9;
+}
+
+.TodosTours {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.TodosTours h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.TodosTours img {
+  width: 15rem;
+}
+
+.divisiongeneralhomesecciones {
+  padding: 4% 0;
 }
