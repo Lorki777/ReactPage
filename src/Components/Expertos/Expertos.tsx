@@ -51,8 +51,8 @@ const Expertos: React.FC = () => {
       </div>
 
       <div className="Servicios" /*Empieza Servicios*/>
-        <div className="Servicio" /*Viajes Empresariales*/>
-          <h3>Viajes Empresariales</h3>
+        <div className="Servicio" /*Viajes Empresarialess*/>
+          <h3>Viajes</h3>
           <p>
             Organizamos viajes que promuevan los valores de la empresa y hacemos
             sinergia con dinámicas de liderazgo, aprendizaje y trabajo en
