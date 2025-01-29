@@ -1,0 +1,58 @@
+.PortadaExpertos {
+  /*Portada*/
+  text-align: center;
+  padding-bottom: 5rem;
+}
+
+.PortadaExpertos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ServiciosTitulo {
+  text-align: center;
+}
+
+.Servicios {
+  /*Columnas Servicios*/
+  display: flex;
+  grid-template-columns: repeat(2, 1fr);
+  height: 30em;
+}
+
+.ServicioImagen {
+  /*Imagenes de Servicios*/
+  width: 50%;
+}
+
+.ServicioImagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.Servicio {
+  /*Nombre y descripción del Servicio*/
+  width: 50%;
+  padding: 11rem 5rem;
+}
+
+.SolicitaCotizacion {
+  /*Apartado solcitar cotizacion*/
+  display: flex;
+  grid-template-columns: repeat(2, 1fr);
+  height: 12em;
+  background-image: url(Ala-avion.jpg);
+}
+
+.SolicCot {
+  width: 50%;
+  text-align: center;
+  padding: 5em;
+}
+
+.InfoContacto {
+  width: 50%;
+  padding: 3em;
+}
