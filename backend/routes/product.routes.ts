@@ -18,9 +18,6 @@ const pool = mysql.createPool({
   connectTimeout: 20000,
 });
 
-/**
- * Método reutilizable para ejecutar consultas SQL
- */
 export const executeQuery = async (
   sql: string,
   params?: any[]
@@ -45,6 +42,142 @@ router.get("/carrusel", authenticateToken, async (_req, res) => {
   }
 });
 
+router.get("/Paquetes/:month/:page", authenticateToken, async (req, res) => {
+  let { month, page } = req.params as { month: string; page: string };
+  const itemsPerPage = 12;
+  const offset = (parseInt(page) - 1) * itemsPerPage; // Calcula el OFFSET
+
+  console.log(`Solicitud recibida en /Paquetes/${month}/${page}`);
+
+  if (!month || typeof month !== "string") {
+    return res.status(400).json({
+      error: "El parámetro 'month' es requerido y debe ser un string válido.",
+    });
+  }
+
+  if (!page || isNaN(parseInt(page)) || parseInt(page) < 1) {
+    return res.status(400).json({
+      error: "El parámetro 'page' debe ser un número válido mayor a 0.",
+    });
+  }
+
+  try {
+    let sql = `
+      SELECT DISTINCT months.IdMonth, products.TourSlug, products.TourName, 
+      products.TourPrice, products.TourDuration 
+      FROM products 
+      JOIN reservationsdates ON products.id = reservationsdates.product_id 
+      JOIN months ON FIND_IN_SET(months.IdMonth, reservationsdates.reservation_month) 
+      WHERE months.Month = ? 
+      LIMIT ? OFFSET ?
+    `;
+
+    let rows = await executeQuery(sql, [month, itemsPerPage, offset]);
+
+    if (!rows.length) {
+      return res.status(404).json({
+        error: `No se encontraron paquetes para el mes: ${month} en la página ${page}`,
+      });
+    }
+
+    // Obtener el total de registros para calcular páginas
+    let countSql = `
+      SELECT COUNT(DISTINCT products.id) AS total 
+      FROM products 
+      JOIN reservationsdates ON products.id = reservationsdates.product_id 
+      JOIN months ON FIND_IN_SET(months.IdMonth, reservationsdates.reservation_month) 
+      WHERE months.Month = ? 
+    `;
+    let countResult = await executeQuery(countSql, [month]);
+    let totalItems = countResult[0]?.total || 0;
+    let totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    res.json({
+      data: rows,
+      totalPages,
+      currentPage: parseInt(page),
+    });
+  } catch (error) {
+    let err = error as Error;
+    res.status(500).json({
+      error: `Error al obtener tours en la ciudad ${month}: ${
+        err.message || "Error desconocido"
+      }`,
+    });
+  }
+});
+
+router.get(
+  "/AvailableTours/:city/:page",
+  authenticateToken,
+  async (req, res) => {
+    let { city, page } = req.params as { city: string; page: string };
+    const itemsPerPage = 12;
+    const offset = (parseInt(page) - 1) * itemsPerPage;
+
+    console.log(`Solicitud recibida en /AvailableTours/${city}/${page}`);
+
+    if (!city || typeof city !== "string") {
+      return res.status(400).json({
+        error: "El parámetro 'city' es requerido y debe ser un string válido.",
+      });
+    }
+
+    if (!page || isNaN(parseInt(page)) || parseInt(page) < 1) {
+      return res.status(400).json({
+        error: "El parámetro 'page' debe ser un número válido mayor a 0.",
+      });
+    }
+
+    try {
+      let sql = `
+        SELECT * FROM products 
+        WHERE Continent = ? OR City = ? OR Country = ? OR State = ? 
+        LIMIT ? OFFSET ?
+      `;
+      let rows = await executeQuery(sql, [
+        city,
+        city,
+        city,
+        city,
+        itemsPerPage,
+        offset,
+      ]);
+
+      if (!rows.length) {
+        return res.status(404).json({
+          error: `No se encontraron tours disponibles en la ciudad: ${city}`,
+        });
+      }
+
+      let countSql = `
+        SELECT COUNT(*) AS total FROM products 
+        WHERE Continent = ? OR City = ? OR Country = ? OR State = ?
+      `;
+      let countResult = await executeQuery(countSql, [city, city, city, city]);
+      let totalItems = countResult[0]?.total || 0;
+      let totalPages = Math.ceil(totalItems / itemsPerPage);
+
+      res.json({
+        data: rows,
+        totalPages,
+        currentPage: parseInt(page),
+      });
+    } catch (error) {
+      let err = error as Error;
+      console.error(
+        `Error al obtener tours en la ciudad ${city}:`,
+        err.message
+      );
+      res.status(500).json({
+        error: `Error al obtener tours en la ciudad ${city}: ${
+          err.message || "Error desconocido"
+        }`,
+      });
+    }
+  }
+);
+
 router.get("/tour/:slug", authenticateToken, async (req, res) => {
   let { slug } = req.params as { slug: string };
   try {
@@ -66,16 +199,6 @@ router.get("/tour/:slug", authenticateToken, async (req, res) => {
         err.message || "Error desconocido"
       }`,
     });
-  }
-});
-
-router.get("/cardsPagination", authenticateToken, async (_req, res) => {
-  try {
-    let sql = "SELECT * FROM products";
-    let rows = await executeQuery(sql);
-    res.json(rows);
-  } catch (error) {
-    res.status(500).json({ error: "Error al obtener los datos" });
   }
 });
 
@@ -130,7 +253,7 @@ router.get("/touritinerary/:sluglist", authenticateToken, async (req, res) => {
 
   try {
     let sql =
-      "SELECT list_title, list_item FROM product_lists, products WHERE product_id = products.id AND products.TourSlug = ?";
+      "SELECT product_itinerary.`day`,product_itinerary.descriptionitinerary FROM product_itinerary, products WHERE product_id = products.id AND products.TourSlug = ?";
     console.log(`Ejecutando consulta SQL: ${sql} con parámetro: ${sluglist}`);
     let rows = await executeQuery(sql, [sluglist]);
 

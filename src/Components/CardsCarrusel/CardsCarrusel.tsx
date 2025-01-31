@@ -7,7 +7,6 @@ import "../../../node_modules/swiper/modules/navigation.css";
 import "../../../node_modules/swiper/modules/pagination.css";
 import tiktokimage from "../CardsCarrusel/tiktok.png";
 import "./CardsCarrusel.css";
-
 import { useProductos } from "../Hook"; // Importa el hook
 
 const CardsCarrusel: React.FC = () => {

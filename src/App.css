@@ -1,4 +1,8 @@
 /* Card Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .card {
   background: white;
   border-radius: 0.5rem;

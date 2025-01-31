@@ -26,9 +26,9 @@
 }
 
 .tour-details2-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   width: 65%;
-  justify-content: space-around;
 }
 
 .detail-item {
@@ -37,6 +37,8 @@
   gap: 0.5rem;
   color: #555;
   font-size: 1rem;
+  padding-left: 30%;
+  grid-gap: 1.5rem;
 }
 
 .detail-item span {
@@ -126,12 +128,8 @@
 }
 
 /* tour-sidebar */
-.tour-sidebar {
-  transition: top 1s ease, transform 1s ease, opacity 1s ease;
-}
 
 .tour-sidebar.absolute {
-  transform: translateY(0);
   margin: 1rem;
   margin-right: 2rem;
   position: absolute;
@@ -147,9 +145,8 @@
 }
 
 .tour-sidebar.sticky {
-  transform: translateY(1rem);
   position: sticky;
-  width: 28%;
+  width: 28.2%;
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 1rem;

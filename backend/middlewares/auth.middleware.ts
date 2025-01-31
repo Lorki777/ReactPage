@@ -1,18 +1,16 @@
-// middlewares/auth.middleware.ts
 import { Request, Response, NextFunction } from "express";
 import jwt = require("jsonwebtoken");
 
 declare global {
   namespace Express {
     export interface Request {
-      user?: any | null; // Opcional y permite null
+      user?: any | null;
     }
   }
 }
 
-const SECRET_KEY = "secret_key"; // Cambiar en producción
+const SECRET_KEY = "secret_key";
 
-// Middleware para autenticar tokens
 export const authenticateToken = (
   req: Request,
   res: Response,
@@ -31,7 +29,6 @@ export const authenticateToken = (
   });
 };
 
-// Generar un token para usuarios no autenticados
 export const generateGuestToken = () => {
   return jwt.sign({ role: "guest" }, SECRET_KEY, { expiresIn: "1h" });
 };

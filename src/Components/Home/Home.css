@@ -21,7 +21,6 @@
 .Continentes-card {
   aspect-ratio: 16 / 9; /* Relación de aspecto más amplia */
   background-size: cover;
-
   object-fit: cover;
   background-position: center;
   background-repeat: no-repeat;
