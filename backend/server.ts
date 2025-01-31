@@ -12,7 +12,7 @@ import app from "./app"; // Usa `app` desde `app.ts`
 //   ),
 // };
 
-// Servidor HTTPS
+// Servidor HTTP
 http.createServer(app).listen(8080, () => {
   console.log("Servidor HTTPS escuchando en http://localhost:8080");
 });

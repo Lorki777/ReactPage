@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./Tours.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
@@ -6,234 +6,17 @@ import "../../../node_modules/swiper/swiper.css";
 import "../../../node_modules/swiper/swiper-bundle.min.css";
 import "../../../node_modules/swiper/modules/navigation.css";
 import "../../../node_modules/swiper/modules/pagination.css";
-import { useParams } from "react-router-dom";
 import placeHolderImg from "./placeholder-image.webp";
 import placeHolderImg2 from "./placeholder-image2.webp";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { Helmet as HelmetReact } from "react-helmet-async";
-import { Product, Title, Item, Itinerary, ListData } from "../Interfaces";
+import { useTourData, useSidebarLogic } from "../Hook";
 
 const Tours: React.FC = () => {
-  //logica para solicitud de productos
-
-  const { tourName } = useParams();
-  //const formattedTourName = (tourName || "").replace(/-/g, " ");
-
-  const [error, setError] = useState<string | null>(null);
-
-  const [product, setProduct] = useState<Product | null>(null); // Cambiar a un solo producto
-
-  const fetchProduct = async () => {
-    try {
-      let token = localStorage.getItem("authToken");
-
-      if (!token) {
-        const guestTokenResponse = await fetch(
-          "http://localhost:8080/api/guest-token"
-        );
-        if (!guestTokenResponse.ok)
-          throw new Error("Error al generar token de invitado");
-
-        const guestTokenData = await guestTokenResponse.json();
-        token = guestTokenData.token;
-        if (token) {
-          localStorage.setItem("authToken", token);
-        } else {
-          throw new Error("Token de invitado no válido");
-        }
-      }
-
-      const response = await fetch(
-        `http://localhost:8080/api/productos/tour/${tourName}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem("authToken");
-          return fetchProduct();
-        }
-        throw new Error("Error al obtener los datos");
-      }
-
-      const data: Product = await response.json();
-      setProduct(data);
-    } catch (err) {
-      console.error("Error:", err);
-      setError(
-        (err as Error).message || "Error al obtener los datos del servidor."
-      );
-    }
-  };
-
-  //logica para solicitud de listas
-
-  const [titles, setTitles] = useState<Title[]>([]); // Estado para los títulos
-  const [items, setItems] = useState<Item[]>([]); // Estado para los ítems
-
-  const fetchListData = async () => {
-    try {
-      let token = localStorage.getItem("authToken");
-
-      if (!token) {
-        const guestTokenResponse = await fetch(
-          "http://localhost:8080/api/guest-token"
-        );
-        if (!guestTokenResponse.ok)
-          throw new Error("Error al generar token de invitado");
-
-        const guestTokenData = await guestTokenResponse.json();
-        token = guestTokenData.token;
-        if (token) {
-          localStorage.setItem("authToken", token);
-        } else {
-          throw new Error("Token de invitado no válido");
-        }
-      }
-
-      const response = await fetch(
-        `http://localhost:8080/api/productos/tourlist/${tourName}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem("authToken");
-          return fetchListData();
-        }
-        throw new Error("Error al obtener los datos");
-      }
-
-      const data: ListData = await response.json();
-      setTitles(data.titles);
-      setItems(data.items);
-    } catch (err) {
-      console.error("Error:", err);
-      setError(
-        (err as Error).message || "Error al obtener los datos del servidor."
-      );
-    }
-  };
-
-  //logica para solicitud de itinerarios
-
-  const [_pointItinerary, setItinerary] = useState<Itinerary[]>([]); // Estado para los datos
-
-  const fetchItinerary = async () => {
-    try {
-      let token = localStorage.getItem("authToken");
-
-      if (!token) {
-        const guestTokenResponse = await fetch(
-          "http://localhost:8080/api/guest-token"
-        );
-        if (!guestTokenResponse.ok)
-          throw new Error("Error al generar token de invitado");
-
-        const guestTokenData = await guestTokenResponse.json();
-        token = guestTokenData.token;
-        if (token) {
-          localStorage.setItem("authToken", token);
-        } else {
-          throw new Error("Token de invitado no válido");
-        }
-      }
-
-      const response = await fetch(
-        `http://localhost:8080/api/productos/touritinerary/${tourName}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem("authToken");
-          return fetchItinerary();
-        }
-        throw new Error("Error al obtener los datos");
-      }
-
-      const data: Itinerary[] = await response.json();
-      setItinerary(data);
-    } catch (err) {
-      console.error("Error:", err);
-      setError(
-        (err as Error).message || "Error al obtener los datos del servidor."
-      );
-    }
-  };
-
-  // Hook useEffect: Llama a la función al montar el componente
-  useEffect(() => {
-    fetchProduct();
-    fetchListData();
-    fetchItinerary();
-  }, []);
-
-  //logica para sidebar
-
-  const [sidebarPosition, setSidebarPosition] = useState("absolute");
-  const [activeTab, setActiveTab] = useState("tourdetails-section");
-
-  // Manejar clics en las pestañas
-  const handleTabClick = (id: string) => {
-    setActiveTab(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // Detectar la sección visible
-  useEffect(() => {
-    // Lógica independiente para el tour-tabs
-    const sections = document.querySelectorAll("section[id]");
-
-    const handleScroll = () => {
-      let currentSectionId = activeTab;
-
-      // Detectar la sección activa con un margen de 150 píxeles
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top < 150 && rect.bottom > 150) {
-          currentSectionId = section.getAttribute("id") || activeTab;
-        }
-      });
-
-      if (currentSectionId !== activeTab) {
-        setActiveTab(currentSectionId);
-      }
-
-      // Lógica independiente para el sidebar basada en un umbral de 350 píxeles
-      const sidebarElement = document.querySelector(".tour-sidebar"); // Selecciona el sidebar si es necesario
-      if (sidebarElement) {
-        if (window.scrollY > 350) {
-          setSidebarPosition("sticky");
-        } else {
-          setSidebarPosition("absolute");
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [activeTab]);
-  const [openDay, setOpenDay] = useState<number | null>(null);
-
-  const toggleDay = (index: number) => {
-    setOpenDay(openDay === index ? null : index);
-  };
+  const { product, titles, items, pointItinerary, openDay, setOpenDay, error } =
+    useTourData();
+  const { sidebarPosition, activeTab, handleTabClick } = useSidebarLogic();
   return (
     <>
       {product && (
@@ -364,27 +147,24 @@ const Tours: React.FC = () => {
                   </span>{" "}
                   Itinerario
                 </h2>
-                <div
-                  className={`day ${openDay === 1 ? "open" : ""}`}
-                  onClick={() => toggleDay(1)}
-                >
-                  <h3>
-                    Día 08: América <span>{openDay === 1 ? "▲" : "▼"}</span>
-                  </h3>
-                  <p>Salida en vuelo internacional con destino a Estambul.</p>
-                </div>
-                <div
-                  className={`day ${openDay === 2 ? "open" : ""}`}
-                  onClick={() => toggleDay(2)}
-                >
-                  <h3>
-                    Día 09: Estambul <span>{openDay === 2 ? "▲" : "▼"}</span>
-                  </h3>
-                  <p>
-                    Llegada y recepción en el aeropuerto por nuestro personal.
-                    Traslado al hotel. Alojamiento.
-                  </p>
-                </div>
+                {error ? (
+                  <p className="error">{error}</p>
+                ) : pointItinerary.length > 0 ? (
+                  pointItinerary.map(({ day, descriptionitinerary }) => (
+                    <div
+                      key={day}
+                      className={`day ${openDay === day ? "open" : ""}`}
+                      onClick={() => setOpenDay(openDay === day ? null : day)}
+                    >
+                      <h3>
+                        Día {day} <span>{openDay === day ? "▲" : "▼"}</span>
+                      </h3>
+                      {openDay === day && <p>{descriptionitinerary}</p>}
+                    </div>
+                  ))
+                ) : (
+                  <p>Cargando itinerario...</p>
+                )}
               </section>
 
               <hr />
@@ -417,7 +197,7 @@ const Tours: React.FC = () => {
                 <h2>Mapa</h2>
                 <div className="tour-mapa">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.8354345093794!2d144.9537363156805!3d-37.81627974274788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577ff84f153ce64!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1614558226485!5m2!1sen!2sau"
+                    src="https://www.google.com/maps/d/embed?mid=1H4PgUJppTbFh8fFmzVPfSuK4JQOH0To&ehbc=2E312F"
                     width="100%"
                     height="100%"
                     style={{
@@ -448,7 +228,6 @@ const Tours: React.FC = () => {
                   <option value="febrero-23">Febrero 23, 2025</option>
                   <option value="marzo-09">Marzo 09, 2025</option>
                   <option value="abril-27">Abril 27, 2025</option>
-                  {/* Añade más fechas según sea necesario */}
                 </select>
                 <label htmlFor="people" className="tour-sidebar-label">
                   Número de personas:

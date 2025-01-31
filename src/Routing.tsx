@@ -8,6 +8,7 @@ import Grupales from "./Components/GrupalesPage/Grupales";
 import Expertos from "./Components/Expertos/Expertos";
 import Conocenos from "./Components/Conocenos/Conocenos";
 import Blog from "./Components/Blog/Blog";
+import Payment from "./Components/Payment/Payment";
 import CardsPagination from "./Components/CardsWithPagination/CardsWithPagination";
 
 const AppRoutes = () => {
@@ -23,6 +24,7 @@ const AppRoutes = () => {
       <Route path="/Conocenos" element={<Conocenos />} />
       <Route path="/Expertos" element={<Expertos />} />
       <Route path="/Blog" element={<Blog />} />
+      <Route path="/Payment" element={<Payment />} />
     </Routes>
   );
 };

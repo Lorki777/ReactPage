@@ -17,23 +17,24 @@ export interface Product {
   SchemaMarkup: string | null;
   BreadcrumbPath: string;
 }
-
 export interface Title {
   list_title: string;
   list_titletxt: string;
 }
-
 export interface Item {
   list_title: string;
   list_item: string;
 }
-
 export interface ListData {
   titles: Title[];
   items: Item[];
 }
 export interface Itinerary {
-  TourName: string;
-  TourInfo: string;
-  TourSlug: string;
+  day: number;
+  descriptionitinerary: string;
+}
+export interface Month {
+  Month: string;
+  MonthSmallBanner: string;
+  MonthLargeBanner: string;
 }

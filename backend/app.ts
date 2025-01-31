@@ -2,7 +2,6 @@ import express = require("express");
 import compression = require("compression");
 import path = require("path");
 import helmet from "helmet";
-import exampleRoutes from "./routes/example.routes";
 import productRoutes from "./routes/product.routes";
 import monthRoutes from "./routes/month.routes";
 import guestTokenRoutes from "./routes/guest-token.routes";
@@ -35,15 +34,6 @@ const pool = mysql.createPool({
   }
 })();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Origen permitido (el frontend)
-    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
-    credentials: true, // Permitir cookies
-  })
-);
-
 // Middleware para seguridad y compresión
 app.use(
   helmet({
@@ -57,18 +47,23 @@ app.use(
           "https://www.google.com/maps",
         ],
         imgSrc: ["'self'", "data:", "https://maps.googleapis.com"],
-        connectSrc: ["'self'", "http://localhost:5173"], // Permite solicitudes al frontend
+        connectSrc: ["'self'", "http://localhost:5173"],
       },
     },
   })
 );
-
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Origen permitido (el frontend)
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+    credentials: true, // Permitir cookies
+  })
+);
 app.use(compression());
-
 app.use(express.json());
 
 // Rutas principales de la API
-app.use("/api/example", exampleRoutes);
 app.use("/api/productos", productRoutes);
 app.use("/api/meses", monthRoutes);
 app.use("/api/guest-token", guestTokenRoutes);
@@ -90,10 +85,10 @@ app.use(
   })
 );
 
-// Manejo de rutas no definidas: servir index.html solo si no es un archivo
+// Manejo de rutas no definidas de la API
 app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) {
-    res.status(404).send("API endpoint not found");
+    res.status(404).send("Esto no existe loco");
   } else {
     res.sendFile(path.join(frontendPath, "index.html"));
   }

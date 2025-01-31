@@ -90,6 +90,11 @@ hr {
 
 .nav-menu-flex a.active {
   color: #0c58a8;
+  padding-bottom: 2px;
+}
+
+.nav-menu-flex a:hover {
+  color: #0c58a8;
   border-bottom: 0.2rem solid #fed222;
   padding-bottom: 2px;
 }
