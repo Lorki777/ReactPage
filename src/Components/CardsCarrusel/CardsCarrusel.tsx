@@ -27,8 +27,8 @@ const CardsCarrusel: React.FC = () => {
         slidesPerView={1}
         pagination={{ clickable: true }}
         breakpoints={{
-          480: { slidesPerView: 1 },
-          768: { slidesPerView: 2 },
+          300: { slidesPerView: 1 },
+          470: { slidesPerView: 2 },
           1024: { slidesPerView: 3 },
         }}
         onSwiper={(swiper) => (swiperRef.current = swiper)}

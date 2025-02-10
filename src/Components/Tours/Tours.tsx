@@ -8,6 +8,7 @@ import "../../../node_modules/swiper/modules/navigation.css";
 import "../../../node_modules/swiper/modules/pagination.css";
 import placeHolderImg from "./placeholder-image.webp";
 import placeHolderImg2 from "./placeholder-image2.webp";
+import Iconoinicio from "./tours-land.svg";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { Helmet as HelmetReact } from "react-helmet-async";
@@ -120,12 +121,17 @@ const Tours: React.FC = () => {
           </div>
 
           <div id="tourdetails-section" className="tourinfo-container">
+            <img
+              src={Iconoinicio}
+              alt="Icono de Tours"
+              className="ToursIcon"
+            ></img>
             <section className="tourdetails-section">
               <h2>Detalles del Paquete</h2>
               <p>{product.TourDescription}</p>
               {titles.map((title) => (
                 <div key={title.list_title}>
-                  <hr />
+                  <hr className="Tourseparation" />
                   <h2>{title.list_titletxt}</h2>
                   <ul>
                     {items
@@ -138,7 +144,7 @@ const Tours: React.FC = () => {
                   </ul>
                 </div>
               ))}
-              <hr />
+              <hr className="Tourseparation" />
 
               <section className="touritinerary">
                 <h2>
@@ -147,27 +153,29 @@ const Tours: React.FC = () => {
                   </span>{" "}
                   Itinerario
                 </h2>
-                {error ? (
-                  <p className="error">{error}</p>
-                ) : pointItinerary.length > 0 ? (
-                  pointItinerary.map(({ day, descriptionitinerary }) => (
-                    <div
-                      key={day}
-                      className={`day ${openDay === day ? "open" : ""}`}
-                      onClick={() => setOpenDay(openDay === day ? null : day)}
-                    >
-                      <h3>
-                        Día {day} <span>{openDay === day ? "▲" : "▼"}</span>
-                      </h3>
-                      {openDay === day && <p>{descriptionitinerary}</p>}
-                    </div>
-                  ))
-                ) : (
-                  <p>Cargando itinerario...</p>
-                )}
+                <div className="touritineraryitems">
+                  {error ? (
+                    <p className="error">{error}</p>
+                  ) : pointItinerary.length > 0 ? (
+                    pointItinerary.map(({ day, descriptionitinerary }) => (
+                      <div
+                        key={day}
+                        className={`day ${openDay === day ? "open" : ""}`}
+                        onClick={() => setOpenDay(openDay === day ? null : day)}
+                      >
+                        <h3>
+                          Día {day} <span>{openDay === day ? "▲" : "▼"}</span>
+                        </h3>
+                        {openDay === day && <p>{descriptionitinerary}</p>}
+                      </div>
+                    ))
+                  ) : (
+                    <p>Cargando itinerario...</p>
+                  )}
+                </div>
               </section>
 
-              <hr />
+              <hr className="Tourseparation" />
 
               <div id="tour-carrusel" className="tour-carrusel">
                 <h2>Fotos</h2>
@@ -191,10 +199,11 @@ const Tours: React.FC = () => {
                 </Swiper>
               </div>
 
-              <hr />
+              <hr className="Tourseparation" />
+
+              <h2>Mapa</h2>
 
               <div id="tour-mapa">
-                <h2>Mapa</h2>
                 <div className="tour-mapa">
                   <iframe
                     src="https://www.google.com/maps/d/embed?mid=1H4PgUJppTbFh8fFmzVPfSuK4JQOH0To&ehbc=2E312F"

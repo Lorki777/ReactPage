@@ -29,6 +29,9 @@ export default {
               /^flex-/,
               /^grid-/,
               /^gap-/,
+              /^amo-/,
+              /^buttonscollapsed/,
+              /^amo-inner-buttons/,
             ], // Excluye clases dinámicas de Tailwind
           },
         })

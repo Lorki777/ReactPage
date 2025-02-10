@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, MessageCircle, ChevronDown } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import "./Chatbot.css"; // Cambié la importación a un archivo CSS regular
+import "./Chatbot.css"; // Importación del CSS
 
 export default function Chatbot() {
   const [messages, setMessages] = useState<{ user: boolean; text: string }[]>(
@@ -30,9 +30,20 @@ export default function Chatbot() {
   return (
     <div className="chatbotContainer">
       {!isOpen && (
-        <button className="chatbotButton" onClick={() => setIsOpen(true)}>
+        <motion.button
+          className="chatbotButton"
+          onClick={() => setIsOpen(true)}
+          whileTap={{ scale: 0.9 }}
+        >
+          {/* Contenedor de los pulsos */}
+          <div className="pulseEffect">
+            {[...Array(4)].map((_, i) => (
+              <span key={i} style={{ "--i": i } as React.CSSProperties}></span>
+            ))}
+          </div>
+          {/* Ícono del chatbot */}
           <MessageCircle size={28} />
-        </button>
+        </motion.button>
       )}
       {isOpen && (
         <motion.div
@@ -44,7 +55,7 @@ export default function Chatbot() {
           <div className="chatbotHeader">
             <div className="chatbotTitle">
               <MessageCircle size={24} />
-              <span>Talk to us</span>
+              <span>Chatbot</span>
             </div>
             <button onClick={() => setIsOpen(false)} className="closeButton">
               <ChevronDown size={24} />

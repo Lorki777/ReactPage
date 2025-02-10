@@ -1,3 +1,12 @@
+.tourspaginationheader {
+  background-image: url("./BannerPaquetes.webp");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 10rem 2rem;
+}
+
 .cards-pagination {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 12 columnas */
