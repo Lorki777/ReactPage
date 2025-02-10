@@ -6,6 +6,7 @@ import telefonoIcon from "./telefono.svg";
 import tiktokIcon from "./tiktok.png";
 import mailIcon from "./mail.svg";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 const links = [
   { path: "/", label: "INICIO" },
@@ -13,23 +14,22 @@ const links = [
   { path: "/Tours", label: "TOURS" },
   { path: "/Grupales", label: "GRUPALES" },
   { path: "/Blog", label: "BLOG" },
-  { path: "/Conocenos", label: "CONÓCENOS" },
-  { path: "/Expertos", label: "EXPERTOS" },
 ];
 
 const Header = () => {
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+
   return (
     <header className="header">
       <div className="top-bar">
         <div className="contact-info">
           <span>
-            <img src={telefonoIcon} alt="Facebook" /> 833-334-40-42
+            <img src={telefonoIcon} alt="Teléfono" /> 833-334-40-42
           </span>
           <span>
-            <img src={mailIcon} alt="Facebook" /> contacto@toursland.mx
+            <img src={mailIcon} alt="Correo" /> contacto@toursland.mx
           </span>
           <span>Síguenos</span>
-          {/* Iconos de redes sociales */}
           <span>
             <img src={facebookIcon} alt="Facebook" />
           </span>
@@ -61,6 +61,23 @@ const Header = () => {
                 {link.label}
               </NavLink>
             ))}
+            <div
+              className="mega-menu-container"
+              onMouseEnter={() => setIsMegaMenuOpen(true)}
+              onMouseLeave={() => setIsMegaMenuOpen(false)}
+            >
+              <span className="mega-menu-trigger">SOBRE NOSOTROS</span>
+              {isMegaMenuOpen && (
+                <div className="mega-menu">
+                  <NavLink to="/Conocenos" className="mega-menu-item">
+                    CONÓCENOS
+                  </NavLink>
+                  <NavLink to="/Expertos" className="mega-menu-item">
+                    EXPERTOS
+                  </NavLink>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       </div>

@@ -3,12 +3,15 @@ import ResponsivePagination from "react-responsive-pagination";
 import "./CardsWithPagination.css";
 import { useParams } from "react-router-dom";
 import "react-responsive-pagination/themes/classic.css";
+import tiktokimage from "../CardsCarrusel/tiktok.png";
 import {
   dropEllipsis,
   dropNav,
   combine,
 } from "react-responsive-pagination/narrowBehaviour";
 import { useProductosPagination } from "../Hook";
+import Footer from "../Footer/Footer";
+import Header from "../Header/Header";
 
 const CardsCarrusel: React.FC = () => {
   const { Type, Param } = useParams();
@@ -23,11 +26,16 @@ const CardsCarrusel: React.FC = () => {
 
   return (
     <>
-      <h1>
-        {Type === "Paquetes" && `Mostrando paquetes para el mes: ${Param}`}
-        {Type === "AvailableTours" &&
-          `Mostrando tours para la ciudad: ${Param}`}
-      </h1>
+      <Header />
+      <div className="tourspaginationheader">
+        <h1>
+          {Type === "Paquetes" && `Mostrando paquetes para el mes: ${Param}`}
+          {Type === "AvailableTours" &&
+            `Mostrando tours para la ciudad: ${Param}`}
+          {Type === "AvailableTours" &&
+            `Mostrando tours para la el continente: ${Param}`}
+        </h1>
+      </div>
       <div className="cards-pagination">
         {/* Mostrar error si ocurre */}
         {error && <p style={{ color: "red" }}>{error}</p>}
@@ -40,7 +48,7 @@ const CardsCarrusel: React.FC = () => {
             onClick={() => handleCardClick(producto.TourSlug)}
           >
             <span className="promo">PROMO</span>
-            <img src={"../path/to/image.png"} alt={producto.TourName} />
+            <img src={tiktokimage} alt={producto.TourName} />
             <div className="card-content">
               <h3>{producto.TourName}</h3>
               <div className="price">{producto.TourPrice}</div>
@@ -68,6 +76,7 @@ const CardsCarrusel: React.FC = () => {
           narrowBehaviour={combine(dropNav, dropEllipsis)}
         />
       )}
+      <Footer />
     </>
   );
 };

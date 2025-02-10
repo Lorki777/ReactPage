@@ -40,18 +40,33 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://maps.googleapis.com"],
+        scriptSrc: [
+          "'self'",
+          "https://maps.googleapis.com",
+          "https://gso.kommo.com", // 🔹 Permite los scripts de Kommo
+        ],
         frameSrc: [
           "'self'",
           "https://www.google.com",
           "https://www.google.com/maps",
+          "https://gso.kommo.com", // 🔹 Permite los iframes de Kommo
         ],
-        imgSrc: ["'self'", "data:", "https://maps.googleapis.com"],
-        connectSrc: ["'self'", "http://localhost:5173"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://maps.googleapis.com",
+          "https://gso.kommo.com", // 🔹 Permite imágenes de Kommo
+        ],
+        connectSrc: [
+          "'self'",
+          "http://localhost:5173",
+          "https://gso.kommo.com", // 🔹 Permite conexiones con Kommo
+        ],
       },
     },
   })
 );
+
 app.use(
   cors({
     origin: "http://localhost:5173", // Origen permitido (el frontend)
