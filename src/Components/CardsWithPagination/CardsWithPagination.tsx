@@ -17,7 +17,6 @@ const CardsCarrusel: React.FC = () => {
   const { Type, Param } = useParams();
   const {
     productos,
-    error,
     currentPage,
     setCurrentPage,
     totalPages,
@@ -37,9 +36,6 @@ const CardsCarrusel: React.FC = () => {
         </h1>
       </div>
       <div className="cards-pagination">
-        {/* Mostrar error si ocurre */}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
         {/* Renderizar las tarjetas */}
         {productos.map((producto) => (
           <div

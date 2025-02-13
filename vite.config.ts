@@ -17,14 +17,10 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8080", // Puerto y esquema del backend
-        changeOrigin: true, // Cambia el origen para evitar conflictos de CORS
+        target: "http://localhost:8080",
+        changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
-    },
-    headers: {
-      "Content-Security-Policy":
-        "default-src 'self' https://gso.kommo.com; script-src 'self' 'unsafe-inline' https://gso.kommo.com; frame-src 'self' https://gso.kommo.com; img-src 'self' data: https://gso.kommo.com;",
     },
   },
   css: {

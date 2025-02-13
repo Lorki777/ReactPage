@@ -80,7 +80,8 @@ hr {
 }
 
 .nav-menu-flex a,
-.mega-menu-trigger {
+.mega-menu-trigger,
+.p-menuitem-link span {
   margin-right: 1rem;
   text-decoration: none;
   color: #8c9298;
@@ -89,11 +90,38 @@ hr {
   letter-spacing: 0.5px;
 }
 
+.nav-menu-flex a,
+.mega-menu-trigger,
+.p-menuitem-link span {
+  position: relative;
+  text-decoration: none;
+}
+
+.nav-menu-flex a::after,
+.mega-menu-trigger::after,
+.p-menuitem-link span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 0.2rem;
+  background-color: #fed222;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.nav-menu-flex a:hover::after,
+.mega-menu-trigger:hover::after,
+.p-menuitem-link span:hover::after {
+  transform: scaleX(1);
+}
+
 .nav-menu-flex a:hover,
-.mega-menu-trigger:hover {
+.mega-menu-trigger:hover,
+.p-menuitem-link span:hover {
   color: #0c58a8;
-  border-bottom: 0.2rem solid #fed222;
-  padding-bottom: 2px;
 }
 
 .nav-menu-flex a.active {
@@ -107,7 +135,7 @@ hr {
 
 .mega-menu {
   position: absolute;
-  top: 107%;
+  top: 100%;
   left: 0;
   background: white;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -130,4 +158,100 @@ hr {
 
 .mega-menu-item:hover {
   color: #000;
+}
+
+/* MegaMenuComponent.css */
+.megamenu-container2 {
+  position: relative;
+  display: flex;
+}
+
+/* Contenedor del contenido del MegaMenu */
+.megamenu-content2 {
+  display: flex;
+  border-top: 1px solid #ddd;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Mostrar el MegaMenu al hacer hover sobre el contenedor principal */
+.megamenu-container2:hover .megamenu-content2,
+.megamenu-container2:focus-within .megamenu-content2 {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Columna izquierda del MegaMenu */
+.megamenu-left2 {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ddd;
+  padding-right: 15px;
+}
+
+.menu-category2 {
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.menu-category2.active,
+.menu-category2:hover {
+  color: #003366;
+  background: #f0f0f0;
+  border-left: 3px solid #003366;
+}
+
+/* Columna derecha del MegaMenu */
+.megamenu-right2 {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 15px;
+}
+
+.attraction-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  transition: transform 0.2s ease;
+}
+
+.attraction-item:hover {
+  transform: translateX(5px);
+}
+
+.attraction-item i {
+  margin-right: 10px;
+  color: #8c9298;
+  font-size: 1.2em;
+}
+
+ul.p-megamenu-root-list {
+  padding-left: 0;
+}
+
+.p-megamenu {
+  padding: 0;
+  background: transparent;
+  color: #8c9298;
+  border: none;
+  border-radius: none;
+}
+
+.p-menuitem-link {
+  text-decoration: none;
 }

@@ -8,7 +8,6 @@ import guestTokenRoutes from "./routes/guest-token.routes";
 import * as dotenv from "dotenv";
 dotenv.config();
 import * as mysql from "mysql2/promise";
-import cors = require("cors");
 
 const app: express.Application = express();
 
@@ -59,20 +58,10 @@ app.use(
         ],
         connectSrc: [
           "'self'",
-          "http://localhost:5173",
           "https://gso.kommo.com", // 🔹 Permite conexiones con Kommo
         ],
       },
     },
-  })
-);
-
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Origen permitido (el frontend)
-    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
-    credentials: true, // Permitir cookies
   })
 );
 app.use(compression());
