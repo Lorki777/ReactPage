@@ -18,9 +18,9 @@ const CardsCarrusel: React.FC = () => {
   const {
     productos,
     currentPage,
-    setCurrentPage,
     totalPages,
     handleCardClick,
+    handlePageChange,
   } = useProductosPagination(Type, Param);
 
   return (
@@ -58,7 +58,7 @@ const CardsCarrusel: React.FC = () => {
         <ResponsivePagination
           current={currentPage}
           total={totalPages}
-          onPageChange={(page) => setCurrentPage(page)}
+          onPageChange={handlePageChange}
           className="paginationCards"
           previousLabel="Previous"
           nextLabel="Next"

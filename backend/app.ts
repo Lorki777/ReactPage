@@ -7,6 +7,7 @@ import monthRoutes from "./routes/month.routes";
 import guestTokenRoutes from "./routes/guest-token.routes";
 import * as dotenv from "dotenv";
 dotenv.config();
+import cors = require("cors");
 import * as mysql from "mysql2/promise";
 
 const app: express.Application = express();
@@ -21,6 +22,12 @@ const pool = mysql.createPool({
   queueLimit: 0,
   connectTimeout: 20000,
 });
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // tu front
+  })
+);
 
 // Probar conexión a la base de datos
 (async () => {

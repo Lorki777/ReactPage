@@ -196,6 +196,12 @@ export const useProductosPagination = (
     navigate(`/tours/${encodeURIComponent(TourSlug)}`);
   };
 
+  const handlePageChange = (page: number) => {
+    // Cambiamos la página
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  };
+
   return {
     productos,
     error,
@@ -203,6 +209,7 @@ export const useProductosPagination = (
     setCurrentPage,
     totalPages,
     handleCardClick,
+    handlePageChange,
   };
 };
 

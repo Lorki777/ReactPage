@@ -49,6 +49,7 @@ const categories: Record<string, Attraction[]> = {
 const Header = () => {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
 
+  const [isMegaMenuOpen2, setIsMegaMenuOpen2] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>(
     "Mejores atracciones"
   );
@@ -77,6 +78,7 @@ const Header = () => {
 
   return (
     <header className="header">
+      {/* Barra superior con datos de contacto */}
       <div className="top-bar">
         <div className="contact-info">
           <span>
@@ -102,24 +104,29 @@ const Header = () => {
         </div>
       </div>
       <hr />
+
+      {/* Barra con logo y menú principal */}
       <div className="logo-bar">
         <div className="logo">
           <img src={logo} alt="ToursLand Logo" />
         </div>
+
         <nav className="nav-menu">
           <div className="nav-menu-flex">
+            {/* MegaMenu "LUGARES QUE VER" */}
             <div
               className="megamenu-container2"
-              onMouseEnter={() => setIsMegaMenuOpen(true)}
-              onMouseLeave={() => setIsMegaMenuOpen(false)}
+              onMouseEnter={() => setIsMegaMenuOpen2(true)}
+              onMouseLeave={() => setIsMegaMenuOpen2(false)}
             >
               <MegaMenu
                 model={items2}
                 orientation="horizontal"
                 className="custom-megamenu2"
               />
-              {isMegaMenuOpen && (
+              {isMegaMenuOpen2 && (
                 <div className="megamenu-content2">
+                  {/* Columna izquierda (categorías) */}
                   <div className="megamenu-left2">
                     {items[0].items.map((item) => (
                       <div
@@ -133,6 +140,7 @@ const Header = () => {
                       </div>
                     ))}
                   </div>
+                  {/* Columna derecha (atracciones) */}
                   <div className="megamenu-right2">
                     {categories[activeCategory]?.map((attraction) => (
                       <div key={attraction.label} className="attraction-item">
@@ -143,6 +151,8 @@ const Header = () => {
                 </div>
               )}
             </div>
+
+            {/* Links de navegación */}
             {links.map((link) => (
               <NavLink
                 key={link.path}
@@ -152,6 +162,8 @@ const Header = () => {
                 {link.label}
               </NavLink>
             ))}
+
+            {/* Mega menú "SOBRE NOSOTROS" */}
             <div
               className="mega-menu-container"
               onMouseEnter={() => setIsMegaMenuOpen(true)}
