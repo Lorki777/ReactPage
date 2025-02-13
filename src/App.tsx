@@ -1,12 +1,13 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./Routing";
-import Chatbot from "./Components/Chatbot/Chatbot";
+import ScrollToTop from "./ScrollToTop";
+//import Chatbot from "./Components/Chatbot/Chatbot";
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AppRoutes />
-      <Chatbot />
     </Router>
   );
 }

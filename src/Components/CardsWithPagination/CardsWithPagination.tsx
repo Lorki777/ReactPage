@@ -17,11 +17,10 @@ const CardsCarrusel: React.FC = () => {
   const { Type, Param } = useParams();
   const {
     productos,
-    error,
     currentPage,
-    setCurrentPage,
     totalPages,
     handleCardClick,
+    handlePageChange,
   } = useProductosPagination(Type, Param);
 
   return (
@@ -37,9 +36,6 @@ const CardsCarrusel: React.FC = () => {
         </h1>
       </div>
       <div className="cards-pagination">
-        {/* Mostrar error si ocurre */}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
         {/* Renderizar las tarjetas */}
         {productos.map((producto) => (
           <div
@@ -62,7 +58,7 @@ const CardsCarrusel: React.FC = () => {
         <ResponsivePagination
           current={currentPage}
           total={totalPages}
-          onPageChange={(page) => setCurrentPage(page)}
+          onPageChange={handlePageChange}
           className="paginationCards"
           previousLabel="Previous"
           nextLabel="Next"

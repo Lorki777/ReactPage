@@ -7,8 +7,8 @@ import monthRoutes from "./routes/month.routes";
 import guestTokenRoutes from "./routes/guest-token.routes";
 import * as dotenv from "dotenv";
 dotenv.config();
-import * as mysql from "mysql2/promise";
 import cors = require("cors");
+import * as mysql from "mysql2/promise";
 
 const app: express.Application = express();
 
@@ -22,6 +22,12 @@ const pool = mysql.createPool({
   queueLimit: 0,
   connectTimeout: 20000,
 });
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // tu front
+  })
+);
 
 // Probar conexión a la base de datos
 (async () => {
@@ -59,20 +65,10 @@ app.use(
         ],
         connectSrc: [
           "'self'",
-          "http://localhost:5173",
           "https://gso.kommo.com", // 🔹 Permite conexiones con Kommo
         ],
       },
     },
-  })
-);
-
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Origen permitido (el frontend)
-    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
-    credentials: true, // Permitir cookies
   })
 );
 app.use(compression());

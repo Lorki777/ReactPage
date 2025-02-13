@@ -15,7 +15,7 @@ import { Helmet as HelmetReact } from "react-helmet-async";
 import { useTourData, useSidebarLogic } from "../Hook";
 
 const Tours: React.FC = () => {
-  const { product, titles, items, pointItinerary, openDay, setOpenDay, error } =
+  const { product, titles, items, pointItinerary, openDay, setOpenDay } =
     useTourData();
   const { sidebarPosition, activeTab, handleTabClick } = useSidebarLogic();
   return (
@@ -154,9 +154,7 @@ const Tours: React.FC = () => {
                   Itinerario
                 </h2>
                 <div className="touritineraryitems">
-                  {error ? (
-                    <p className="error">{error}</p>
-                  ) : pointItinerary.length > 0 ? (
+                  {pointItinerary.length > 0 ? (
                     pointItinerary.map(({ day, descriptionitinerary }) => (
                       <div
                         key={day}

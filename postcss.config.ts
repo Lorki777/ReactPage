@@ -16,6 +16,7 @@ export default {
             content.match(/[\w-/:]+(?<!:)/g) || [],
           safelist: {
             standard: [
+              /^styles_/,
               /^swiper-/,
               /^bootstrap-/,
               /^btn-/,
