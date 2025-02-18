@@ -200,3 +200,117 @@
 .payment-next-button:hover {
   background-color: #0056b3;
 }
+
+/* Título */
+.form-title {
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Contenedor de inputs */
+.form-grid {
+  display: grid;
+  gap: 10px;
+}
+
+/* Inputs */
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Botón */
+.form-button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.form-button:hover {
+  background: #0056b3;
+}
+
+/* Sección de Facturación */
+.billing-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px solid #ccc;
+}
+
+/* Contenedor de cada input */
+.floating-group {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Estilo del input */
+.floating-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #333;
+  border-radius: 5px;
+  outline: none;
+  background: none;
+}
+
+/* Label flotante */
+.floating-label {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #aaa;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none; /* Evita que el usuario lo seleccione */
+}
+
+/* Cuando el input tiene contenido o está enfocado, el label se mueve arriba */
+.floating-input:focus + .floating-label,
+.floating-label.focused {
+  top: 1px;
+  font-size: 12px;
+  color: #007bff;
+  transform: translateY(0);
+}
+
+/* Estilos de botón */
+.form-button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.form-button:hover {
+  background: #0056b3;
+}
+
+/* Sección de Facturación */
+.billing-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px solid #ccc;
+}

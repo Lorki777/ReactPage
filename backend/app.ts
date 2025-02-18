@@ -23,11 +23,7 @@ const pool = mysql.createPool({
   connectTimeout: 20000,
 });
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // tu front
-  })
-);
+app.use(cors({ origin: "http://localhost:5173" }));
 
 // Probar conexión a la base de datos
 (async () => {

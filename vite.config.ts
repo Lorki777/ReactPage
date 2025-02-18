@@ -15,6 +15,8 @@ export default defineConfig({
     },
   },
   server: {
+    host: "localhost", // 🔹 Asegura que use localhost en dev
+    port: 5173, // 🔹 Asegura que corre en el puerto correcto
     proxy: {
       "/api": {
         target: "http://localhost:8080",

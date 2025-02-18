@@ -216,13 +216,52 @@ export const useProductosPagination = (
 // Hook para obtener meses
 export const useFetchMonths = () => {
   const [months, setMonths] = useState<Month[]>([]);
+  const [totalMonths, setTotalMonths] = useState<number>(0); // Estado para la cantidad total
   const navigate = useNavigate();
-  const { error } = useFetchData("meses", setMonths);
+
+  // Modificamos el setter para actualizar los dos estados
+  const setMonthsData = (data: {
+    rows: Month[];
+    count: { total: number }[];
+  }) => {
+    setMonths(data.rows);
+    if (data.count.length > 0) {
+      setTotalMonths(data.count[0].total);
+    }
+  };
+
+  const { error } = useFetchData("meses", setMonthsData);
 
   const handleCardClick = (monthName: string) => {
     const formattedMonthName = monthName.toLowerCase().replace(/\s+/g, "-");
     navigate(`/Paquetes/${encodeURIComponent(formattedMonthName)}`);
   };
 
-  return { months, error, handleCardClick };
+  return { months, totalMonths, error, handleCardClick };
+};
+
+//Hook para obtener locations
+
+export const useFetchLocations = (
+  level: string,
+  country?: string,
+  state?: string
+) => {
+  const [locations, setLocations] = useState<
+    { name: string; image?: string }[]
+  >([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let endpoint = "";
+    if (level === "countries") endpoint = "locations/countries";
+    if (level === "states" && country) endpoint = `locations/states/${country}`;
+    if (level === "cities" && state) endpoint = `locations/cities/${state}`;
+
+    if (!endpoint) return;
+
+    useFetchData(endpoint, (data) => setLocations(data || []));
+  }, [level, country, state]);
+
+  return { locations, error };
 };

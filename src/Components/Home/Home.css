@@ -33,6 +33,7 @@
 
 .Continentes-name {
   display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
   justify-content: center;
@@ -58,7 +59,7 @@
   text-align: center;
   font-size: 1.2rem; /* Aumenta un poco el tamaño del texto */
   height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.653), rgba(0, 0, 0, 0));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.718), rgba(0, 0, 0, 0));
 }
 
 .Continentes-tours {
@@ -69,13 +70,7 @@
   top: 1rem;
   right: 1rem;
   font-size: 1rem; /* Tamaño de texto más balanceado */
-}
-
-.Continentes-tours-vertodo {
-  display: none;
-  color: #4692e7;
-  width: 100%;
-  height: 100%;
+  z-index: 5;
 }
 
 .Continentes-card:hover::after {
@@ -90,6 +85,22 @@
   background: url("tour-hover.svg") no-repeat center center;
 }
 
+.Continentes-tours-vertodo {
+  display: none;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffff2d;
+  margin-top: 1rem;
+  z-index: 10;
+}
+
+.Continentes-card:hover .Continentes-tours-vertodo {
+  display: inline-block;
+}
+
+.Continentes-card:hover .Continentes-content {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0));
+}
 /* Responsivo para pantallas más pequeñas */
 @media (max-width: 768px) {
   .Continentes-container {

@@ -290,11 +290,9 @@ router.get("/Paquetes", authenticateToken, async (req, res) => {
     page &&
     (isNaN(parseInt(page as string)) || parseInt(page as string) < 1)
   ) {
-    return res
-      .status(400)
-      .json({
-        error: "El parámetro 'page' debe ser un número válido mayor a 0.",
-      });
+    return res.status(400).json({
+      error: "El parámetro 'page' debe ser un número válido mayor a 0.",
+    });
   }
 
   try {
@@ -347,11 +345,9 @@ router.get("/Paquetes", authenticateToken, async (req, res) => {
     let rows = await executeQuery(sql, values);
 
     if (!rows.length) {
-      return res
-        .status(404)
-        .json({
-          error: "No se encontraron paquetes con los filtros aplicados.",
-        });
+      return res.status(404).json({
+        error: "No se encontraron paquetes con los filtros aplicados.",
+      });
     }
 
     // Obtener el total de registros para calcular páginas
@@ -380,6 +376,46 @@ router.get("/Paquetes", authenticateToken, async (req, res) => {
     res.status(500).json({
       error: `Error al obtener tours: ${err.message || "Error desconocido"}`,
     });
+  }
+});
+
+// Obtener países
+router.get("/locations/countries", authenticateToken, async (_req, res) => {
+  try {
+    const sql = "SELECT DISTINCT Country AS name FROM products";
+    const countries = await executeQuery(sql);
+    res.json(countries);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener países" });
+  }
+});
+
+// Obtener estados por país
+router.get(
+  "/locations/states/:country",
+  authenticateToken,
+  async (req, res) => {
+    const { country } = req.params;
+    try {
+      const sql =
+        "SELECT DISTINCT State AS name FROM products WHERE Country = ?";
+      const states = await executeQuery(sql, [country]);
+      res.json(states);
+    } catch (error) {
+      res.status(500).json({ error: "Error al obtener estados" });
+    }
+  }
+);
+
+// Obtener ciudades por estado
+router.get("/locations/cities/:state", authenticateToken, async (req, res) => {
+  const { state } = req.params;
+  try {
+    const sql = "SELECT DISTINCT City AS name FROM products WHERE State = ?";
+    const cities = await executeQuery(sql, [state]);
+    res.json(cities);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener ciudades" });
   }
 });
 
