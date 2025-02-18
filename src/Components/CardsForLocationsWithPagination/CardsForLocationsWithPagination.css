@@ -1,6 +1,6 @@
 .cardLocationCard-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
   gap: 2rem;
   padding: 4% 15%;
 }
@@ -17,7 +17,7 @@
 .cardLocationCard {
   display: flex;
   flex-direction: column;
-  aspect-ratio: 4 / 4;
+  aspect-ratio: 6 / 4;
   background-size: cover;
   background-position: center;
   border-radius: 0.5rem;
@@ -32,6 +32,7 @@
 }
 
 .cardLocationCard-content:hover {
+  justify-content: center;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0));
 }
 
@@ -42,7 +43,7 @@
 .cardLocationCard-content {
   height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   flex-direction: column;
   padding: 1rem;
@@ -61,7 +62,7 @@
   content: "";
   position: absolute;
   top: 60%;
-  left: 0;
+  left: -10%;
   width: 50%;
   height: 50%;
   background-size: cover;

@@ -3,6 +3,7 @@ import "./Tours.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { Helmet as HelmetReact } from "react-helmet-async";
+import CardsForLocationsWithPagination from "../CardsForLocationsWithPagination/CardsForLocationsWithPagination";
 
 const ToursPage: React.FC = () => {
   return (
@@ -35,6 +36,7 @@ const ToursPage: React.FC = () => {
       <div className="tourspageheader">
         <h1>Tours </h1>
       </div>
+      <CardsForLocationsWithPagination />
       <Footer />
     </>
   );

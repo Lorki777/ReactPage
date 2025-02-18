@@ -25,7 +25,7 @@ const CardsForLocationsWithPagination: React.FC = () => {
       setSelectedState(name);
       setLevel("cities");
     } else if (level === "cities") {
-      navigate(`/AvailableTours/${encodeURIComponent(name)}/1`);
+      navigate(`/AvailableTours/${encodeURIComponent(name)}`);
     }
   };
 

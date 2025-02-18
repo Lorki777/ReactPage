@@ -252,16 +252,19 @@ export const useFetchLocations = (
   >([]);
   const [error, setError] = useState<string | null>(null);
 
+  let endpoint = "";
+  if (level === "countries") endpoint = "productos/locations/countries";
+  if (level === "states" && country)
+    endpoint = `productos/locations/states/${country}`;
+  if (level === "cities" && state)
+    endpoint = `productos/locations/cities/${state}`;
+
+  // Aquí llamamos useFetchData una sola vez fuera de useEffect
+  const { error: fetchError } = useFetchData(endpoint, setLocations);
+
   useEffect(() => {
-    let endpoint = "";
-    if (level === "countries") endpoint = "locations/countries";
-    if (level === "states" && country) endpoint = `locations/states/${country}`;
-    if (level === "cities" && state) endpoint = `locations/cities/${state}`;
-
-    if (!endpoint) return;
-
-    useFetchData(endpoint, (data) => setLocations(data || []));
-  }, [level, country, state]);
+    setError(fetchError); // Se actualiza el error cuando cambia
+  }, [fetchError]);
 
   return { locations, error };
 };
