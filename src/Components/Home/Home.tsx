@@ -174,6 +174,13 @@ const Home: React.FC = () => {
 
       <h2>Galería de fotos</h2>
 
+      <div id="ptw-container" className="ptw-menu-vertical">
+        <script
+          type="text/javascript"
+          src="https://widgets.priceres.com.mx/travel-agencyweb/jsonpBooker/startWidget?container=ptw-container&UseConfigs=false&WhiteLabelId=toursland-agency"
+        ></script>
+      </div>
+
       <FacebookPagePlugin />
 
       <Footer />

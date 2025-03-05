@@ -10,45 +10,41 @@
   background-size: cover;
   background-position: center;
   color: white;
-  text-align: center;
+  text-align: left;
   padding: 6rem 2rem;
   height: 300px; /* Ajusta la altura según sea necesario */
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-/* Estilizar el título */
 .payment-header h1 {
-  margin: 0;
   font-size: 3rem;
   font-weight: bold;
-  text-transform: uppercase;
-  z-index: 5;
+  margin-left: 2rem;
+  width: 100%;
+  text-align: center;
 }
 
 /* Barra de pasos */
-/* Estilos para la barra de pasos */
 .payment-steps-bar {
-  position: absolute;
-  bottom: -2%; /* Ajustar para que quede más sobre la imagen */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  background: transparent; /* Eliminamos fondo sólido */
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  z-index: 10; /* Asegurar que esté sobre la imagen */
+  width: 100%;
+  padding: 1rem 0;
+  background: rgba(0, 0, 0, 0.3); /* Fondo transparente */
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
-/* Contenedor de los pasos */
 .payment-steps2-bar {
   display: flex;
-  width: 100%;
+  justify-content: center;
+  width: 80%;
 }
 
-/* Estilizar cada paso con efecto de flecha */
 .step-item {
   flex: 1;
   text-align: center;
@@ -56,16 +52,50 @@
   font-weight: bold;
   position: relative;
   color: white;
-  clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  margin-left: -4.5%;
+}
+
+.step-item:first-child {
+  clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
+  margin-left: 0;
+}
+
+.step-item:not(:first-child):not(:last-child) {
+  clip-path: polygon(15% 50%, 0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
+}
+
+.step-item:last-child {
+  clip-path: polygon(15% 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  width: 100%;
+  justify-content: flex-end;
+  text-align: right;
+  padding-right: 2rem;
+}
+
+.step-item::before {
+  content: "\2713";
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 0.5rem;
+  display: none;
 }
 
 /* Paso completado */
 .step-item.completed {
   background-color: #28a745;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-item.completed::before {
+  display: inline;
 }
 
 /* Paso activo */
@@ -76,61 +106,7 @@
 
 /* Pasos inactivos */
 .step-item:not(.completed):not(.active) {
-  background-color: #b5b5b5;
-  color: white;
-}
-
-/* Ajustar el primer y último paso para evitar cortes */
-.step-item:first-child {
-  clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 0% 100%);
-  border-radius: 10px 0 0 10px;
-}
-
-.step-item:last-child {
-  clip-path: polygon(5% 0%, 100% 0%, 100% 100%, 0% 100%);
-  border-radius: 0 10px 10px 0;
-}
-
-/* Ajuste del header para mayor espacio */
-.payment-header {
-  position: relative;
-  background-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.4),
-      rgba(0, 0, 0, 0.7)
-    ),
-    url("./header-image.webp");
-  background-size: cover;
-  background-position: center;
-  color: white;
-  text-align: center;
-  padding: 7rem 2rem;
-  height: 320px; /* Ajusta la altura según sea necesario */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Estilizar cada paso */
-.step-item {
-  flex: 1;
-  text-align: center;
-  padding: 1rem;
-  border-radius: 5px;
-  background-color: #ddd;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-/* Paso activo */
-.step-item.active {
-  background-color: #ffcc00;
-  color: white;
-}
-
-/* Paso completado */
-.step-item.completed {
-  background-color: #28a745;
+  background: rgba(255, 255, 255, 0.2);
   color: white;
 }
 
@@ -313,4 +289,34 @@
   margin-top: 20px;
   padding-top: 15px;
   border-top: 2px solid #ccc;
+}
+
+.terminosyaviso {
+  display: flex;
+  align-items: center; /* Alinea los elementos verticalmente */
+  gap: 8px; /* Espacio entre checkbox y texto */
+  font-size: 14px;
+  max-width: 100%; /* Asegura que el texto no desborde */
+}
+
+.terminosyaviso input {
+  flex-shrink: 0; /* Evita que el checkbox se estire o desplace */
+  width: 10%;
+}
+
+.terminosyaviso label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Permite que el texto se acomode si es necesario */
+}
+
+.terminosyaviso a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 2px; /* Agrega espacio entre enlaces */
+}
+
+.terminosyaviso a:hover {
+  text-decoration: underline;
 }

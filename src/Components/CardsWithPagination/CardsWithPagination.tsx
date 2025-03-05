@@ -28,11 +28,8 @@ const CardsCarrusel: React.FC = () => {
       <Header />
       <div className="tourspaginationheader">
         <h1>
-          {Type === "Paquetes" && `Mostrando paquetes para el mes: ${Param}`}
-          {Type === "AvailableTours" &&
-            `Mostrando tours para la ciudad: ${Param}`}
-          {Type === "AvailableTours" &&
-            `Mostrando tours para la el continente: ${Param}`}
+          {Type === "Paquetes" && `${Param}`}
+          {Type === "AvailableTours" && `${Param}`}
         </h1>
       </div>
       <div className="cards-pagination">

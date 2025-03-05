@@ -46,22 +46,26 @@ app.use(
           "'self'",
           "https://maps.googleapis.com",
           "https://gso.kommo.com", // 🔹 Permite los scripts de Kommo
+          "https://widgets.priceres.com.mx",
         ],
         frameSrc: [
           "'self'",
           "https://www.google.com",
           "https://www.google.com/maps",
           "https://gso.kommo.com", // 🔹 Permite los iframes de Kommo
+          "https://widgets.priceres.com.mx",
         ],
         imgSrc: [
           "'self'",
           "data:",
           "https://maps.googleapis.com",
           "https://gso.kommo.com", // 🔹 Permite imágenes de Kommo
+          "https://widgets.priceres.com.mx",
         ],
         connectSrc: [
           "'self'",
           "https://gso.kommo.com", // 🔹 Permite conexiones con Kommo
+          "https://widgets.priceres.com.mx",
         ],
       },
     },
