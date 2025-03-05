@@ -3,6 +3,10 @@ import "./Blog.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { Helmet as HelmetReact } from "react-helmet-async";
+import ReducirHuella from "./Reducir huella Portada Chica.webp";
+import Anuncio from "./ANUNCIOS-02.webp";
+import Diamante from "./diamante.svg";
+import ToursLandLogo from "./ToursLand-Logo.png";
 
 const Blog: React.FC = () => {
   return (
@@ -32,29 +36,87 @@ const Blog: React.FC = () => {
         <meta property="og:image:alt" content="Descripción de la imagen" />
       </HelmetReact>
       <Header />
-      <div className="experienciablog">
-        <div className="experienciablog1">
-          <img src="hola" alt="Sobre Nostros" />
+
+      <div className="PortadaBlog" /*Portada TourStories*/>
+        <h3>TourStories</h3>
+      </div>
+
+      <div className="experienciablog" /*Contenedor Blog*/>
+        <div className="experienciablog1" /*Lado Izquierdo*/>
+          <div className="barra-busqueda-blog" /*Buscador*/>
+            <input
+              type="text"
+              placeholder="Buscar"
+              className="input-busqueda-blog"
+            />
+            <button className="boton-busqueda-blog">BUSCAR</button>
+          </div>
+
+          <div className="ConoceTourStories">
+            <h2>CONÓCE TOURSTORIES</h2>
+            <p>
+              En esta página podrás estar informado de las últimas noticias en
+              el mundo de los viajes.
+            </p>
+          </div>
+
+          <div className="PostsRec">
+            <h2>POSTS RECIENTES</h2>
+          </div>
         </div>
-        <div className="experienciablog2">
-          <h3>10 Años de experienciablog</h3>
+
+        <div className="experienciablog2" /*Parte del Centro*/>
+          <div className="cardBlog">
+            <div className="imagenBlog">
+              <img src={ReducirHuella} alt="" />
+            </div>
+            <div className="contentBlog">
+              <a href="#">
+                <span className="title">
+                  Consejos prácticos para viajeros conscientes: reduce tu huella
+                  de carbono mientras exploras el mundo
+                </span>
+              </a>
+
+              <p className="descBlog">
+                Viajar es una experiencia enriquecedora, pero también conlleva
+                un impacto ambiental que podemos minimizar. Si buscas ser un
+                viajero más consciente y reducir tu huella de carbono, estos
+                consejos te ayudarán a disfrutar del mundo mientras cuidas el
+                planeta. 1. Opta por medios de transporte...
+              </p>
+
+              <button
+                className="actionBlog"
+                onClick={() => (window.location.href = "/BlogTemplate")}
+              >
+                Leer Más
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="experienciablog3" /*Lado Derecho*/>
+          <h3>TOURSLAND</h3>
           <p>
-            Somos una empresa de turismo 100% mexicana, que se dedica a la
-            prestación de servicios para personas desde el año 2015, iniciando
-            nuestras operaciones en Tampico y posicionándonos en el mercado. Hoy
-            en día nuestra plataforma de red social tiene un total de 98,996
-            seguidores y operamos con más de 3,000 clientes anualmente.
+            En esta página podrás estar informado de las últimas noticias en el
+            mundo de los viajes.
           </p>
         </div>
-        <div className="experienciablog3">
-          <h3>10 Años de experienciablog</h3>
-          <p>
-            Somos una empresa de turismo 100% mexicana, que se dedica a la
-            prestación de servicios para personas desde el año 2015, iniciando
-            nuestras operaciones en Tampico y posicionándonos en el mercado. Hoy
-            en día nuestra plataforma de red social tiene un total de 98,996
-            seguidores y operamos con más de 3,000 clientes anualmente.
-          </p>
+      </div>
+
+      <div className="Canal-Whats" /*Apartado Canal Whats*/>
+        <div className="Img-Canal-Whats">
+          <img src={Anuncio} alt="" />
+        </div>
+        <div className="Unete-Canal">
+          <h3>¿Quieres recibir ofertas?</h3>
+          <h2>¡Únete a nuestro canal de WhatsApp!</h2>
+          <img src={Diamante} alt="" />
+          <button className="Boton-Canal">Únete aquí al canal</button>
+          <div className="LogoToursLandCanal">
+            <img src={ToursLandLogo} alt="" />
+          </div>
         </div>
       </div>
 
