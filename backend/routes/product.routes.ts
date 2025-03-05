@@ -42,6 +42,24 @@ router.get("/carrusel", authenticateToken, async (_req, res) => {
   }
 });
 
+// Endpoint genérico para obtener productos en el MegaMenu según el tipo
+router.get("/megamenu/:type", authenticateToken, async (req, res) => {
+  try {
+    const { type } = req.params;
+    const validTypes = ["activity", "tour", "grupal"];
+
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({ error: "Tipo de producto no válido" });
+    }
+
+    let sql = "SELECT * FROM products WHERE ProductType = ? LIMIT 10";
+    let rows = await executeQuery(sql, [type]);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los datos del menú" });
+  }
+});
+
 router.get("/Paquetes/:month/:page", authenticateToken, async (req, res) => {
   let { month, page } = req.params as { month: string; page: string };
   const itemsPerPage = 12;

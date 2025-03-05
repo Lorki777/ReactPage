@@ -12,50 +12,20 @@ import { useLocation } from "react-router-dom";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-
-interface Attraction {
-  label: string;
-  icon: string;
-}
-
-const categories: Record<string, Attraction[]> = {
-  PAQUETES: [
-    { label: "Castillo de Chenonceau", icon: "pi pi-image" },
-    { label: "Castillo de Amboise", icon: "pi pi-image" },
-    { label: "Catedral de Tours", icon: "pi pi-image" },
-    { label: "Castillo de Langeais", icon: "pi pi-map-marker" },
-    { label: "Castillo de l'Islette", icon: "pi pi-map-marker" },
-    { label: "Castillo de Chenonceau2", icon: "pi pi-image" },
-    { label: "Castillo de Amboise2", icon: "pi pi-image" },
-    { label: "Catedral de Tours2", icon: "pi pi-image" },
-    { label: "Castillo de Langeais2", icon: "pi pi-map-marker" },
-    { label: "Castillo de l'Islette2", icon: "pi pi-map-marker" },
-  ],
-  TOURS: [
-    { label: "Tours por palacios y castillos", icon: "pi pi-compass" },
-    { label: "Patrimonio de la UNESCO", icon: "pi pi-globe" },
-    { label: "Museos y exposiciones", icon: "pi pi-building" },
-    { label: "Excursiones de varios días", icon: "pi pi-calendar" },
-  ],
-  GRUPALES: [
-    { label: "Tours por palacios y castillos grupales", icon: "pi pi-compass" },
-    { label: "Patrimonio de la UNESCO grupales", icon: "pi pi-globe" },
-    { label: "Museos y exposiciones grupales", icon: "pi pi-building" },
-    { label: "Excursiones de varios díasv grupales", icon: "pi pi-calendar" },
-  ],
-};
+import { useMegaMenuData } from "../Hook";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const location = useLocation();
   const [isMegaMenuOpen2, setIsMegaMenuOpen2] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("PAQUETES");
+  const navigate = useNavigate();
 
-  const items2 = [
-    {
-      label: "LUGARES QUE VER",
-    },
-  ];
+  // Obtener datos de la API para el MegaMenu
+  const { items: paquetes } = useMegaMenuData("activity");
+  const { items: tours } = useMegaMenuData("tour");
+  const { items: grupales } = useMegaMenuData("grupal");
 
   useEffect(() => {
     if (location.pathname.includes("/PAQUETES")) {
@@ -118,17 +88,12 @@ const Header = () => {
               onMouseLeave={() => setIsMegaMenuOpen2(false)}
             >
               <MegaMenu
-                model={items2}
+                model={[{ label: "LUGARES QUE VER" }]}
                 orientation="horizontal"
                 className="custom-megamenu2"
               />
               {isMegaMenuOpen2 && (
-                <div
-                  className="megamenu-content2"
-                  onMouseLeave={() => {
-                    setIsMegaMenuOpen2(false);
-                  }}
-                >
+                <div className="megamenu-content2">
                   {/* Columna izquierda (categorías) */}
                   <div className="megamenu-left2">
                     {["PAQUETES", "TOURS", "GRUPALES"].map((category) => (
@@ -149,15 +114,30 @@ const Header = () => {
                       </NavLink>
                     ))}
                   </div>
-
-                  {/* Columna derecha (atracciones) */}
+                  {/* Columna derecha (productos dinámicos desde la API) */}
                   <div className="megamenu-right2">
-                    {categories[activeCategory]?.map((attraction) => (
-                      <div key={attraction.label} className="attraction-item">
-                        <i className={attraction.icon}></i> {attraction.label}
+                    {(activeCategory === "PAQUETES"
+                      ? paquetes
+                      : activeCategory === "TOURS"
+                      ? tours
+                      : grupales
+                    ).map((item) => (
+                      <div
+                        key={item.TourSlug}
+                        className="attraction-item"
+                        onClick={() =>
+                          navigate(
+                            `/tours/${encodeURIComponent(item.TourSlug)}`
+                          )
+                        }
+                        style={{ cursor: "pointer" }}
+                      >
+                        <img src={item.OgImage} alt={""} />
+                        <span>{item.TourName}</span>
                       </div>
                     ))}
                   </div>
+                  ;
                 </div>
               )}
             </div>

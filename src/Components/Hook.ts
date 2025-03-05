@@ -259,12 +259,29 @@ export const useFetchLocations = (
   if (level === "cities" && state)
     endpoint = `productos/locations/cities/${state}`;
 
-  // Aquí llamamos useFetchData una sola vez fuera de useEffect
-  const { error: fetchError } = useFetchData(endpoint, setLocations);
+  console.log("Generated endpoint:", endpoint);
+
+  const { error: fetchError } = useFetchData(
+    endpoint ? endpoint : "", // Evitar llamadas vacías
+    setLocations
+  );
 
   useEffect(() => {
-    setError(fetchError); // Se actualiza el error cuando cambia
-  }, [fetchError]);
+    if (!endpoint) {
+      setError("Endpoint no válido");
+    } else {
+      setError(fetchError);
+    }
+  }, [fetchError, endpoint]);
 
   return { locations, error };
+};
+
+//Hook para obtener productos megamenu
+
+export const useMegaMenuData = (type: string) => {
+  const [items, setItems] = useState<Product[]>([]);
+  const { error } = useFetchData(`productos/megamenu/${type}`, setItems);
+
+  return { items, error };
 };
