@@ -55,6 +55,11 @@ const useFetchData = (endpoint: string, setter: (data: any) => void) => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async (retry = true) => {
+    if (!endpoint.trim()) {
+      console.warn("El endpoint está vacío, no se realizará la consulta.");
+      return;
+    }
+
     try {
       let token = await getToken();
       if (!token) throw new Error("No se pudo obtener un token válido");
@@ -84,7 +89,9 @@ const useFetchData = (endpoint: string, setter: (data: any) => void) => {
   };
 
   useEffect(() => {
-    fetchData();
+    if (endpoint.trim()) {
+      fetchData();
+    }
   }, [endpoint]);
 
   return { error };
@@ -258,8 +265,6 @@ export const useFetchLocations = (
     endpoint = `productos/locations/states/${country}`;
   if (level === "cities" && state)
     endpoint = `productos/locations/cities/${state}`;
-
-  console.log("Generated endpoint:", endpoint);
 
   const { error: fetchError } = useFetchData(
     endpoint ? endpoint : "", // Evitar llamadas vacías

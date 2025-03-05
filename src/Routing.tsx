@@ -10,7 +10,6 @@ import Conocenos from "./Components/Conocenos/Conocenos";
 import Blog from "./Components/Blog/Blog";
 import Payment from "./Components/Payment/Payment";
 import CardsPagination from "./Components/CardsWithPagination/CardsWithPagination";
-import CardsForLocationsWithPagination from "./Components/CardsForLocationsWithPagination/CardsForLocationsWithPagination";
 import BlogTemplate from "./Components/BlogTemplate/BlogTemplate";
 import AvisoDePrivacidad from "./Components/AvisoDePrivacidad/AvisoDePrivacidad";
 import TerminosYCondiciones from "./Components/Terminos y Condiciones/TerminosYCondiciones";
@@ -24,32 +23,20 @@ const AppRoutes = () => {
       <Route path="/Paquetes" element={<Paquetes />} />
       <Route path="/Terminos" element={<TerminosYCondiciones />} />
       <Route path="/Aviso" element={<AvisoDePrivacidad />} />
-      <Route
-        path="/Tours"
-        element={<ToursPage key={window.location.pathname} />}
-      />
       <Route path="/Grupales" element={<Grupales />} />
       <Route path="/:Type/:Param" element={<CardsPagination />} />
-      {/* Ruta principal de tours (para países) */}
-      <Route
-        path="/TOURS"
-        element={<ToursPage key={window.location.pathname} />}
-      />
+      <Route path="/TOURS" element={<ToursPage key={location.pathname} />} />
       <Route
         path="/TOURS/Location"
-        element={<ToursPage key={window.location.pathname} />}
+        element={<ToursPage key={location.pathname} />}
       />
-
-      {/* Ruta para los estados (requiere el nombre del país) */}
       <Route
         path="/TOURS/Location/:country"
-        element={<ToursPage key={window.location.pathname} />}
+        element={<ToursPage key={location.pathname} />}
       />
-
-      {/* Ruta para las ciudades (requiere el país y el estado) */}
       <Route
         path="/TOURS/Location/:country/:state"
-        element={<ToursPage key={window.location.pathname} />}
+        element={<ToursPage key={location.pathname} />}
       />
       <Route path="/Conocenos" element={<Conocenos />} />
       <Route path="/Expertos" element={<Expertos />} />
