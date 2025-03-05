@@ -10,6 +10,8 @@ import Conocenos from "./Components/Conocenos/Conocenos";
 import Blog from "./Components/Blog/Blog";
 import Payment from "./Components/Payment/Payment";
 import CardsPagination from "./Components/CardsWithPagination/CardsWithPagination";
+import CardsForLocationsWithPagination from "./Components/CardsForLocationsWithPagination/CardsForLocationsWithPagination";
+import BlogTemplate from "./Components/BlogTemplate/BlogTemplate";
 import AvisoDePrivacidad from "./Components/AvisoDePrivacidad/AvisoDePrivacidad";
 import TerminosYCondiciones from "./Components/Terminos y Condiciones/TerminosYCondiciones";
 
@@ -53,6 +55,7 @@ const AppRoutes = () => {
       <Route path="/Expertos" element={<Expertos />} />
       <Route path="/Blog" element={<Blog />} />
       <Route path="/Payment" element={<Payment />} />
+      <Route path="/BlogTemplate" element={<BlogTemplate />} />
     </Routes>
   );
 };
