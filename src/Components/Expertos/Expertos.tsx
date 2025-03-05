@@ -38,7 +38,7 @@ const Expertos: React.FC = () => {
       </HelmetReact>
       <Header />
       <div className="PortadaExpertos" /*Portada Pagina*/>
-        <img src={Portada} alt="" />
+        <img src={Portada} alt="" loading="lazy"/>
         <p>
           SI VIAJAS CON 10 O MAS PERSONAS PERSONALIZAMOS TU VIAJE A TU MANERA,
           AGREGANDO LOS SERVICIOS QUE NECESITES PARA QUE TU VIAJE SEA COMO TU LO
@@ -65,13 +65,13 @@ const Expertos: React.FC = () => {
           </p>
         </div>
         <div className="ServicioImagen">
-          <img src={Empresarial} alt="Viaje Empresarial" />
+          <img src={Empresarial} alt="Viaje Empresarial" loading="lazy" />
         </div>
       </div>
 
       <div className="Servicios">
         <div className="ServicioImagen" /*Viajes Familiares*/>
-          <img src={Familiar} alt="" />
+          <img src={Familiar} alt=""  loading="lazy"/>
         </div>
         <div className="Servicio">
           <h3>Viajes Familiares</h3>
@@ -95,13 +95,13 @@ const Expertos: React.FC = () => {
           </p>
         </div>
         <div className="ServicioImagen">
-          <img src={Graduacion} alt="" />
+          <img src={Graduacion} alt=""  loading="lazy"/>
         </div>
       </div>
 
       <div className="Servicios">
         <div className="ServicioImagen" /*Viajes Despedida de Soltero/a*/>
-          <img src={Despedida} alt="" />
+          <img src={Despedida} alt=""   loading="lazy"/>
         </div>
         <div className="Servicio">
           <h3>Viajes de Despedida de Soltero/a</h3>

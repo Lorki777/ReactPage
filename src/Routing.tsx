@@ -11,6 +11,7 @@ import Blog from "./Components/Blog/Blog";
 import Payment from "./Components/Payment/Payment";
 import CardsPagination from "./Components/CardsWithPagination/CardsWithPagination";
 import CardsForLocationsWithPagination from "./Components/CardsForLocationsWithPagination/CardsForLocationsWithPagination";
+import BlogTemplate from "./Components/BlogTemplate/BlogTemplate";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/Expertos" element={<Expertos />} />
       <Route path="/Blog" element={<Blog />} />
       <Route path="/Payment" element={<Payment />} />
+      <Route path="/BlogTemplate" element={<BlogTemplate />} />
     </Routes>
   );
 };
