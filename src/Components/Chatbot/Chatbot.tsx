@@ -1,83 +1,29 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Send, MessageCircle, ChevronDown } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import "./Chatbot.css"; // Cambié la importación a un archivo CSS regular
+import { useEffect } from "react";
+import "./Chatbot.css";
 
-export default function Chatbot() {
-  const [messages, setMessages] = useState<{ user: boolean; text: string }[]>(
-    []
-  );
-  const [input, setInput] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+const KommoButton: React.FC = () => {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.id = "crm_plugin_script";
+    script.src = "https://gso.kommo.com/js/button.js";
+    (window as any).crm_plugin = {
+      id: "1032869",
+      hash: "95cffc1ceecce296f8e28b9e322e9708b3f22a40930ec600096fa8648343a7c7",
+      locale: "es",
+      setMeta: function (p: any) {
+        this.params = (this.params || []).concat([p]);
+      },
+    };
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
+    document.head.appendChild(script);
 
-    const userMessage = { user: true, text: input };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
 
-    setTimeout(() => {
-      const botResponse = {
-        user: false,
-        text: "Hola! Soy un chatbot. ¿En qué puedo ayudarte?",
-      };
-      setMessages((prev) => [...prev, botResponse]);
-    }, 1000);
-  };
+  return null;
+};
 
-  return (
-    <div className="chatbotContainer">
-      {!isOpen && (
-        <button className="chatbotButton" onClick={() => setIsOpen(true)}>
-          <MessageCircle size={28} />
-        </button>
-      )}
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="chatbotBox"
-        >
-          <div className="chatbotHeader">
-            <div className="chatbotTitle">
-              <MessageCircle size={24} />
-              <span>Talk to us</span>
-            </div>
-            <button onClick={() => setIsOpen(false)} className="closeButton">
-              <ChevronDown size={24} />
-            </button>
-          </div>
-          <div className="chatbotMessages">
-            {messages.map((msg, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={msg.user ? "userMessage" : "botMessage"}
-              >
-                <div className={msg.user ? "userBubble" : "botBubble"}>
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-          <div className="chatbotInput">
-            <input
-              type="text"
-              placeholder="Escribe un mensaje..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            />
-            <button className="sendButton" onClick={sendMessage}>
-              <Send size={20} />
-            </button>
-          </div>
-        </motion.div>
-      )}
-    </div>
-  );
-}
+export default KommoButton;

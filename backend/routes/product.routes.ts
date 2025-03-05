@@ -278,4 +278,145 @@ router.get("/touritinerary/:sluglist", authenticateToken, async (req, res) => {
   }
 });
 
+router.get("/Paquetes", authenticateToken, async (req, res) => {
+  let { month, minPrice, maxPrice, duration, tourName, page = "1" } = req.query;
+  const itemsPerPage = 12;
+  const offset = (parseInt(page as string) - 1) * itemsPerPage;
+
+  console.log(`Solicitud recibida en /Paquetes con filtros`, req.query);
+
+  // Validaciones
+  if (
+    page &&
+    (isNaN(parseInt(page as string)) || parseInt(page as string) < 1)
+  ) {
+    return res.status(400).json({
+      error: "El parámetro 'page' debe ser un número válido mayor a 0.",
+    });
+  }
+
+  try {
+    let sql = `
+      SELECT DISTINCT months.IdMonth, products.TourSlug, products.TourName, 
+      products.TourPrice, products.TourDuration 
+      FROM products 
+      JOIN reservationsdates ON products.id = reservationsdates.product_id 
+      JOIN months ON FIND_IN_SET(months.IdMonth, reservationsdates.reservation_month) 
+    `;
+
+    let filters: string[] = [];
+    let values: any[] = [];
+
+    // Aplicar filtros dinámicamente
+    if (month) {
+      filters.push(`months.Month = ?`);
+      values.push(month);
+    }
+
+    if (minPrice) {
+      filters.push(`products.TourPrice >= ?`);
+      values.push(parseFloat(minPrice as string));
+    }
+
+    if (maxPrice) {
+      filters.push(`products.TourPrice <= ?`);
+      values.push(parseFloat(maxPrice as string));
+    }
+
+    if (duration) {
+      filters.push(`products.TourDuration = ?`);
+      values.push(parseInt(duration as string));
+    }
+
+    if (tourName) {
+      filters.push(`products.TourName LIKE ?`);
+      values.push(`%${tourName}%`);
+    }
+
+    // Agregar filtros a la consulta si existen
+    if (filters.length > 0) {
+      sql += ` WHERE ` + filters.join(" AND ");
+    }
+
+    // Agregar paginación
+    sql += ` LIMIT ? OFFSET ?`;
+    values.push(itemsPerPage, offset);
+
+    let rows = await executeQuery(sql, values);
+
+    if (!rows.length) {
+      return res.status(404).json({
+        error: "No se encontraron paquetes con los filtros aplicados.",
+      });
+    }
+
+    // Obtener el total de registros para calcular páginas
+    let countSql = `
+      SELECT COUNT(DISTINCT products.id) AS total 
+      FROM products 
+      JOIN reservationsdates ON products.id = reservationsdates.product_id 
+      JOIN months ON FIND_IN_SET(months.IdMonth, reservationsdates.reservation_month) 
+    `;
+
+    if (filters.length > 0) {
+      countSql += ` WHERE ` + filters.join(" AND ");
+    }
+
+    let countResult = await executeQuery(countSql, values.slice(0, -2)); // Quitamos LIMIT y OFFSET
+    let totalItems = countResult[0]?.total || 0;
+    let totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    res.json({
+      data: rows,
+      totalPages,
+      currentPage: parseInt(page as string),
+    });
+  } catch (error) {
+    let err = error as Error;
+    res.status(500).json({
+      error: `Error al obtener tours: ${err.message || "Error desconocido"}`,
+    });
+  }
+});
+
+// Obtener países
+router.get("/locations/countries", authenticateToken, async (_req, res) => {
+  try {
+    const sql = "SELECT DISTINCT Country AS name FROM products";
+    const countries = await executeQuery(sql);
+    res.json(countries);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener países" });
+  }
+});
+
+// Obtener estados por país
+router.get(
+  "/locations/states/:country",
+  authenticateToken,
+  async (req, res) => {
+    const { country } = req.params;
+    try {
+      const sql =
+        "SELECT DISTINCT State AS name FROM products WHERE Country = ?";
+      const states = await executeQuery(sql, [country]);
+      res.json(states);
+    } catch (error) {
+      res.status(500).json({ error: "Error al obtener estados" });
+    }
+  }
+);
+
+// Obtener ciudades por estado
+router.get("/locations/cities/:state", authenticateToken, async (req, res) => {
+  const { state } = req.params;
+  try {
+    const sql = "SELECT DISTINCT City AS name FROM products WHERE State = ?";
+    const cities = await executeQuery(sql, [state]);
+    res.json(cities);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener ciudades" });
+  }
+});
+
 export default router;

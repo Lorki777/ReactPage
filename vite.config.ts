@@ -15,10 +15,12 @@ export default defineConfig({
     },
   },
   server: {
+    host: "localhost", // 🔹 Asegura que use localhost en dev
+    port: 5173, // 🔹 Asegura que corre en el puerto correcto
     proxy: {
       "/api": {
-        target: "http://localhost:8080", // Puerto y esquema del backend
-        changeOrigin: true, // Cambia el origen para evitar conflictos de CORS
+        target: "http://localhost:8080",
+        changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },

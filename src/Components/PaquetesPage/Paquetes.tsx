@@ -7,7 +7,7 @@ import { Helmet as HelmetReact } from "react-helmet-async";
 import { useFetchMonths } from "../Hook";
 
 const Paquetes: React.FC = () => {
-  const { months, error, handleCardClick } = useFetchMonths();
+  const { months, totalMonths, error, handleCardClick } = useFetchMonths();
   return (
     <>
       <HelmetReact>
@@ -55,7 +55,7 @@ const Paquetes: React.FC = () => {
               <h3>
                 {month.Month.charAt(0).toUpperCase() + month.Month.slice(1)}
               </h3>
-              <p className="NumPaquetes-tours">20 Paquetes</p>
+              <p className="NumPaquetes-tours">{totalMonths} Paquetes</p>
               <p className="PaquetesCard-tours">Ver todos los tours</p>
             </div>
           </div>

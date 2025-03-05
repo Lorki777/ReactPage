@@ -15,6 +15,7 @@ import Icono2 from "./Recurso-2.svg";
 import Icono3 from "./Recurso-3.svg";
 import IconoTodosLosTours from "./TODOS LOS TOURS.svg";
 import { Helmet as HelmetReact } from "react-helmet-async";
+import FacebookPagePlugin from "../Facebook/FacebookPagePlugin";
 
 const continentes = [
   { nombre: "Europa", tours: 7, imagen: Europa, area: "europa" },
@@ -41,6 +42,9 @@ const continentes = [
 ];
 
 const Home: React.FC = () => {
+  const handleDestinationClick = () => {
+    return 0;
+  };
   return (
     <>
       <HelmetReact>
@@ -148,23 +152,30 @@ const Home: React.FC = () => {
               key={continente.nombre}
               className={`Continentes-card ${continente.area}`}
               style={{ backgroundImage: `url(${continente.imagen})` }}
+              onClick={() => handleDestinationClick()}
             >
               <div className="Continentes-name">
                 <h3>{continente.nombre}</h3>
+                <p className="Continentes-tours-vertodo">
+                  Ver todos los tours
+                </p>{" "}
               </div>
               <div className="Continentes-content">
                 <p className="Continentes-tours">{continente.tours} tours</p>
               </div>
-              <p className="Continentes-tours-vertodo">Ver todos los tours</p>
             </div>
           ))}
         </div>
+
         <CardsCarrusel />
       </div>
 
       <hr />
 
       <h2>Galería de fotos</h2>
+
+      <FacebookPagePlugin />
+
       <Footer />
     </>
   );

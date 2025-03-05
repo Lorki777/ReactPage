@@ -6,30 +6,79 @@ import telefonoIcon from "./telefono.svg";
 import tiktokIcon from "./tiktok.png";
 import mailIcon from "./mail.svg";
 import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { MegaMenu } from "primereact/megamenu";
+import { useLocation } from "react-router-dom";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 
-const links = [
-  { path: "/", label: "INICIO" },
-  { path: "/Paquetes", label: "PAQUETES" },
-  { path: "/Tours", label: "TOURS" },
-  { path: "/Grupales", label: "GRUPALES" },
-  { path: "/Blog", label: "BLOG" },
-  { path: "/Conocenos", label: "CONÓCENOS" },
-  { path: "/Expertos", label: "EXPERTOS" },
-];
+interface Attraction {
+  label: string;
+  icon: string;
+}
+
+const categories: Record<string, Attraction[]> = {
+  PAQUETES: [
+    { label: "Castillo de Chenonceau", icon: "pi pi-image" },
+    { label: "Castillo de Amboise", icon: "pi pi-image" },
+    { label: "Catedral de Tours", icon: "pi pi-image" },
+    { label: "Castillo de Langeais", icon: "pi pi-map-marker" },
+    { label: "Castillo de l'Islette", icon: "pi pi-map-marker" },
+    { label: "Castillo de Chenonceau2", icon: "pi pi-image" },
+    { label: "Castillo de Amboise2", icon: "pi pi-image" },
+    { label: "Catedral de Tours2", icon: "pi pi-image" },
+    { label: "Castillo de Langeais2", icon: "pi pi-map-marker" },
+    { label: "Castillo de l'Islette2", icon: "pi pi-map-marker" },
+  ],
+  TOURS: [
+    { label: "Tours por palacios y castillos", icon: "pi pi-compass" },
+    { label: "Patrimonio de la UNESCO", icon: "pi pi-globe" },
+    { label: "Museos y exposiciones", icon: "pi pi-building" },
+    { label: "Excursiones de varios días", icon: "pi pi-calendar" },
+  ],
+  GRUPALES: [
+    { label: "Tours por palacios y castillos grupales", icon: "pi pi-compass" },
+    { label: "Patrimonio de la UNESCO grupales", icon: "pi pi-globe" },
+    { label: "Museos y exposiciones grupales", icon: "pi pi-building" },
+    { label: "Excursiones de varios díasv grupales", icon: "pi pi-calendar" },
+  ],
+};
 
 const Header = () => {
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const location = useLocation();
+  const [isMegaMenuOpen2, setIsMegaMenuOpen2] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>("PAQUETES");
+
+  const items2 = [
+    {
+      label: "LUGARES QUE VER",
+    },
+  ];
+
+  useEffect(() => {
+    if (location.pathname.includes("/PAQUETES")) {
+      setActiveCategory("PAQUETES");
+    } else if (location.pathname.includes("/TOURS")) {
+      setActiveCategory("TOURS");
+    } else if (location.pathname.includes("/GRUPALES")) {
+      setActiveCategory("GRUPALES");
+    }
+  }, [location.pathname]);
+
   return (
     <header className="header">
+      {/* Barra superior con datos de contacto */}
       <div className="top-bar">
         <div className="contact-info">
           <span>
-            <img src={telefonoIcon} alt="Facebook" /> 833-334-40-42
+            <img src={telefonoIcon} alt="Teléfono" /> 833-334-40-42
           </span>
           <span>
-            <img src={mailIcon} alt="Facebook" /> contacto@toursland.mx
+            <img src={mailIcon} alt="Correo" /> contacto@toursland.mx
           </span>
           <span>Síguenos</span>
-          {/* Iconos de redes sociales */}
           <span>
             <img src={facebookIcon} alt="Facebook" />
           </span>
@@ -46,21 +95,98 @@ const Header = () => {
         </div>
       </div>
       <hr />
+
+      {/* Barra con logo y menú principal */}
       <div className="logo-bar">
         <div className="logo">
           <img src={logo} alt="ToursLand Logo" />
         </div>
+
         <nav className="nav-menu">
           <div className="nav-menu-flex">
-            {links.map((link) => (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                {link.label}
-              </NavLink>
-            ))}
+            <NavLink
+              to="/"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              INICIO
+            </NavLink>
+
+            {/* MegaMenu "LUGARES QUE VER" */}
+            <div
+              className="megamenu-container2"
+              onMouseEnter={() => setIsMegaMenuOpen2(true)}
+              onMouseLeave={() => setIsMegaMenuOpen2(false)}
+            >
+              <MegaMenu
+                model={items2}
+                orientation="horizontal"
+                className="custom-megamenu2"
+              />
+              {isMegaMenuOpen2 && (
+                <div
+                  className="megamenu-content2"
+                  onMouseLeave={() => {
+                    setIsMegaMenuOpen2(false);
+                  }}
+                >
+                  {/* Columna izquierda (categorías) */}
+                  <div className="megamenu-left2">
+                    {["PAQUETES", "TOURS", "GRUPALES"].map((category) => (
+                      <NavLink
+                        key={category}
+                        to={`/${category}`}
+                        className={`menu-category2 ${
+                          activeCategory === category ? "active" : ""
+                        }`}
+                        onMouseEnter={() => setActiveCategory(category)}
+                      >
+                        <input
+                          type="radio"
+                          checked={activeCategory === category}
+                          readOnly
+                        />
+                        {category}
+                      </NavLink>
+                    ))}
+                  </div>
+
+                  {/* Columna derecha (atracciones) */}
+                  <div className="megamenu-right2">
+                    {categories[activeCategory]?.map((attraction) => (
+                      <div key={attraction.label} className="attraction-item">
+                        <i className={attraction.icon}></i> {attraction.label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <NavLink
+              to="/Blog"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              BLOG
+            </NavLink>
+
+            {/* Mega menú "SOBRE NOSOTROS" */}
+            <div
+              className="mega-menu-container"
+              onMouseEnter={() => setIsMegaMenuOpen(true)}
+              onMouseLeave={() => setIsMegaMenuOpen(false)}
+            >
+              <span className="mega-menu-trigger">SOBRE NOSOTROS</span>
+              {isMegaMenuOpen && (
+                <div className="mega-menu">
+                  <NavLink to="/Conocenos" className="mega-menu-item">
+                    CONÓCENOS
+                  </NavLink>
+                  <NavLink to="/Expertos" className="mega-menu-item">
+                    EXPERTOS
+                  </NavLink>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       </div>

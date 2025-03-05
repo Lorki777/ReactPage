@@ -1,0 +1,70 @@
+.cardLocationCard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 2rem;
+  padding: 4% 15%;
+}
+
+.cardLocationCard-content .NumcardLocation-tours {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  background-color: #1aafe6;
+  border-radius: 1rem;
+  padding: 0.5rem;
+}
+
+.cardLocationCard {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 4 / 4;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  position: relative;
+}
+
+.cardLocationCard:hover {
+  transform: scale(1.05); /* Escala la tarjeta ligeramente al pasar el cursor */
+}
+
+.cardLocationCard-content:hover {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0));
+}
+
+.cardLocationCard:hover .cardLocationCard-tours {
+  display: block;
+}
+
+.cardLocationCard-content {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  font-size: 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+}
+
+.cardLocationCard-tours {
+  display: none;
+  color: #4692e7;
+}
+
+.cardLocationCard-content:hover::after {
+  content: "";
+  position: absolute;
+  top: 60%;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  background-size: cover;
+  transition: opacity 0.3s ease-in-out;
+  background: url("tour-hover.svg") no-repeat center center;
+}

@@ -16,6 +16,7 @@ export default {
             content.match(/[\w-/:]+(?<!:)/g) || [],
           safelist: {
             standard: [
+              /^styles_/,
               /^swiper-/,
               /^bootstrap-/,
               /^btn-/,
@@ -29,6 +30,9 @@ export default {
               /^flex-/,
               /^grid-/,
               /^gap-/,
+              /^amo-/,
+              /^buttonscollapsed/,
+              /^amo-inner-buttons/,
             ], // Excluye clases dinámicas de Tailwind
           },
         })

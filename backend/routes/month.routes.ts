@@ -34,8 +34,12 @@ export const executeQuery = async (sql: string) => {
 router.get("/", authenticateToken, async (_req, res) => {
   try {
     let sql = "SELECT * FROM months";
+    let countSql = `
+        SELECT COUNT(*) AS total FROM months
+      `;
     let rows = await executeQuery(sql);
-    res.json(rows);
+    let count = await executeQuery(countSql);
+    res.json({ rows, count });
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los datos" });
   }

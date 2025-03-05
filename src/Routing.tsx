@@ -10,6 +10,7 @@ import Conocenos from "./Components/Conocenos/Conocenos";
 import Blog from "./Components/Blog/Blog";
 import Payment from "./Components/Payment/Payment";
 import CardsPagination from "./Components/CardsWithPagination/CardsWithPagination";
+import CardsForLocationsWithPagination from "./Components/CardsForLocationsWithPagination/CardsForLocationsWithPagination";
 import BlogTemplate from "./Components/BlogTemplate/BlogTemplate";
 
 const AppRoutes = () => {
@@ -22,6 +23,10 @@ const AppRoutes = () => {
       <Route path="/Tours" element={<ToursPage />} />
       <Route path="/Grupales" element={<Grupales />} />
       <Route path="/:Type/:Param" element={<CardsPagination />} />
+      <Route
+        path="/locations/:Type/:Param"
+        element={<CardsForLocationsWithPagination />}
+      />
       <Route path="/Conocenos" element={<Conocenos />} />
       <Route path="/Expertos" element={<Expertos />} />
       <Route path="/Blog" element={<Blog />} />

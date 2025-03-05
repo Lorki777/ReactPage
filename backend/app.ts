@@ -7,8 +7,8 @@ import monthRoutes from "./routes/month.routes";
 import guestTokenRoutes from "./routes/guest-token.routes";
 import * as dotenv from "dotenv";
 dotenv.config();
-import * as mysql from "mysql2/promise";
 import cors = require("cors");
+import * as mysql from "mysql2/promise";
 
 const app: express.Application = express();
 
@@ -22,6 +22,8 @@ const pool = mysql.createPool({
   queueLimit: 0,
   connectTimeout: 20000,
 });
+
+app.use(cors({ origin: "http://localhost:5173" }));
 
 // Probar conexión a la base de datos
 (async () => {
@@ -40,24 +42,29 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://maps.googleapis.com"],
+        scriptSrc: [
+          "'self'",
+          "https://maps.googleapis.com",
+          "https://gso.kommo.com", // 🔹 Permite los scripts de Kommo
+        ],
         frameSrc: [
           "'self'",
           "https://www.google.com",
           "https://www.google.com/maps",
+          "https://gso.kommo.com", // 🔹 Permite los iframes de Kommo
         ],
-        imgSrc: ["'self'", "data:", "https://maps.googleapis.com"],
-        connectSrc: ["'self'", "http://localhost:5173"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://maps.googleapis.com",
+          "https://gso.kommo.com", // 🔹 Permite imágenes de Kommo
+        ],
+        connectSrc: [
+          "'self'",
+          "https://gso.kommo.com", // 🔹 Permite conexiones con Kommo
+        ],
       },
     },
-  })
-);
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Origen permitido (el frontend)
-    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
-    credentials: true, // Permitir cookies
   })
 );
 app.use(compression());
