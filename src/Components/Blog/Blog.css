@@ -1,4 +1,5 @@
-.PortadaBlog {     /*Portada TourStories*/
+.PortadaBlog {
+  /*Portada TourStories*/
   align-items: center;
   justify-content: center;
   background-image: url(Toursland-Wensite-BannerBlog.webp);
@@ -7,20 +8,21 @@
   padding: 9rem 2rem;
   background-position: center;
   background-size: cover;
-  font-size: 30px;
+  font-size: 1.875rem; /* 30px -> 1.875rem */
   color: white;
 }
 
-.experienciablog {    
+.experienciablog {
   display: flex;
   grid-template-columns: repeat(3, 1fr);
   height: 100%;
 }
 
-.experienciablog1 {     /*Lado Izquierdo*/
+.experienciablog1 {
+  /*Lado Izquierdo*/
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem; /* 10px -> 0.625rem */
   width: 25%;
   padding: 3em 3em;
 }
@@ -31,37 +33,37 @@
   object-fit: cover;
 }
 
-.barra-busqueda-blog-container {    /*Barra de busqueda*/
+.barra-busqueda-blog-container {
+  /*Barra de búsqueda*/
   background-color: #00a9e0;
-  padding: 20px;
+  padding: 1rem 5%;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: Arial, sans-serif;
-  padding: 1rem 5%;
 }
 
 .barra-busqueda-blog {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.625rem; /* 10px -> 0.625rem */
+  margin-bottom: 1.25rem; /* 20px -> 1.25rem */
   align-items: center;
 }
 
 .input-busqueda-blog {
-  padding: 10px;
+  padding: 0.625rem; /* 10px -> 0.625rem */
   border: none;
-  border-radius: 25px;
+  border-radius: 1.5625rem; /* 25px -> 1.5625rem */
   width: 60%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); /* 2px -> 0.125rem, 4px -> 0.25rem */
 }
 
 .search-icon-button {
   background: #f5f5f5;
   border: none;
-  padding: 10px;
+  padding: 0.625rem; /* 10px -> 0.625rem */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -70,60 +72,65 @@
 }
 
 .search-icon-button i {
-  font-size: 16px;
+  font-size: 1rem; /* 16px -> 1rem */
   color: #00a9e0;
 }
 
 .boton-busqueda-blog {
   background: #ffd700;
-  padding: 10px 2px;
+  padding: 0.625rem 0.125rem; /* 10px 2px -> 0.625rem 0.125rem */
   width: 40%;
   border: none;
-  border-radius: 25px;
+  border-radius: 1.5625rem; /* 25px -> 1.5625rem */
   color: #000;
   font-weight: bold;
   cursor: pointer;
 }
 
-.ConoceTourStories{    /*Apartado Conoce Tours Stories*/
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.ConoceTourStories {
+  /*Apartado Conoce Tours Stories*/
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   padding: 2rem 0;
 }
 
-.ConoceTourStories h2{
+.ConoceTourStories h2 {
   font-weight: bold;
   padding-bottom: 1rem;
 }
 
-.PostsRec h2{    /*Apartado Ports recientes*/
+.PostsRec h2 {
+  /*Apartado Posts recientes*/
   font-weight: bold;
 }
 
-.experienciablog2 {     /*Parte del Centro*/
+.experienciablog2 {
+  /*Parte del Centro*/
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem; /* 10px -> 0.625rem */
   padding: 1rem 5rem;
   width: 50%;
 }
 
-.cardBlog {     /*Blogs*/
+.cardBlog {
+  /*Blogs*/
   border-radius: 0.5rem;
   background-color: #fff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid transparent;
+  box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.05); /* 1px -> 0.0625rem, 2px -> 0.125rem */
+  border: 0.0625rem solid transparent; /* 1px -> 0.0625rem */
   width: 90%;
 }
 
 .cardBlog a {
-  text-decoration: none
+  text-decoration: none;
 }
 
-.contentBlog {   
+.contentBlog {
   padding: 1.1rem;
 }
 
-.imagenBlog {   /*Imagen destacada del Blog*/
+.imagenBlog {
+  /*Imagen destacada del Blog*/
   object-fit: cover;
   width: 100%;
   height: 20rem;
@@ -131,22 +138,24 @@
   display: flex;
 }
 
-.imagenBlog img{
+.imagenBlog img {
   object-fit: cover;
   width: 100%;
   height: 100%;
 }
 
-.titleBlog {    /*Titulo del Blog*/
+.titleBlog {
+  /*Título del Blog*/
   color: #111827;
   font-size: 1rem;
   line-height: 1.25rem;
   font-weight: 400;
 }
 
-.descBlog {    /*Descripcion del Blog*/
+.descBlog {
+  /*Descripción del Blog*/
   margin-top: 0.5rem;
-  color: #6B7280;
+  color: #6b7280;
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
@@ -160,48 +169,49 @@
   font-weight: 500;
   align-items: center;
   gap: 0.25rem;
-  background-color: #2563EB;
-  padding: 4px 8px;
-  border-radius: 4px;
+  background-color: #2563eb;
+  padding: 0.25rem 0.5rem; /* 4px 8px -> 0.25rem 0.5rem */
+  border-radius: 0.25rem; /* 4px -> 0.25rem */
 }
 
 .actionBlog span {
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 .actionBlog:hover span {
-  transform: translateX(4px);
+  transform: translateX(0.25rem); /* 4px -> 0.25rem */
 }
 
-
-.experienciablog3 {     /*Lado Derecho*/
+.experienciablog3 {
+  /*Lado Derecho*/
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem; /* 10px -> 0.625rem */
   padding: 1rem 5rem;
   width: 25%;
 }
 
-.Canal-Whats{    /*Apartado del Canal de Whats*/
+.Canal-Whats {
+  /*Apartado del Canal de Whats*/
   display: flex;
   grid-template-columns: repeat(3, 1fr);
   padding: 1rem 25rem;
   height: 22rem;
 }
 
-.Img-Canal-Whats{
+.Img-Canal-Whats {
   display: flex;
   background-color: #1cb0e6;
   width: 40%;
 }
 
-.Img-Canal-Whats img{
+.Img-Canal-Whats img {
   object-fit: cover;
   height: 100%;
   width: 100%;
 }
 
-.Unete-Canal{
+.Unete-Canal {
   text-align: center;
   justify-content: center;
   align-items: center;
@@ -210,42 +220,91 @@
   padding-top: 1rem;
 }
 
-.Unete-Canal h3{
-  font-size: 20px;
+.Unete-Canal h3 {
+  font-size: 1.25rem; /* 20px -> 1.25rem */
   font-weight: bold;
   color: white;
 }
 
-.Unete-Canal h2{
-  font-size: 30px;
+.Unete-Canal h2 {
+  font-size: 1.875rem; /* 30px -> 1.875rem */
   font-weight: bold;
   color: white;
   padding-bottom: 1rem;
 }
 
-.Unete-Canal img{
+.Unete-Canal img {
   display: flex;
   height: 15%;
   width: 100%;
   margin-bottom: 2rem;
 }
 
-.Boton-Canal{
+.Boton-Canal {
   background: #ffd700;
-  padding: 10px 2px;
+  padding: 0.625rem 0.125rem; /* 10px 2px -> 0.625rem 0.125rem */
   width: 40%;
   border: none;
-  border-radius: 25px;
+  border-radius: 1.5625rem; /* 25px -> 1.5625rem */
   color: #1cb0e6;
   font-weight: bold;
   cursor: pointer;
 }
 
-.Boton-Canal:hover{
+.Boton-Canal:hover {
   color: white;
 }
 
-.LogoToursLandCanal{
+.LogoToursLandCanal {
   height: 40rem;
-  width:100%;
+  width: 100%;
+}
+
+/* Media Queries para hacerlo responsivo */
+@media (max-width: 768px) {
+  .PortadaBlog {
+    padding: 4rem 1rem;
+    font-size: 1.5rem;
+  }
+  .experienciablog {
+    flex-direction: column;
+  }
+  .experienciablog1,
+  .experienciablog2,
+  .experienciablog3 {
+    width: 100%;
+    padding: 1rem;
+  }
+  .barra-busqueda-blog {
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+  .Canal-Whats {
+    grid-template-columns: repeat(1, 1fr);
+    padding: 1rem;
+  }
+  .Unete-Canal {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .PortadaBlog {
+    padding: 3rem 0.5rem;
+    font-size: 1.25rem;
+  }
+  .barra-busqueda-blog-container {
+    padding: 1rem 2%;
+  }
+  .experienciablog1,
+  .experienciablog2,
+  .experienciablog3 {
+    padding: 0.5rem;
+  }
+  .Unete-Canal h2 {
+    font-size: 1.5rem;
+  }
+  .Unete-Canal h3 {
+    font-size: 1rem;
+  }
 }

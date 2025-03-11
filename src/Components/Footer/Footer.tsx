@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Llámanos</h3>
           <span>
-            <img src={telefononegro} alt="Contact" /> 833-334-40-42
+            <img src={telefononegro} alt="Contact" /> 833-334-4042
           </span>
           <h3>Correo</h3>
           <p>

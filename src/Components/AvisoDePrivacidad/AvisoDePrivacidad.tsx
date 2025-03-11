@@ -1,6 +1,10 @@
+import Footer from "../Footer/Footer";
+import Header from "../Header/Header";
+
 const AvisoDePrivacidad: React.FC = () => {
   return (
     <>
+      <Header />
       <section>
         <div>
           <h2>Aviso de Privacidad</h2>{" "}
@@ -265,6 +269,7 @@ const AvisoDePrivacidad: React.FC = () => {
           </p>{" "}
         </div>
       </section>
+      <Footer />
     </>
   );
 };

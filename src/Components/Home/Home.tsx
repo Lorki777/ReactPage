@@ -3,7 +3,7 @@ import Footer from "../Footer/Footer";
 import React from "react";
 import CardsCarrusel from "../CardsCarrusel/CardsCarrusel";
 import "./Home.css";
-import InicioImg from "./inicio.webp";
+import Inicioimg from "./inicio.webp";
 import Asia from "./ASIA.webp";
 import Europa from "./EUROPA.webp";
 import Latinoamerica from "./LATINOAMERICA.webp";
@@ -74,7 +74,7 @@ const Home: React.FC = () => {
       <Header />
 
       <div className="homeheader">
-        <img src={InicioImg} alt="" />
+        <img loading="lazy" src={Inicioimg} alt="" />
       </div>
 
       <div className="search-bar-container">
@@ -92,7 +92,7 @@ const Home: React.FC = () => {
         <div className="info-section">
           <div className="info-item">
             <div className="icon-placeholder">
-              <img src={Icono3} alt="" />
+              <img loading="lazy" src={Icono3} alt="" />
             </div>
             <div>
               <h3>
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
           </div>
           <div className="info-item">
             <div className="icon-placeholder">
-              <img src={Icono2} alt="" />
+              <img loading="lazy" src={Icono2} alt="" />
             </div>
             <div>
               <h3>
@@ -116,7 +116,7 @@ const Home: React.FC = () => {
           </div>
           <div className="info-item">
             <div className="icon-placeholder">
-              <img src={Icono1} alt="" />
+              <img loading="lazy" src={Icono1} alt="" />
             </div>
             <div>
               <h3>
@@ -133,7 +133,7 @@ const Home: React.FC = () => {
         <div className="TodosTours">
           <h2>&#128205;Ofertas de viajes</h2>
 
-          <img src={IconoTodosLosTours} alt="" />
+          <img loading="lazy" src={IconoTodosLosTours} alt="" />
         </div>
 
         <CardsCarrusel />
@@ -143,7 +143,7 @@ const Home: React.FC = () => {
         <div className="TodosTours">
           <h2>&#128205;Mejores destinos para viajar</h2>
 
-          <img src={IconoTodosLosTours} alt="" />
+          <img loading="lazy" src={IconoTodosLosTours} alt="" />
         </div>
 
         <div className="Continentes-container">

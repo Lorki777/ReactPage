@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  width: 80%;
+  width: 90%;
   margin: auto;
   overflow: hidden;
   position: relative;
@@ -15,7 +15,12 @@
 }
 
 .swiper-wrapper {
-  margin: 1rem 1rem;
+  margin: 1rem;
+}
+
+.swiper-slide {
+  display: flex !important;
+  justify-content: center !important;
 }
 
 /* Cards Wrapper */
@@ -52,14 +57,14 @@
 
 .arrow {
   cursor: pointer;
-  font-size: 24px;
+  font-size: 1.5rem; /* 24px = 1.5rem */
   color: white;
   background: #5380f7;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 2.5rem; /* 40px = 2.5rem */
+  height: 2.5rem; /* 40px = 2.5rem */
+  box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1); /* 4px y 6px convertidos */
   z-index: 100;
 }
 
@@ -68,9 +73,52 @@
 }
 
 .arrow.left {
-  left: 10px;
+  left: 0.625rem; /* 10px = 0.625rem */
 }
 
 .arrow.right {
-  right: 10px;
+  right: 0.625rem; /* 10px = 0.625rem */
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+  .swiper-wrapper {
+    margin: 0.5rem;
+  }
+  .cards-wrapper {
+    gap: 0.5rem;
+  }
+  .arrow {
+    font-size: 1.25rem;
+    width: 2rem;
+    height: 2rem;
+    box-shadow: 0 0.1875rem 0.3125rem rgba(0, 0, 0, 0.1);
+  }
+  .arrow.left {
+    left: 0.5rem;
+  }
+  .arrow.right {
+    right: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .swiper-wrapper {
+    margin: 0.25rem;
+  }
+  .cards-wrapper {
+    gap: 0.25rem;
+  }
+  .arrow {
+    font-size: 1rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+  }
+  .arrow.left {
+    left: 0.25rem;
+  }
+  .arrow.right {
+    right: 0.25rem;
+  }
 }

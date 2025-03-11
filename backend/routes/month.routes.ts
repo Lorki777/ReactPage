@@ -1,25 +1,9 @@
 import { Router } from "express";
-import * as mysql from "mysql2/promise";
-import * as dotenv from "dotenv";
 import { authenticateToken } from "../middlewares/auth.middleware";
-dotenv.config();
+import { pool } from "../connection/connection";
 
 const router = Router();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  queueLimit: 0,
-  connectTimeout: 20000,
-});
-
-/**
- * Método reutilizable para ejecutar consultas SQL
- */
 export const executeQuery = async (sql: string) => {
   try {
     let [results] = await pool.query(sql);

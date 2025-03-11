@@ -18,11 +18,11 @@
   /*Columnas Servicios*/
   display: flex;
   grid-template-columns: repeat(2, 1fr);
-  height: 30em;
+  height: 30rem;
 }
 
 .ServicioImagen {
-  /*Imagenes de Servicios*/
+  /*Imágenes de Servicios*/
   width: 50%;
 }
 
@@ -39,20 +39,55 @@
 }
 
 .SolicitaCotizacion {
-  /*Apartado solcitar cotizacion*/
+  /*Apartado solicitar cotización*/
   display: flex;
   grid-template-columns: repeat(2, 1fr);
-  height: 12em;
+  height: 12rem;
   background-image: url(Ala-avion.jpg);
 }
 
 .SolicCot {
   width: 50%;
   text-align: center;
-  padding: 5em;
+  padding: 5rem;
 }
 
 .InfoContacto {
   width: 50%;
-  padding: 3em;
+  padding: 3rem;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+  .Servicios {
+    flex-direction: column;
+    height: auto;
+  }
+  .ServicioImagen,
+  .Servicio {
+    width: 100%;
+  }
+  .SolicitaCotizacion {
+    flex-direction: column;
+    height: auto;
+  }
+  .SolicCot,
+  .InfoContacto {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .PortadaExpertos {
+    padding-bottom: 3rem;
+  }
+  .Servicio {
+    padding: 6rem 2rem;
+  }
+  .SolicCot {
+    padding: 3rem;
+  }
+  .InfoContacto {
+    padding: 2rem;
+  }
 }

@@ -1,22 +1,9 @@
-import * as mysql from "mysql2/promise";
+import { pool } from "../connection/connection";
 import { RowDataPacket } from "mysql2";
-import * as dotenv from "dotenv";
 import { Router } from "express";
 import { authenticateToken } from "../middlewares/auth.middleware";
-dotenv.config();
 
 const router = Router();
-
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  queueLimit: 0,
-  connectTimeout: 20000,
-});
 
 export const executeQuery = async (
   sql: string,

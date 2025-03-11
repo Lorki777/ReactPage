@@ -1,21 +1,23 @@
-.PortadaBlogTemplate {     /*Portada para Blogs*/
-    align-items: center;
-    justify-content: center;
-    background-image: url(Reducir-huella-Portada-Larga.webp);
-    display: flex;
-    /*height: 22em;*/
-    padding: 9rem 2rem;
-    background-position: center;
-    background-size: cover;
-    font-size: 30px;
-    color: white;
-  }
+.PortadaBlogTemplate {
+  /*Portada para Blogs*/
+  align-items: center;
+  justify-content: center;
+  background-image: url(Reducir-huella-Portada-Larga.webp);
+  display: flex;
+  /*height: 22em;*/
+  padding: 9rem 2rem;
+  background-position: center;
+  background-size: cover;
+  font-size: 2rem;
+  color: white;
+}
 
-  .CuerpoBlog {    /*Cuerpo del Blog*/
-    padding: 0 20rem;
-    padding-top: 5rem;
-    line-height: 1.7;
-    font-family: "Roboto", Sans-serif;
-    font-size: 18px;
-    font-weight: 400;
-  }
+.CuerpoBlog {
+  /*Cuerpo del Blog*/
+  padding: 0 20rem;
+  padding-top: 5rem;
+  line-height: 1.7;
+  font-family: "Roboto", Sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+}

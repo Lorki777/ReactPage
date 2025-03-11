@@ -6,7 +6,7 @@ import telefonoIcon from "./telefono.svg";
 import tiktokIcon from "./tiktok.png";
 import mailIcon from "./mail.svg";
 import { NavLink } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { MegaMenu } from "primereact/megamenu";
 import { useLocation } from "react-router-dom";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -17,16 +17,20 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const location = useLocation();
   const [isMegaMenuOpen2, setIsMegaMenuOpen2] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("PAQUETES");
+
+  const [showMobileMenu, setShowMobileMenu] = useState(false); // <--- NUEVO ESTADO
+
+  const location = useLocation();
   const navigate = useNavigate();
 
-  // Obtener datos de la API para el MegaMenu
+  // Obtener datos de la API
   const { items: paquetes } = useMegaMenuData("activity");
   const { items: tours } = useMegaMenuData("tour");
   const { items: grupales } = useMegaMenuData("grupal");
 
+  // Actualizar categoría activa según la ruta
   useEffect(() => {
     if (location.pathname.includes("/PAQUETES")) {
       setActiveCategory("PAQUETES");
@@ -37,13 +41,58 @@ const Header = () => {
     }
   }, [location.pathname]);
 
+  // Referencia para posicionar el Megamenu 2
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [offset, setOffset] = useState<number>(0);
+
+  const recalcOffset = () => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setOffset(rect.left);
+    }
+  };
+
+  function widthScrollbar(): number {
+    const div = document.createElement("div");
+    div.style.overflow = "scroll";
+    div.style.width = "100px";
+    div.style.height = "100px";
+    div.style.position = "absolute";
+    div.style.top = "-9999px";
+    document.body.appendChild(div);
+    const scrollbarWidth = div.offsetWidth - div.clientWidth;
+    document.body.removeChild(div);
+    return scrollbarWidth;
+  }
+
+  const scrollbarWidth = widthScrollbar();
+
+  useLayoutEffect(() => {
+    recalcOffset();
+    window.addEventListener("load", recalcOffset);
+    return () => window.removeEventListener("load", recalcOffset);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      recalcOffset();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleResize = () => recalcOffset();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <header className="header">
-      {/* Barra superior con datos de contacto */}
+      {/* Barra superior */}
       <div className="top-bar">
         <div className="contact-info">
           <span>
-            <img src={telefonoIcon} alt="Teléfono" /> 833-334-40-42
+            <img src={telefonoIcon} alt="Teléfono" /> 833-334-4042
           </span>
           <span>
             <img src={mailIcon} alt="Correo" /> contacto@toursland.mx
@@ -72,6 +121,16 @@ const Header = () => {
           <img src={logo} alt="ToursLand Logo" />
         </div>
 
+        {/* Ícono de menú hamburguesa (SOLO SE MUESTRA EN MÓVIL) */}
+        <div
+          className="hamburger-icon"
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+        >
+          {/* Usamos PrimeIcons para el ícono, o podría ser cualquier SVG */}
+          <i className="pi pi-bars" style={{ fontSize: "1.5rem" }} />
+        </div>
+
+        {/* Menú normal (DESKTOP) */}
         <nav className="nav-menu">
           <div className="nav-menu-flex">
             <NavLink
@@ -81,20 +140,33 @@ const Header = () => {
               INICIO
             </NavLink>
 
-            {/* MegaMenu "LUGARES QUE VER" */}
+            {/* MegaMenu LUGARES QUE VER */}
             <div
               className="megamenu-container2"
+              ref={containerRef}
               onMouseEnter={() => setIsMegaMenuOpen2(true)}
               onMouseLeave={() => setIsMegaMenuOpen2(false)}
             >
               <MegaMenu
-                model={[{ label: "LUGARES QUE VER" }]}
-                orientation="horizontal"
-                className="custom-megamenu2"
+                model={[
+                  {
+                    label: "LUGARES QUE VER",
+                    template: (item) => {
+                      return (
+                        <span className="custom-megamenu2">{item.label}</span>
+                      );
+                    },
+                  },
+                ]}
               />
               {isMegaMenuOpen2 && (
-                <div className="megamenu-content2">
-                  {/* Columna izquierda (categorías) */}
+                <div
+                  className="megamenu-content2"
+                  style={{
+                    left: `-${offset}px`,
+                    width: `calc(100vw - ${scrollbarWidth}px)`,
+                  }}
+                >
                   <div className="megamenu-left2">
                     {["PAQUETES", "TOURS", "GRUPALES"].map((category) => (
                       <NavLink
@@ -114,7 +186,6 @@ const Header = () => {
                       </NavLink>
                     ))}
                   </div>
-                  {/* Columna derecha (productos dinámicos desde la API) */}
                   <div className="megamenu-right2">
                     {(activeCategory === "PAQUETES"
                       ? paquetes
@@ -132,12 +203,11 @@ const Header = () => {
                         }
                         style={{ cursor: "pointer" }}
                       >
-                        <img src={item.OgImage} alt={""} />
+                        <img src={tiktokIcon} alt="" />
                         <span>{item.TourName}</span>
                       </div>
                     ))}
                   </div>
-                  ;
                 </div>
               )}
             </div>
@@ -149,7 +219,7 @@ const Header = () => {
               BLOG
             </NavLink>
 
-            {/* Mega menú "SOBRE NOSOTROS" */}
+            {/* Mega menú SOBRE NOSOTROS */}
             <div
               className="mega-menu-container"
               onMouseEnter={() => setIsMegaMenuOpen(true)}
@@ -169,6 +239,52 @@ const Header = () => {
             </div>
           </div>
         </nav>
+      </div>
+
+      {/* Menú móvil (SOLO SE MUESTRA EN PANTALLAS PEQUEÑAS) */}
+      <div className={`mobile-menu ${showMobileMenu ? "open" : ""}`}>
+        <NavLink
+          to="/"
+          onClick={() => setShowMobileMenu(false)}
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          INICIO
+        </NavLink>
+
+        {/* Sección LUGARES QUE VER con submenú anidado (opcional) */}
+        <div className="mobile-submenu">
+          <span className="mobile-submenu-title">LUGARES QUE VER</span>
+          <div className="mobile-submenu-items">
+            {["PAQUETES", "TOURS", "GRUPALES"].map((category) => (
+              <NavLink
+                key={category}
+                to={`/${category}`}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                {category}
+              </NavLink>
+            ))}
+            <NavLink
+              to="/Blog"
+              onClick={() => setShowMobileMenu(false)}
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              BLOG
+            </NavLink>
+          </div>
+        </div>
+
+        <div className="mobile-submenu">
+          <span className="mobile-submenu-title">SOBRE NOSOTROS</span>
+          <div className="mobile-submenu-items">
+            <NavLink to="/Conocenos" onClick={() => setShowMobileMenu(false)}>
+              CONÓCENOS
+            </NavLink>
+            <NavLink to="/Expertos" onClick={() => setShowMobileMenu(false)}>
+              EXPERTOS
+            </NavLink>
+          </div>
+        </div>
       </div>
     </header>
   );

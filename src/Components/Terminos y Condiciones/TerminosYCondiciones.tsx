@@ -1,6 +1,10 @@
+import Footer from "../Footer/Footer";
+import Header from "../Header/Header";
+
 const TerminosYCondiciones: React.FC = () => {
   return (
     <>
+      <Header />
       <section>
         <div>
           <h2>TÉRMINOS Y CONDICIONES DEL SITIO WEB</h2>{" "}
@@ -786,6 +790,7 @@ const TerminosYCondiciones: React.FC = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </>
   );
 };

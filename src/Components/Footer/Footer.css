@@ -1,61 +1,108 @@
+/* Estilos base del footer */
 .footer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 20px;
+  gap: 2%;
+  padding: 2%;
   background-color: #f8f8f8;
   font-family: Arial, sans-serif;
   color: #333;
   background-image: url("fondo-footer.svg");
   background-repeat: no-repeat;
-  background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
-  background-position: center; /* Centra la imagen */
-  background-size: 100%; /* Estira la imagen para cubrir toda la sección */
-  padding-right: 9rem;
-  padding-left: 9rem;
-  padding-top: 4rem;
-  height: 97vh; /* Ajusta la altura al 100% del alto de la ventana */
+  background-size: cover;
+  background-position: center;
+  padding-right: 8%;
+  padding-left: 8%;
+  padding-top: 4%;
+  height: 97vh;
 }
 
 .footer-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .footer-section h3 {
   color: #00aff1;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 
 .footer-section p,
 .footer-section ul li {
-  font-size: 1.2rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.6;
   color: #333;
 }
 
 .footer-secure {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 0.5rem;
   align-items: flex-start;
 }
 
 .footer-secure img {
-  width: 80px;
-  margin-top: 10px;
+  width: 30%;
+  max-width: 6rem;
+  margin-top: 1rem;
 }
 
 span img {
-  width: 20px;
-  height: 20px;
+  width: 1rem;
+  height: auto;
 }
 
 .footer-section ul {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+/* Media query para pantallas menores o iguales a 776px */
+@media (max-width: 776px) {
+  .footer-section h3 {
+    font-size: 1.3rem;
+  }
+
+  .footer-section p,
+  .footer-section ul li {
+    font-size: 0.9rem;
+  }
+
+  .footer-secure img {
+    width: 40%;
+  }
+
+  span img {
+    width: 1rem;
+  }
+}
+
+/* Media query adicional para pantallas menores o iguales a 684px */
+@media (max-width: 684px) {
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #f7f7f7;
+  }
+
+  .footer-section h3 {
+    font-size: 1.3rem;
+  }
+
+  .footer-section p,
+  .footer-section ul li {
+    font-size: 0.9rem;
+  }
+
+  .footer-secure img {
+    width: 40%;
+  }
+
+  span img {
+    width: 0.8rem;
+  }
 }

@@ -5,23 +5,10 @@ import helmet from "helmet";
 import productRoutes from "./routes/product.routes";
 import monthRoutes from "./routes/month.routes";
 import guestTokenRoutes from "./routes/guest-token.routes";
-import * as dotenv from "dotenv";
-dotenv.config();
 import cors = require("cors");
-import * as mysql from "mysql2/promise";
+import { pool } from "./connection/connection";
 
 const app: express.Application = express();
-
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  queueLimit: 0,
-  connectTimeout: 20000,
-});
 
 app.use(cors({ origin: "http://localhost:5173" }));
 
