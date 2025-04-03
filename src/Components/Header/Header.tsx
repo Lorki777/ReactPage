@@ -14,6 +14,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { useMegaMenuData } from "../Hook";
 import { useNavigate } from "react-router-dom";
+import IconoTodosLosTours from "./TODOS LOS TOURS.svg";
 
 const Header = () => {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
@@ -26,9 +27,9 @@ const Header = () => {
   const navigate = useNavigate();
 
   // Obtener datos de la API
-  const { items: paquetes } = useMegaMenuData("activity");
-  const { items: tours } = useMegaMenuData("tour");
-  const { items: grupales } = useMegaMenuData("grupal");
+  const { items: paquetes } = useMegaMenuData("package");
+  const { items: tours } = useMegaMenuData("activity");
+  const { items: grupales } = useMegaMenuData("group");
 
   // Actualizar categoría activa según la ruta
   useEffect(() => {
@@ -198,7 +199,7 @@ const Header = () => {
                         className="attraction-item"
                         onClick={() =>
                           navigate(
-                            `/tours/${encodeURIComponent(item.TourSlug)}`
+                            `/Productos/${encodeURIComponent(item.TourSlug)}`
                           )
                         }
                         style={{ cursor: "pointer" }}
@@ -207,6 +208,31 @@ const Header = () => {
                         <span>{item.TourName}</span>
                       </div>
                     ))}
+                    <NavLink
+                      to={
+                        activeCategory === "PAQUETES"
+                          ? "/PAQUETES"
+                          : activeCategory === "TOURS"
+                          ? "/TOURS"
+                          : "/GRUPALES"
+                      }
+                    >
+                      <img
+                        loading="lazy"
+                        src={IconoTodosLosTours}
+                        alt="Icono de todos los tours"
+                        className="attraction-item"
+                        style={{
+                          maxWidth: "240px",
+                          minWidth: "100px",
+                          width: "100%",
+                          maxHeight: "50px",
+                          minHeight: "25px",
+                          height: "auto",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </NavLink>
                   </div>
                 </div>
               )}

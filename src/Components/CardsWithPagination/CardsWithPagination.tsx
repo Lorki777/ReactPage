@@ -12,6 +12,7 @@ import {
 import { useProductosPagination } from "../Hook";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
+import { FaBolt } from "react-icons/fa";
 
 const CardsCarrusel: React.FC = () => {
   const { Type, Param } = useParams();
@@ -21,6 +22,7 @@ const CardsCarrusel: React.FC = () => {
     totalPages,
     handleCardClick,
     handlePageChange,
+    capitalize,
   } = useProductosPagination(Type, Param);
 
   return (
@@ -28,8 +30,15 @@ const CardsCarrusel: React.FC = () => {
       <Header />
       <div className="tourspaginationheader">
         <h1>
-          {Type === "Paquetes" && `${Param}`}
-          {Type === "AvailableTours" && `${Param}`}
+          {Type === "Paquetes" && `${capitalize(Param)}`}
+          {Type === "AvailableTours" &&
+            `${
+              Param === "playasdemexico"
+                ? "Playas de México"
+                : Param === "mexico"
+                ? "México"
+                : capitalize(Param)
+            }`}
         </h1>
       </div>
       <div className="cards-pagination">
@@ -40,10 +49,17 @@ const CardsCarrusel: React.FC = () => {
             className="card"
             onClick={() => handleCardClick(producto.TourSlug)}
           >
-            <span className="promo">PROMO</span>
+            {producto.TourBadge ? (
+              <span className="promo">{producto.TourBadge}</span>
+            ) : (
+              <span style={{ display: "none" }}>{producto.TourBadge}</span>
+            )}
             <img src={tiktokimage} alt={producto.TourName} />
             <div className="card-content">
-              <h3>{producto.TourName}</h3>
+              <h3>
+                <FaBolt />
+                {producto.TourName}
+              </h3>
               <div className="price">{producto.TourPrice}</div>
               <div className="duration">{producto.TourDuration} Días</div>
             </div>

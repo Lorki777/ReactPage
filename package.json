@@ -31,6 +31,7 @@
     "path": "^0.12.7",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.2",
+    "rc-slider": "^11.1.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.5",
@@ -38,6 +39,7 @@
     "react-markdown": "^9.0.3",
     "react-responsive-pagination": "^2.10.0",
     "react-router-dom": "^7.1.1",
+    "react-slider": "^2.0.6",
     "swiper": "^11.1.15",
     "tsx": "^4.19.2"
   },

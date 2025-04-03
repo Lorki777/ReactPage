@@ -320,3 +320,38 @@
 .terminosyaviso a:hover {
   text-decoration: underline;
 }
+
+.payment-table-resume {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+}
+
+.payment-table-resume th,
+.payment-table-resume td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.payment-table-resume th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.typeofpayment {
+  display: flex;
+}
+
+.typeofpayment > * {
+  display: inline-block;
+}
+
+.typeofpayment > input {
+  width: 5%;
+}
+
+.Separadortypeofpayment {
+  display: flex;
+  gap: 1rem;
+}

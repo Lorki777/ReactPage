@@ -1,8 +1,9 @@
 .cardLocationCard-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Tres columnas fijas en escritorio */
   gap: 2rem;
   padding: 4% 15%;
+  justify-items: center; /* Centra cada tarjeta dentro de su celda */
 }
 
 .cardLocationCard-content .NumcardLocation-tours {
@@ -15,6 +16,7 @@
 }
 
 .cardLocationCard {
+  width: 100%; /* La tarjeta ocupa el 100% del ancho de la celda */
   display: flex;
   flex-direction: column;
   aspect-ratio: 6 / 4;
@@ -68,4 +70,20 @@
   background-size: cover;
   transition: opacity 0.3s ease-in-out;
   background: url("tour-hover.svg") no-repeat center center;
+}
+
+/* Para dispositivos de tamaño medio (tablet) */
+@media (max-width: 768px) {
+  .cardLocationCard-container {
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas en tablets */
+    padding: 4% 10%;
+  }
+}
+
+/* Para dispositivos pequeños (móviles) */
+@media (max-width: 480px) {
+  .cardLocationCard-container {
+    grid-template-columns: 1fr; /* Una columna en móviles */
+    padding: 4% 5%;
+  }
 }

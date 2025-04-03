@@ -59,21 +59,21 @@
   left: -4%;
   background-color: #467be7;
   color: white;
-  padding: 0.625rem 0.9375rem; /* 10px 15px */
-  font-size: 0.875rem; /* 14px */
+  padding: 0.625rem 0.9375rem;
+  font-size: 0.875rem;
   font-weight: bold;
   z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block; /* o flex/inline-flex */
+  white-space: nowrap; /* evita que el texto haga salto de línea */
+  min-width: 3rem; /* ancho mínimo para el badge */
 }
 
 .promo::after {
   content: "";
   position: absolute;
   bottom: -31%;
-  left: 7%;
-  transform: translateX(-50%);
+  right: 100%;
+  transform: translateX(100%);
   width: 0;
   height: 0;
   border-left: 0.8rem solid transparent;
@@ -110,7 +110,8 @@
 
   .promo::after {
     bottom: -37%;
-    left: 8%;
+    right: 100%;
+    transform: translateX(100%);
     border-left: 0.67rem solid transparent;
     border-top: 0.67rem solid #233e74;
   }

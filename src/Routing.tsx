@@ -19,7 +19,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/extra" element={<ExtraPage />} />
-      <Route path="/tours/:tourName" element={<Tours />} />
+      <Route path="/Productos/:tourName" element={<Tours />} />
       <Route path="/Paquetes" element={<Paquetes />} />
       <Route path="/Terminos" element={<TerminosYCondiciones />} />
       <Route path="/Aviso" element={<AvisoDePrivacidad />} />

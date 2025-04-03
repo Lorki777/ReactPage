@@ -71,6 +71,14 @@ const ToursPage: React.FC = () => {
     selectedState ?? undefined
   );
 
+  // Definir el texto dinámico para el encabezado y título
+  let headerText = "Tours";
+  if (level === "states" && selectedCountry) {
+    headerText = `Tours para ${selectedCountry}`;
+  } else if (level === "cities" && selectedState) {
+    headerText = `Tours para ${selectedState}`;
+  }
+
   useEffect(() => {
     if (shouldFetch) {
       setIsLoading(true);
@@ -107,7 +115,7 @@ const ToursPage: React.FC = () => {
 
       <Header />
       <div className="tourspageheader">
-        <h1>Tours</h1>
+        <h1>{headerText}</h1>
       </div>
 
       {error && <p style={{ color: "red" }}>{error}</p>}

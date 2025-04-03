@@ -114,19 +114,34 @@
 }
 
 .tourdetails-section h2 {
+  position: relative;
   color: #333;
+  padding-left: 2rem;
   margin-top: 0;
 }
 
-.tourdetails-section ul {
-  padding: 0;
-  list-style: none;
+.tourdetails-section h2.tourlisth2::before {
+  content: "";
+  position: absolute;
+  left: 0; /* Se ubica a la izquierda del texto */
+  top: 0.5rem; /* Ajusta verticalmente según tu diseño */
+  width: 1rem;
+  height: 1rem;
+  background-color: #0087f5; /* Rosa o el color que desees */
+  border-radius: 50%;
 }
 
+/* Elimina el bullet nativo */
+.tourdetails-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ajusta la posición del texto e inserta un "bullet" rosa con ::before */
 .tourdetails-section ul li {
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: center;
+  position: relative; /* Necesario para posicionar el ::before */
+  margin-bottom: 0.5rem; /* Separación entre ítems */
 }
 
 .tourdetails-section ul li span {
@@ -143,7 +158,20 @@
   padding-left: 5%;
 }
 
-/* Tour Sidebar */
+/* =========================
+   Tour Sidebar (posicionamiento)
+   ========================= */
+
+.TourListSeparation {
+  padding-left: 3%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem; /* Opcional: separa las columnas */
+}
+
+/* =========================
+   Tour Sidebar (posicionamiento)
+   ========================= */
 .tour-sidebar.absolute {
   margin: 1rem;
   margin-right: 2rem;
@@ -171,58 +199,124 @@
   z-index: 101;
 }
 
+/* =========================
+     Título y Subtítulo
+     ========================= */
 .tour-sidebar-title {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: #333;
 }
 
-.tour-sidebar-price {
-  font-size: 2rem;
+.tour-sidebar-subtitle {
+  font-size: 1.6rem;
   color: #00a2ff;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
-.tour-sidebar-reservation {
-  margin-bottom: 1.5rem;
+.tour-sidebar-subtitle span {
+  color: #00a2ff;
 }
 
+/* =========================
+     Tabs (Reserva / Cotización)
+     ========================= */
+.tour-sidebar-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.tour-sidebar-tabs button {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tour-sidebar-tabs button:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+.tour-sidebar-tabs button:hover {
+  border-bottom: 0.2rem solid #fed222;
+}
+
+button.active-tab-button-sidebar {
+  border-bottom: 0.2rem solid #fed222;
+}
+
+/* =========================
+     Labels y Selects
+     ========================= */
 .tour-sidebar-label {
   display: block;
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   color: #555;
 }
 
 .tour-sidebar-select {
   width: 100%;
   padding: 0.625rem; /* 10px */
-  margin-bottom: 1rem;
   border: 0.0625rem solid #ddd;
   border-radius: 0.3125rem; /* 5px */
   font-size: 1rem;
   background: #f9f9f9;
 }
 
+/* =========================
+     Adultos y Niños en la misma fila
+     (opcional si se usará)
+     ========================= */
+
+.step-content {
+  display: flex;
+  justify-content: space-around;
+}
+
+.step-content select#adults,
+.step-content select#children {
+  width: fit-content;
+}
+
+.tour-sidebar-people {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* =========================
+     Botón de comprar
+     ========================= */
 .tour-sidebar-button {
   width: 100%;
-  padding: 0.625rem; /* 10px */
+  padding: 0.625rem;
   background-color: #00a2ff;
   color: white;
   border: none;
-  border-radius: 0.3125rem; /* 5px */
+  border-radius: 0.3125rem;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
 }
 
 .tour-sidebar-button:hover {
   background-color: #007acc;
 }
 
+/* =========================
+     Guardar en lista de deseos y contador
+     ========================= */
 .tour-sidebar-wishlist {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
@@ -237,10 +331,135 @@
   color: #005f99;
 }
 
-.tour-sidebar-contact {
+.tour-sidebar-likes {
   font-size: 0.9rem;
   color: #666;
+}
+
+/* =========================
+     Contacto
+     ========================= */
+.tour-sidebar-contact {
   text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* =========================
+     Sección de Cotización
+     ========================= */
+.tour-sidebar-quotation {
+  margin-bottom: 1rem;
+}
+
+.tour-sidebar-form-group {
+  margin-bottom: 1rem;
+}
+
+.tour-sidebar-form-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: #555;
+}
+
+.tour-sidebar-form-group input {
+  width: 100%;
+  padding: 0.625rem;
+  border: 0.0625rem solid #ddd;
+  border-radius: 0.3125rem;
+  font-size: 1rem;
+  background: #f9f9f9;
+}
+
+/* Checkbox */
+.tour-sidebar-form-group-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tour-sidebar-form-group-checkbox input[type="checkbox"] {
+  margin-top: 0.2rem;
+}
+
+/* =========================
+     Nueva maquetación vertical
+     ========================= */
+.new-layout {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 2rem; /* Espacio extra abajo, opcional */
+}
+
+/* Línea vertical continua */
+.new-layout::before {
+  content: "";
+  position: absolute;
+  left: 1.3rem; /* Ajusta la distancia desde el borde izquierdo */
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #ddd;
+  z-index: 0;
+}
+
+/* Cada paso (fila) con icono e inputs */
+.sidebar-step {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 1.5rem; /* Separación vertical entre pasos */
+}
+
+/* Contenedor del ícono */
+.icon-container {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #f1f1f1; /* Gris claro */
+  color: #007acc; /* Color del ícono */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  margin-bottom: 4.7%;
+  position: relative;
+  z-index: 1; /* Para que quede por encima de la línea */
+  /* Desplazamos el ícono a la izquierda para que quede sobre la línea */
+  margin-left: -1.5rem;
+}
+
+/* Donde van los labels, selects o botones */
+.step-content {
+  flex: 1;
+  z-index: 1;
+}
+
+/* Ajustes básicos para label y select (ya estaban, pero repetimos si hace falta) */
+.tour-sidebar-label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: #555;
+}
+
+/* Botón con gradiente (si quieres mantenerlo) */
+.tour-sidebar-button {
+  width: 100%;
+  padding: 0.625rem;
+  background: linear-gradient(90deg, #3b82f6, #4338ca);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tour-sidebar-button:hover {
+  opacity: 0.9;
 }
 
 /* Itinerary */
@@ -325,11 +544,24 @@
   height: auto; /* Mantén las proporciones originales */
 }
 
+.swiper-slide {
+  padding-bottom: 2rem;
+}
+
 .swiper-wrapper,
 .swiper-slide {
   max-height: 70vh;
   height: 50vh;
   height: auto; /* Mantén las proporciones originales */
+}
+
+.tour-carrusel .swiper-pagination {
+  bottom: -2rem;
+}
+
+.swiper-pagination-bullet {
+  width: 0.77rem;
+  height: 0.77rem;
 }
 
 /* Map */
@@ -357,8 +589,63 @@
   margin: 2rem 0 0 1rem; /* 2rem top/bottom, 1rem left */
 }
 
+/*preguntas frecuentes*/
+
+.faq-container {
+  margin: 0 auto; /* Centrar en la página */
+  padding: 1rem;
+}
+
+.faq-item {
+  border-bottom: 1px solid #ccc;
+  padding: 1rem 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.faq-item.open {
+  background-color: #f9f9f9;
+}
+
+.faq-question {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  margin: 0;
+}
+
+.faq-icon {
+  margin-right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.faq-answer {
+  margin-top: 0.5rem;
+  padding-left: 1.8rem; /* para alinear texto con icono */
+  color: #333;
+  line-height: 1.5;
+}
+
+.faq-answer p {
+  margin: 0.5rem 0;
+}
+
+.faq-answer ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.faq-answer li {
+  margin-bottom: 0.5rem;
+}
+
 /* Media Queries for Responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .tourinfo-container {
     flex-direction: column;
     padding: 1rem;
@@ -383,6 +670,12 @@
   }
   .tour-mapa {
     height: 20rem;
+  }
+  .ToursIcon {
+    width: 4rem;
+    position: absolute;
+    left: 0%;
+    top: 0.5rem;
   }
 }
 

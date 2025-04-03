@@ -1,3 +1,7 @@
+.cards-carousel {
+  cursor: pointer;
+}
+
 /* Carousel Container */
 .cards-carousel {
   display: grid;
@@ -21,6 +25,7 @@
 .swiper-slide {
   display: flex !important;
   justify-content: center !important;
+  margin-right: 0.5rem !important;
 }
 
 /* Cards Wrapper */
@@ -48,11 +53,16 @@
 }
 
 .swiper-button-next {
-  grid-column: 3;
+  grid-column: 1;
 }
 
 .swiper-button-prev {
   grid-column: 1;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  display: none;
 }
 
 .arrow {

@@ -5,6 +5,12 @@
 
 .homeheader img {
   width: 100%;
+  height: auto;
+}
+
+/* Reservar espacio para el widget */
+#ptw-container {
+  min-height: 400px; /* Ajusta este valor según lo requerido */
 }
 
 .Continentes-container {
@@ -151,66 +157,244 @@
   }
 }
 
+/* ======== SEARCH BAR ======== */
 .search-bar-container {
-  background-color: #00a9e0;
-  /* Se utiliza la declaración posterior para padding */
-  padding: 1rem 10%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: Arial, sans-serif;
+  width: 100%;
+  background-color: #00b0e8; /* Ajusta a tu gusto */
+  padding: 1rem;
+  text-align: center; /* Para centrar el contenido */
 }
 
 .search-bar {
+  display: inline-flex;
+  gap: 1rem;
+  border-radius: 8px;
+  padding: 0.5rem 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Contenedor general de cada dropdown (Destination, Activities, etc.) */
+.dropdown-container {
+  position: relative; /* Para posicionar la lista desplegable */
+}
+
+/* Botón/encabezado que muestra la selección actual */
+.dropdown-header {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  min-width: 180px; /* Para que no se mueva demasiado cuando se seleccionan opciones más largas */
+  border-radius: 1rem;
+}
+
+.dropdown-title {
+  display: flex;
+  justify-content: space-around;
   width: 100%;
-  gap: 0.625rem; /* 10px */
-  margin-bottom: 1.25rem; /* 20px */
-  align-items: center;
 }
 
-.search-input {
-  padding: 0.625rem; /* 10px */
-  border: none;
-  border-radius: 1.5625rem; /* 25px */
-  width: 25%;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
-}
-
-.search-icon-button {
-  background: #f5f5f5;
-  border: none;
-  padding: 0.625rem; /* 10px */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.search-icon-button i {
-  font-size: 1rem; /* 16px */
-  color: #00a9e0;
-}
-
-.search-dropdown {
-  padding: 0.625rem; /* 10px */
-  border: none;
-  border-radius: 1.5625rem; /* 25px */
-  background: #f5f5f5;
-  width: 25%;
-}
-
-.search-button {
-  background: #ffd700;
-  padding: 0.625rem 1.25rem; /* 10px 20px */
-  border: none;
-  border-radius: 1.5625rem; /* 25px */
-  color: #000;
+.arrow-symbol {
+  color: #00b0e8; /* Azul claro, puedes usar otro tono si prefieres */
   font-weight: bold;
-  cursor: pointer;
+  margin-left: 0.25rem;
 }
+
+.dropdown-header:hover {
+  background-color: #f0f0f0;
+}
+
+/* Ícono y flecha del dropdown */
+.dropdown-icon {
+  margin-right: 0.5rem;
+}
+.dropdown-arrow {
+  margin-left: auto; /* Empuja la flecha a la derecha */
+}
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* La lista desplegable personalizada */
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Debajo del header */
+  left: 0;
+  z-index: 999;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  list-style: none;
+  padding: 0.5rem 0;
+  width: 180px; /* Ajusta el ancho al del botón o a tu preferencia */
+  display: block;
+  max-height: 200px; /* Ajusta el valor según tu preferencia */
+  overflow-y: auto; /* Activa la barra de desplazamiento vertical */
+}
+
+.dropdown-menu li {
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+/* ======== DURATION & BUDGET (RANGE) ======== */
+.dropdown-body.range-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  margin-top: 0.2rem;
+  border-radius: 4px;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 150px;
+  padding: 0.5rem 1rem;
+}
+/* Estilos generales para los sliders */
+.search-slider {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #d7dcdf;
+  outline: none;
+  transition: background 0.2s ease-in-out;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+/* Pista para navegadores basados en WebKit (Chrome, Safari, Opera) */
+.search-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 5px;
+  background: #d7dcdf;
+}
+
+/* Manejador (thumb) para navegadores basados en WebKit */
+.search-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* quita el estilo por defecto */
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* que sea circular */
+  background: #00b0e8; /* color del thumb */
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  margin-top: -6px; /* para alinear verticalmente el thumb con la pista */
+  transition: background 0.2s ease-in-out;
+}
+
+/* Efecto hover en el thumb */
+.search-slider::-webkit-slider-thumb:hover {
+  background: #e8be19;
+}
+
+/* Para navegadores basados en Firefox (Gecko) */
+.search-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 5px;
+  background: #d7dcdf;
+}
+
+.search-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #00b0e8;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+/* Efecto hover en el thumb de Firefox */
+.search-slider::-moz-range-thumb:hover {
+  background: #e8be19;
+}
+
+/* Para IE/Edge (versión antigua con -ms) */
+.search-slider::-ms-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+.search-slider::-ms-fill-lower {
+  background: #d7dcdf;
+  border-radius: 5px;
+}
+.search-slider::-ms-fill-upper {
+  background: #d7dcdf;
+  border-radius: 5px;
+}
+.search-slider::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #00b0e8;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  margin-top: 0px; /* ajusta si ves que se descoloca */
+}
+.search-slider::-ms-thumb:hover {
+  background: #e8be19;
+}
+
+.range-values {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  text-align: center;
+}
+
+.range-values span {
+  font-size: smaller;
+  background-color: #eeeeee;
+  padding: 5%;
+  border-radius: 1rem;
+}
+
+/* ======== BOTÓN SEARCH ======== */
+.search-button {
+  background-color: #fed222;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  border-radius: 1rem;
+}
+.search-button:hover {
+  background-color: #e8be19;
+}
+/* (Mantén el resto de tu CSS sin cambios) */
 
 .info-section {
   display: flex;

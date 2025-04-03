@@ -1,7 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Swiper as SwiperType } from "swiper";
-import { Product, Itinerary, Title, Item, ListData, Month } from "./Interfaces";
+import {
+  Product,
+  Itinerary,
+  Title,
+  Item,
+  ListData,
+  Month,
+  MinMaxProducts,
+} from "./Interfaces";
 // Hook reutilizable para obtener datos con autenticación automática
 const isTokenExpired = (token: string): boolean => {
   try {
@@ -97,15 +105,47 @@ const useFetchData = (endpoint: string, setter: (data: any) => void) => {
   return { error };
 };
 
+export const useMinMaxProducts = () => {
+  const [minmaxproducts, setminmaxproducts] = useState<MinMaxProducts | null>(
+    null
+  );
+
+  const endpoint = "productos/minmax";
+
+  const { error } = useFetchData(endpoint, setminmaxproducts);
+
+  return { minmaxproducts, error };
+};
+
+// Hook para pagina grupales
+export const useProductosGrupales = () => {
+  const [productos, setProductos] = useState<Product[]>([]);
+  const navigate = useNavigate();
+
+  const endpoint = "productos/grupales";
+  const { error } = useFetchData(endpoint, setProductos);
+
+  const handleCardClick = (TourSlug: string) => {
+    navigate(`/Productos/${encodeURIComponent(TourSlug)}`);
+  };
+
+  return { productos, error, handleCardClick };
+};
+
 // Hook para productos del carrusel
-export const useProductos = () => {
+export const useProductos = (filter?: string) => {
   const [productos, setProductos] = useState<Product[]>([]);
   const swiperRef = useRef<SwiperType | null>(null);
   const navigate = useNavigate();
-  const { error } = useFetchData("productos/carrusel", setProductos);
+
+  // Construir la URL dependiendo del filtro recibido
+  const endpoint = filter
+    ? `productos/carrusel?filter=${filter}`
+    : "productos/carrusel";
+  const { error } = useFetchData(endpoint, setProductos);
 
   const handleCardClick = (TourSlug: string) => {
-    navigate(`/tours/${encodeURIComponent(TourSlug)}`);
+    navigate(`/Productos/${encodeURIComponent(TourSlug)}`);
   };
 
   return { productos, error, swiperRef, handleCardClick };
@@ -161,7 +201,7 @@ export const useSidebarLogic = () => {
       if (sidebarElement) {
         sidebarElement.style.transition =
           "top 0.3s ease, transform 0.3s ease, opacity 0.3s ease";
-        if (window.scrollY > 350) {
+        if (window.scrollY > 500) {
           setTranslateY("-10rem");
           setTimeout(() => {
             setSidebarPosition("sticky");
@@ -200,13 +240,18 @@ export const useProductosPagination = (
   );
 
   const handleCardClick = (TourSlug: string) => {
-    navigate(`/tours/${encodeURIComponent(TourSlug)}`);
+    navigate(`/Productos/${encodeURIComponent(TourSlug)}`);
   };
 
   const handlePageChange = (page: number) => {
     // Cambiamos la página
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "auto" });
+  };
+
+  const capitalize = (str: string | undefined): string => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   return {
@@ -217,6 +262,7 @@ export const useProductosPagination = (
     totalPages,
     handleCardClick,
     handlePageChange,
+    capitalize,
   };
 };
 
@@ -281,7 +327,6 @@ export const useFetchLocations = (
 
   return { locations, error };
 };
-
 //Hook para obtener productos megamenu
 
 export const useMegaMenuData = (type: string) => {
@@ -289,4 +334,42 @@ export const useMegaMenuData = (type: string) => {
   const { error } = useFetchData(`productos/megamenu/${type}`, setItems);
 
   return { items, error };
+};
+
+// TourAvailability Sidebar
+
+export const useTourAvailability = () => {
+  const { tourName } = useParams(); // Usamos el slug del tour
+  const [salidaDesde, setSalidaDesde] = useState<any[]>([]);
+  const [horarios, setHorarios] = useState<any[]>([]);
+  const [ninosAdultosCantidad, setNinosAdultosCantidad] = useState<any[]>([]);
+  const [reservationDates, setReservationDates] = useState<any[]>([]);
+  const { error } = useFetchData(
+    `productos/tour/availability/${tourName}`,
+    (data: any) => {
+      // Almacenamos cada tabla por separado
+      setSalidaDesde(data.salida_desde);
+      setHorarios(data.horario);
+      setNinosAdultosCantidad(data.ninos_adultos_cantidad);
+      setReservationDates(data.reservation_date);
+    }
+  );
+  return {
+    salidaDesde,
+    horarios,
+    ninosAdultosCantidad,
+    reservationDates,
+    error,
+  };
+};
+
+// Formatear Fecha a Texto
+
+export const formatDate = (isoString: string) => {
+  const date = new Date(isoString);
+  return date.toLocaleDateString("es-MX", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 };
