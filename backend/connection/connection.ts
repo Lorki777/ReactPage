@@ -11,4 +11,8 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   queueLimit: 0,
   connectTimeout: 20000,
+  /*ssl: {
+    rejectUnauthorized: true,
+    ca: process.env.DB_CA_CERT, // Add CA certificate for stricter validation
+  }, */
 });

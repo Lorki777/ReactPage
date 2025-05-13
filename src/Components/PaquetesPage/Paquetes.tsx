@@ -1,3 +1,11 @@
+/**
+ * @file Paquetes.tsx
+ * @brief Component for displaying travel packages.
+ * @details This component fetches and displays travel packages for different months.
+ * @author
+ * @date
+ */
+
 import React from "react";
 import "./Paquetes.css";
 import Header from "../Header/Header";
@@ -6,12 +14,16 @@ import Enero from "./ENERO.webp";
 import { Helmet as HelmetReact } from "react-helmet-async";
 import { useFetchMonths } from "../Hook";
 
+/**
+ * @brief Paquetes component.
+ * @returns JSX.Element
+ */
 const Paquetes: React.FC = () => {
   const { months, totalMonths, error, handleCardClick } = useFetchMonths();
   return (
     <>
       <HelmetReact>
-        {/* Meta etiquetas dinámicas */}
+        {/* Meta tags for SEO */}
         <title>Tours</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,14 +58,15 @@ const Paquetes: React.FC = () => {
       <div className="PaquetesCard-container">
         {months.map((month) => (
           <div
-            key={month.Month}
+            key={month.month_name}
             className="PaquetesCard"
-            onClick={() => handleCardClick(month.Month)}
+            onClick={() => handleCardClick(month.month_name)}
             style={{ backgroundImage: `url(${Enero})` }}
           >
             <div className="PaquetesCard-content">
               <h3>
-                {month.Month.charAt(0).toUpperCase() + month.Month.slice(1)}
+                {month.month_name.charAt(0).toUpperCase() +
+                  month.month_name.slice(1)}
               </h3>
               <p className="NumPaquetes-tours">{totalMonths} Paquetes</p>
               <p className="PaquetesCard-tours">Ver todos los tours</p>

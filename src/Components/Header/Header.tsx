@@ -195,17 +195,17 @@ const Header = () => {
                       : grupales
                     ).map((item) => (
                       <div
-                        key={item.TourSlug}
+                        key={item.tour_slug}
                         className="attraction-item"
                         onClick={() =>
                           navigate(
-                            `/Productos/${encodeURIComponent(item.TourSlug)}`
+                            `/Productos/${encodeURIComponent(item.tour_slug)}`
                           )
                         }
                         style={{ cursor: "pointer" }}
                       >
                         <img src={tiktokIcon} alt="" />
-                        <span>{item.TourName}</span>
+                        <span>{item.tour_name}</span>
                       </div>
                     ))}
                     <NavLink

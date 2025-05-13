@@ -9,7 +9,6 @@
   align-items: center;
   width: 90%;
   margin: auto;
-  overflow: hidden;
   position: relative;
 }
 
@@ -25,7 +24,6 @@
 .swiper-slide {
   display: flex !important;
   justify-content: center !important;
-  margin-right: 0.5rem !important;
 }
 
 /* Cards Wrapper */
@@ -83,11 +81,11 @@
 }
 
 .arrow.left {
-  left: 0.625rem; /* 10px = 0.625rem */
+  left: -1%; /* 10px = 0.625rem */
 }
 
 .arrow.right {
-  right: 0.625rem; /* 10px = 0.625rem */
+  left: 100%; /* 10px = 0.625rem */
 }
 
 /* Media Queries para Responsividad */

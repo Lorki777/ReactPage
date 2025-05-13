@@ -1,9 +1,23 @@
+/**
+ * @file Tours.css
+ * @brief Styles for the Tours component.
+ * @details Contains styles for the header, tour details bar, FAQ sections, and responsive design.
+ */
+
 /* General */
+/**
+ * @brief General styles for the Tours page.
+ * @details Includes font family and basic resets.
+ */
 * {
   font-family: "Arial", sans-serif;
 }
 
 /* Header */
+/**
+ * @brief Styles for the header section.
+ * @details Includes background image, text alignment, and padding.
+ */
 .tourheader {
   background-image: url("./header-image.webp");
   background-size: cover;
@@ -19,6 +33,10 @@
 }
 
 /* Tour Details Bar */
+/**
+ * @brief Styles for the tour details bar.
+ * @details Includes grid layout and alignment for displaying tour details.
+ */
 .tour-details-bar {
   background-color: #f9f9f9;
   padding: 1rem;
@@ -38,7 +56,6 @@
   color: #555;
   font-size: 1rem;
   padding-left: 30%;
-  /* grid-gap redundante eliminado, se usa gap */
 }
 
 .detail-item span {
@@ -46,6 +63,10 @@
 }
 
 /* Tabs */
+/**
+ * @brief Styles for the tabs section.
+ * @details Includes sticky positioning, hover effects, and active tab styles.
+ */
 .tour-tabs {
   width: 100%;
   background-color: white;
@@ -88,6 +109,10 @@
 }
 
 /* Tour Details Section */
+/**
+ * @brief Styles for the tour details section.
+ * @details Includes layout, typography, and bullet point customization.
+ */
 .ToursIcon {
   width: 4rem;
   position: absolute;
@@ -113,23 +138,25 @@
   max-width: 65%;
 }
 
-.tourdetails-section h2 {
+.tourdetails-section h3 {
   position: relative;
   color: #333;
   padding-left: 2rem;
   margin-top: 0;
 }
 
-.tourdetails-section h2.tourlisth2::before {
+.tourdetails-section h3.tourlisth2::before {
   content: "";
   position: absolute;
-  left: 0; /* Se ubica a la izquierda del texto */
-  top: 0.5rem; /* Ajusta verticalmente según tu diseño */
+  left: 0;
+  top: 0.5rem;
   width: 1rem;
   height: 1rem;
-  background-color: #0087f5; /* Rosa o el color que desees */
+  background-color: #0087f5;
   border-radius: 50%;
-}
+} /* Elimina el bullet nativo */
+
+/* Elimina el bullet nativo */
 
 /* Elimina el bullet nativo */
 .tourdetails-section ul {
@@ -137,11 +164,12 @@
   margin: 0;
   padding: 0;
 }
+/* Ajusta la posición del texto e inserta un "bullet" rosa con ::before */
 
 /* Ajusta la posición del texto e inserta un "bullet" rosa con ::before */
 .tourdetails-section ul li {
-  position: relative; /* Necesario para posicionar el ::before */
-  margin-bottom: 0.5rem; /* Separación entre ítems */
+  position: relative;
+  margin-bottom: 0.5rem;
 }
 
 .tourdetails-section ul li span {
@@ -158,16 +186,20 @@
   padding-left: 5%;
 }
 
-/* =========================
-   Tour Sidebar (posicionamiento)
-   ========================= */
-
+/* Sidebar */
+/**
+ * @brief Styles for the sidebar.
+ * @details Includes sticky and absolute positioning, tabs, and buttons.
+ */
 .TourListSeparation {
   padding-left: 3%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem; /* Opcional: separa las columnas */
+  gap: 1rem;
 }
+/* =========================
+   Tour Sidebar (posicionamiento)
+   ========================= */
 
 /* =========================
    Tour Sidebar (posicionamiento)
@@ -198,6 +230,9 @@
   top: 0;
   z-index: 101;
 }
+/* =========================
+     Título y Subtítulo
+     ========================= */
 
 /* =========================
      Título y Subtítulo
@@ -218,6 +253,9 @@
 .tour-sidebar-subtitle span {
   color: #00a2ff;
 }
+/* =========================
+     Tabs (Reserva / Cotización)
+     ========================= */
 
 /* =========================
      Tabs (Reserva / Cotización)
@@ -249,6 +287,9 @@
 button.active-tab-button-sidebar {
   border-bottom: 0.2rem solid #fed222;
 }
+/* =========================
+     Labels y Selects
+     ========================= */
 
 /* =========================
      Labels y Selects
@@ -262,12 +303,16 @@ button.active-tab-button-sidebar {
 
 .tour-sidebar-select {
   width: 100%;
-  padding: 0.625rem; /* 10px */
+  padding: 0.625rem;
   border: 0.0625rem solid #ddd;
-  border-radius: 0.3125rem; /* 5px */
+  border-radius: 0.3125rem;
   font-size: 1rem;
   background: #f9f9f9;
 }
+/* =========================
+     Adultos y Niños en la misma fila
+     (opcional si se usará)
+     ========================= */
 
 /* =========================
      Adultos y Niños en la misma fila
@@ -290,6 +335,31 @@ button.active-tab-button-sidebar {
   gap: 1rem;
 }
 
+.custom-select__control {
+  min-height: 40px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+/* fuerza el color del texto del valor seleccionado */
+
+/* fuerza el color del texto del valor seleccionado */
+.custom-select__single-value {
+  color: #333 !important;
+}
+/* también para cuando el valor ha sido tipiado manualmente */
+
+/* también para cuando el valor ha sido tipiado manualmente */
+.custom-select__input input {
+  color: #333 !important;
+}
+
+.custom-select__control--is-focused .custom-select__single-value {
+  color: #333 !important;
+}
+/* =========================
+     Botón de comprar
+     ========================= */
+
 /* =========================
      Botón de comprar
      ========================= */
@@ -309,6 +379,9 @@ button.active-tab-button-sidebar {
 .tour-sidebar-button:hover {
   background-color: #007acc;
 }
+/* =========================
+     Guardar en lista de deseos y contador
+     ========================= */
 
 /* =========================
      Guardar en lista de deseos y contador
@@ -335,6 +408,9 @@ button.active-tab-button-sidebar {
   font-size: 0.9rem;
   color: #666;
 }
+/* =========================
+     Contacto
+     ========================= */
 
 /* =========================
      Contacto
@@ -344,6 +420,9 @@ button.active-tab-button-sidebar {
   font-size: 0.9rem;
   color: #666;
 }
+/* =========================
+     Sección de Cotización
+     ========================= */
 
 /* =========================
      Sección de Cotización
@@ -371,6 +450,7 @@ button.active-tab-button-sidebar {
   font-size: 1rem;
   background: #f9f9f9;
 }
+/* Checkbox */
 
 /* Checkbox */
 .tour-sidebar-form-group-checkbox {
@@ -383,6 +463,9 @@ button.active-tab-button-sidebar {
 .tour-sidebar-form-group-checkbox input[type="checkbox"] {
   margin-top: 0.2rem;
 }
+/* =========================
+     Nueva maquetación vertical
+     ========================= */
 
 /* =========================
      Nueva maquetación vertical
@@ -390,52 +473,55 @@ button.active-tab-button-sidebar {
 .new-layout {
   position: relative;
   padding-left: 2rem;
-  margin-bottom: 2rem; /* Espacio extra abajo, opcional */
+  margin-bottom: 2rem;
 }
+/* Línea vertical continua */
 
 /* Línea vertical continua */
 .new-layout::before {
   content: "";
   position: absolute;
-  left: 1.3rem; /* Ajusta la distancia desde el borde izquierdo */
+  left: 1.3rem;
   top: 0;
   bottom: 0;
   width: 2px;
   background-color: #ddd;
   z-index: 0;
 }
+/* Cada paso (fila) con icono e inputs */
 
 /* Cada paso (fila) con icono e inputs */
 .sidebar-step {
   display: flex;
   align-items: center;
   position: relative;
-  margin-bottom: 1.5rem; /* Separación vertical entre pasos */
+  margin-bottom: 1.5rem;
 }
+/* Contenedor del ícono */
 
 /* Contenedor del ícono */
 .icon-container {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background-color: #f1f1f1; /* Gris claro */
-  color: #007acc; /* Color del ícono */
+  background-color: #f1f1f1;
+  color: #007acc;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
   margin-bottom: 4.7%;
   position: relative;
-  z-index: 1; /* Para que quede por encima de la línea */
-  /* Desplazamos el ícono a la izquierda para que quede sobre la línea */
+  z-index: 1;
   margin-left: -1.5rem;
 }
+/* Donde van los labels, selects o botones */
 
 /* Donde van los labels, selects o botones */
 .step-content {
   flex: 1;
-  z-index: 1;
 }
+/* Ajustes básicos para label y select (ya estaban, pero repetimos si hace falta) */
 
 /* Ajustes básicos para label y select (ya estaban, pero repetimos si hace falta) */
 .tour-sidebar-label {
@@ -444,6 +530,7 @@ button.active-tab-button-sidebar {
   margin-bottom: 0.3rem;
   color: #555;
 }
+/* Botón con gradiente (si quieres mantenerlo) */
 
 /* Botón con gradiente (si quieres mantenerlo) */
 .tour-sidebar-button {
@@ -541,7 +628,7 @@ button.active-tab-button-sidebar {
 .swiper {
   max-height: 70vh;
   height: 50vh;
-  height: auto; /* Mantén las proporciones originales */
+  height: auto;
 }
 
 .swiper-slide {
@@ -552,7 +639,7 @@ button.active-tab-button-sidebar {
 .swiper-slide {
   max-height: 70vh;
   height: 50vh;
-  height: auto; /* Mantén las proporciones originales */
+  height: auto;
 }
 
 .tour-carrusel .swiper-pagination {
@@ -585,14 +672,47 @@ button.active-tab-button-sidebar {
   border-radius: 0.625rem; /* 10px */
 }
 
-.Tourseparation {
-  margin: 2rem 0 0 1rem; /* 2rem top/bottom, 1rem left */
+/* 1) Iconos uniformes: tamaño relativo al font-size */
+.tourdetails-section h2 svg,
+.detail-item svg,
+.tour-carrusel > svg,
+.faq-container > svg,
+.tour-sidebar-subtitle svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  /* si quieres un poquito de espacio entre icono y texto: */
+  margin-right: 0.25em;
 }
 
-/*preguntas frecuentes*/
+/* 2) Títulos de sección homogéneos */
+.tourdetails-section h2,
+.tour-carrusel h2,
+#tour-mapa + h2,
+.faq-container h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 2rem;
+}
 
+/* 3) Separador unificado */
+.Tourseparation {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 1.5rem 0;
+}
+
+/* FAQ Section */
+/**
+ * @brief Styles for the FAQ section.
+ * @details Includes question and answer formatting, hover effects, and alignment.
+ */
 .faq-container {
-  margin: 0 auto; /* Centrar en la página */
+  margin: 0 auto;
   padding: 1rem;
 }
 
@@ -625,7 +745,7 @@ button.active-tab-button-sidebar {
 
 .faq-answer {
   margin-top: 0.5rem;
-  padding-left: 1.8rem; /* para alinear texto con icono */
+  padding-left: 1.8rem;
   color: #333;
   line-height: 1.5;
 }
@@ -636,15 +756,18 @@ button.active-tab-button-sidebar {
 
 .faq-answer ul {
   list-style: disc;
-  padding-left: 1.5rem;
-  margin: 0.5rem 0;
+  margin: 1rem 2rem;
 }
 
 .faq-answer li {
   margin-bottom: 0.5rem;
 }
 
-/* Media Queries for Responsiveness */
+/* Media Queries */
+/**
+ * @brief Responsive styles for the Tours page.
+ * @details Adjusts layout and typography for smaller screen sizes.
+ */
 @media (max-width: 1100px) {
   .tourinfo-container {
     flex-direction: column;

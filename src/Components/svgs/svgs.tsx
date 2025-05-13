@@ -1,3 +1,14 @@
+/**
+ * @file svgs.tsx
+ * @brief Component for rendering SVG icons.
+ * @details This component renders a WhatsApp icon with a link to the official ToursLand WhatsApp contact.
+ */
+
+/**
+ * @brief Renders the WhatsApp SVG icon.
+ * @returns JSX.Element
+ */
+
 function svgs() {
   return (
     <>
@@ -5,6 +16,7 @@ function svgs() {
       <a
         href="https://wa.me/+528333344042?text=¡Hola!%20estoy%20en%20el%20sitio%20Web%20de%20Toursland%20¿Me%20podrías%20ayudar%20con%20más%20detalles%20de%20un%20viaje?"
         target="_blank"
+        rel="noopener noreferrer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -14,9 +26,9 @@ function svgs() {
         >
           <style type="text/css">
             {`
-        .st0 { fill: #FFFFFF; }
-        .st1 { fill: #36CE51; }
-      `}
+            .st0 { fill: #FFFFFF; }
+            .st1 { fill: #36CE51; }
+            `}
           </style>
           <g>
             {" "}

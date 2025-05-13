@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-const SECRET_KEY = "secret_key";
+const SECRET_KEY = process.env.JWT_SECRET || "default_secret_key";
 
 export const authenticateToken = (
   req: Request,

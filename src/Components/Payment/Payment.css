@@ -341,6 +341,7 @@
 
 .typeofpayment {
   display: flex;
+  width: 95%;
 }
 
 .typeofpayment > * {
@@ -354,4 +355,14 @@
 .Separadortypeofpayment {
   display: flex;
   gap: 1rem;
+}
+
+.paymentmethodwithicons {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.paymentmethodwithicons_icon {
+  margin-left: 2%;
 }

@@ -43,29 +43,29 @@ const Grupales: React.FC = () => {
 
       {productos.map((producto) => (
         <div
-          key={producto.TourSlug}
+          key={producto.tour_slug}
           className="travel-card"
-          onClick={() => handleCardClick(producto.TourSlug)}
+          onClick={() => handleCardClick(producto.tour_slug)}
         >
           <div className="image-container">
             <img
               src={tiktokimagen}
-              alt={producto.TourName}
+              alt={producto.tour_name}
               className="travel-image"
             />
             <div className="highlight etiqueta">
-              {producto.TourBadge || "¡DESCUBRE!"}
+              {producto.tour_badge_name || "¡DESCUBRE!"}
             </div>
           </div>
           <div className="card-details">
-            <h2 className="title">{producto.TourName}</h2>
-            <p className="duration">⏱️ {producto.TourDuration} días</p>
+            <h2 className="title">{producto.tour_name}</h2>
+            <p className="duration">⏱️ {producto.tour_duration} días</p>
             <p className="location">✈️ de algun lugar </p>
-            <p className="location">🚢 {producto.Llegada}</p>
+            <p className="location">🚢 {producto.city_name}</p>
           </div>
           <div className="price-container">
             <p className="price-label">Desde</p>
-            <p className="price">{producto.TourPrice}</p>
+            <p className="price">{producto.tour_price}</p>
             <button className="details-button">VER DETALLES</button>
           </div>
         </div>

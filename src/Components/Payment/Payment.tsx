@@ -6,6 +6,8 @@ import { IoIosContacts } from "react-icons/io";
 import { RiFileList3Line } from "react-icons/ri";
 import { formatDate } from "../Hook";
 import { Traveler } from "../Interfaces";
+import { FaCcVisa, FaCcMastercard, FaMoneyCheckAlt } from "react-icons/fa";
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 
 const Payment: React.FC = () => {
   const [billing, setBilling] = useState(false);
@@ -14,6 +16,8 @@ const Payment: React.FC = () => {
   const [metodoPago, setMetodoPago] = useState<"transferencia" | "tarjeta">(
     "transferencia"
   );
+
+  const sanitizeInput = (input: string) => input.replace(/[^a-zA-Z0-9 ]/g, "");
 
   // Estado para los datos de contacto (fuera de los viajeros)
   const [formData, setFormData] = useState<{ [key: string]: string }>({
@@ -130,6 +134,10 @@ const Payment: React.FC = () => {
     bookingInfo.cantidad !== undefined && bookingInfo.cantidad !== 0;
   // Calcular el colSpan para las filas de Subtotal y Total: se cuentan todas las columnas menos la de Totales.
   const colSpan = 2 + (showNinos ? 1 : 0) + (showCantidad ? 1 : 0);
+
+  useEffect(() => {
+    initMercadoPago("TU_PUBLIC_KEY"); // Reemplaza con tu Public Key de Mercado Pago
+  }, []);
 
   return (
     <>
@@ -317,12 +325,13 @@ const Payment: React.FC = () => {
                   <input
                     type="radio"
                     name="metodoPago"
-                    value="transferencia"
+                    value={sanitizeInput("transferencia")}
                     checked={metodoPago === "transferencia"}
                     onChange={() => setMetodoPago("transferencia")}
                   />
-                  <strong style={{ marginLeft: "8px" }}>
+                  <strong className="paymentmethodwithicons">
                     Transferencia bancaria directa
+                    <FaMoneyCheckAlt className="paymentmethodwithicons_icon" />
                   </strong>
                 </label>
 
@@ -330,12 +339,14 @@ const Payment: React.FC = () => {
                   <input
                     type="radio"
                     name="metodoPago"
-                    value="tarjeta"
+                    value={sanitizeInput("tarjeta")}
                     checked={metodoPago === "tarjeta"}
                     onChange={() => setMetodoPago("tarjeta")}
                   />
-                  <strong style={{ marginLeft: "8px" }}>
+                  <strong className="paymentmethodwithicons">
                     Tarjetas de crédito/débito
+                    <FaCcVisa className="paymentmethodwithicons_icon" />
+                    <FaCcMastercard className="paymentmethodwithicons_icon" />
                   </strong>
                 </label>
               </div>
@@ -380,43 +391,15 @@ const Payment: React.FC = () => {
                   </ol>
                 </div>
               )}
-
+              {/* formulario de pago */}
               {metodoPago === "tarjeta" && (
-                <div
-                  style={{
-                    backgroundColor: "#eae6f9",
-                    padding: "1rem",
-                    borderRadius: "8px",
-                    marginTop: "1rem",
-                    marginBottom: "2rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <input
-                      type="text"
-                      placeholder="Número de tarjeta"
-                      style={{ flex: 2 }}
-                    />
-                    <input
-                      type="text"
-                      placeholder="MM / AA"
-                      style={{ flex: 1 }}
-                    />
-                    <input type="text" placeholder="CVC" style={{ flex: 1 }} />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Nombre"
-                    style={{ width: "100%", marginBottom: "1rem" }}
+                <div className="mercado-pago-form">
+                  <Wallet
+                    initialization={{ preferenceId: "TU_PREFERENCE_ID" }}
                   />
                 </div>
               )}
+
               <button
                 className="form-button"
                 style={{ backgroundColor: "#0056b3" }}

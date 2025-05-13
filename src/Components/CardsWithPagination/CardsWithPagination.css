@@ -7,10 +7,33 @@
   padding: 10rem 2rem;
 }
 
+.cards-container {
+  display: flex;
+  padding-top: 5%;
+  margin: 0% 5%;
+  position: relative;
+  gap: 2rem;
+}
+
+.sidebar {
+  position: absolute;
+  width: fit-content;
+  margin-top: -5%;
+  height: fit-content;
+  z-index: 100;
+}
+
+.cards-pagination {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
 .cards-pagination {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 12 columnas */
-  margin: 5%;
+  justify-items: center;
   justify-content: center;
 }
 
@@ -24,6 +47,7 @@
   justify-content: center;
   align-items: center;
   list-style: none;
+  padding-left: 0;
 }
 
 /* Estilos base para los botones de paginación */
@@ -90,14 +114,25 @@
   color: white;
 }
 
-/* Media Queries para Responsividad */
-@media (max-width: 768px) {
+.centerpaginationcardsn {
+  grid-column: 1 / -1; /* spans from primera a última columna */
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 2rem 0; /* separarlo un poco de las cards */
+}
+
+.cards-pagination {
+  margin: 0; /* o el que necesites */
+}
+
+@media (max-width: 1285px) {
   .tourspaginationheader {
     padding: 8rem 1rem;
   }
   .cards-pagination {
-    grid-template-columns: repeat(2, 1fr);
-    margin: 5%;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 5% 0;
   }
   .card {
     margin: 0.5rem;
@@ -117,13 +152,53 @@
   }
 }
 
+/* Media Queries para Responsividad */
+@media (max-width: 1055px) {
+  .tourspaginationheader {
+    padding: 8rem 1rem;
+  }
+  .cards-pagination {
+    grid-template-columns: repeat(2, 1fr);
+    margin: 5% 0;
+  }
+  .card {
+    margin: 0.5rem;
+  }
+  .my-link {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+  }
+  .my-nav {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+  .previous-justified .my-link,
+  .next-justified .my-link {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
+  }
+}
+
+@media (max-width: 745px) {
+  .cards-pagination {
+    margin: 8% 0;
+  }
+}
+
+@media (max-width: 660px) {
+  .cards-pagination {
+    grid-template-columns: repeat(1, 1fr);
+    margin: 10% 0;
+  }
+}
+
 @media (max-width: 480px) {
   .tourspaginationheader {
     padding: 6rem 1rem;
   }
   .cards-pagination {
     grid-template-columns: repeat(1, 1fr);
-    margin: 3%;
+    margin: 20% 0;
   }
   .card {
     margin: 0.5rem;

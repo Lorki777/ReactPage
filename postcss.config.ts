@@ -2,6 +2,7 @@ import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
 // Eliminamos PurgeCSS en desarrollo y lo configuramos bien en producción
 import purgecss from "@fullhuman/postcss-purgecss";
+import cssnano from "cssnano";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -37,5 +38,15 @@ export default {
           },
         })
       : null, // No usamos PurgeCSS en desarrollo
+    isProduction
+      ? cssnano({
+          preset: [
+            "default",
+            {
+              discardComments: { removeAll: true }, // Elimina todos los comentarios
+            },
+          ],
+        })
+      : null,
   ].filter(Boolean), // Filtra plugins vacíos para evitar errores
 };

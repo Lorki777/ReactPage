@@ -1,0 +1,43 @@
+.ptw-btn {
+  background-color: blanchedalmond !important;
+}
+
+.ptw-menu {
+  width: 100%;
+}
+
+.ptw-menu ul {
+  display: flex;
+  justify-content: space-around;
+}
+
+div:has(> .ptw-field-origin) {
+  display: flex;
+}
+
+div#ptw-container #ptw-menu {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+.ptw-menu ul li {
+  width: 100%;
+}
+
+.ptw-menu ul li a {
+  text-align: center;
+}
+
+div#ptw-container #ptw-menu > ul > li.ptw-active > a {
+  color: #0c58a8 !important;
+  border: 0px solid #5180ad !important;
+}
+
+#ptw-menu > ul > li > a:hover {
+  color: #0c58a8 !important;
+  background-color: transparent !important;
+}
+
+#ptw-menu > ul > li > a {
+  color: #8c9298 !important;
+}

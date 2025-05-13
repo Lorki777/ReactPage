@@ -4,13 +4,21 @@ import path = require("path");
 import helmet from "helmet";
 import productRoutes from "./routes/product.routes";
 import monthRoutes from "./routes/month.routes";
+import blogRoutes from "./routes/blogs.routes";
 import guestTokenRoutes from "./routes/guest-token.routes";
+import paymentRoutes from "./routes/payment.routes";
 import cors = require("cors");
 import { pool } from "./connection/connection";
 
 const app: express.Application = express();
 
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Probar conexión a la base de datos
 (async () => {
@@ -30,32 +38,34 @@ app.use(
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: [
-          "'self'",
+          "'self'          ",
           "https://maps.googleapis.com",
-          "https://gso.kommo.com", // 🔹 Permite los scripts de Kommo
+          "https://gso.kommo.com",
           "https://widgets.priceres.com.mx",
         ],
         frameSrc: [
           "'self'",
           "https://www.google.com",
           "https://www.google.com/maps",
-          "https://gso.kommo.com", // 🔹 Permite los iframes de Kommo
+          "https://gso.kommo.com",
           "https://widgets.priceres.com.mx",
         ],
         imgSrc: [
           "'self'",
           "data:",
           "https://maps.googleapis.com",
-          "https://gso.kommo.com", // 🔹 Permite imágenes de Kommo
+          "https://gso.kommo.com",
           "https://widgets.priceres.com.mx",
         ],
         connectSrc: [
           "'self'",
-          "https://gso.kommo.com", // 🔹 Permite conexiones con Kommo
+          "https://gso.kommo.com",
           "https://widgets.priceres.com.mx",
         ],
       },
     },
+    /*referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    frameguard: { action: "sameorigin" }, */
   })
 );
 app.use(compression());
@@ -64,7 +74,9 @@ app.use(express.json());
 // Rutas principales de la API
 app.use("/api/productos", productRoutes);
 app.use("/api/meses", monthRoutes);
+app.use("/api/blogs", blogRoutes);
 app.use("/api/guest-token", guestTokenRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // Ruta para servir archivos comprimidos
 const frontendPath = path.join(__dirname, "../dist");

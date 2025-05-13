@@ -1,4 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+/**
+ * @file Hook.ts
+ * @brief Custom hooks for managing application state and logic.
+ * @details This file contains reusable hooks for fetching data and managing UI state.
+ * @date
+ */
+
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Swiper as SwiperType } from "swiper";
 import {
@@ -9,8 +16,21 @@ import {
   ListData,
   Month,
   MinMaxProducts,
+  BlogPost,
 } from "./Interfaces";
 // Hook reutilizable para obtener datos con autenticación automática
+/**
+ *
+ * @param token - Token JWT para verificar la expiración.
+ * @returns boolean - Retorna true si el token ha expirado, false en caso contrario.
+ * @description Verifica si el token JWT ha expirado. Si no se puede decodificar el token, se considera que ha expirado.
+ * @throws Error - Si ocurre un error al decodificar el token.
+ * @example
+ * const isExpired = isTokenExpired("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVkX3N0YWdlIjoxNjY2NTY4NzQwfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
+ * console.log(isExpired); // true o false dependiendo de la expiración del token
+ * @returns {boolean} - Retorna true si el token ha expirado, false en caso contrario.
+ * @throws {Error} - Si ocurre un error al decodificar el token.
+ */
 const isTokenExpired = (token: string): boolean => {
   try {
     const payloadBase64 = token.split(".")[1];
@@ -26,6 +46,16 @@ const isTokenExpired = (token: string): boolean => {
   }
 };
 
+/**
+ * @function getToken
+ * @description Obtiene un token de autenticación. Si no existe o ha expirado, genera uno nuevo.
+ * @returns {Promise<string | null>} - Retorna el token o null si no se pudo obtener.
+ * @throws {Error} - Si ocurre un error al generar el token de invitado.
+ * @example
+ * const token = await getToken();
+ * console.log(token); // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVkX3N0YWdlIjoxNjY2NTY4NzQwfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+ */
+
 const getToken = async (): Promise<string | null> => {
   let token = localStorage.getItem("authToken");
 
@@ -37,6 +67,16 @@ const getToken = async (): Promise<string | null> => {
 
   return token;
 };
+
+/**
+ * @function generateGuestToken
+ * @description Genera un token de invitado y lo almacena en el localStorage.
+ * @returns {Promise<string | null>} - Retorna el token o null si no se pudo generar.
+ * @throws {Error} - Si ocurre un error al generar el token de invitado.
+ * @example
+ * const token = await generateGuestToken();
+ * console.log(token); // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVkX3N0YWdlIjoxNjY2NTY4NzQwfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+ */
 
 const generateGuestToken = async (): Promise<string | null> => {
   try {
@@ -59,7 +99,23 @@ const generateGuestToken = async (): Promise<string | null> => {
   }
 };
 
-const useFetchData = (endpoint: string, setter: (data: any) => void) => {
+/**
+ * @function useFetchData
+ * @description Hook para realizar peticiones HTTP y manejar el estado de los datos.
+ * @param {string} endpoint - Endpoint de la API a la que se desea hacer la petición.
+ * @param {Function} setter - Función para establecer el estado de los datos obtenidos.
+ * @param {any} [body] - Cuerpo de la petición (opcional).
+ * @returns {Object} - Objeto que contiene el error, si lo hubo.
+ * @example
+ * const { error } = useFetchData("productos", setProducts, { filter: "new" });
+ * console.log(error); // "Error al obtener los datos del servidor."
+ */
+
+export const useFetchData = (
+  endpoint: string,
+  setter: (data: any) => void,
+  body?: any
+) => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async (retry = true) => {
@@ -72,15 +128,27 @@ const useFetchData = (endpoint: string, setter: (data: any) => void) => {
       let token = await getToken();
       if (!token) throw new Error("No se pudo obtener un token válido");
 
-      const response = await fetch(`http://localhost:8080/api/${endpoint}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const isPost = !!body;
+
+      const fetchOptions: RequestInit = {
+        method: isPost ? "POST" : "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ...(isPost && { "Content-Type": "application/json" }),
+        },
+        ...(isPost && { body: JSON.stringify(body) }),
+      };
+
+      const response = await fetch(
+        `http://localhost:8080/api/${endpoint}`,
+        fetchOptions
+      );
 
       if (!response.ok) {
         if (response.status === 401 && retry) {
           console.log("Token expirado, solicitando uno nuevo...");
           localStorage.removeItem("authToken");
-          token = await generateGuestToken();
+          token = await getToken();
           if (token) return fetchData(false);
         }
         throw new Error("Error al obtener los datos");
@@ -100,10 +168,23 @@ const useFetchData = (endpoint: string, setter: (data: any) => void) => {
     if (endpoint.trim()) {
       fetchData();
     }
-  }, [endpoint]);
+  }, [endpoint, JSON.stringify(body)]);
 
   return { error };
 };
+
+/**
+ * @function useMinMaxProducts
+ * @returns { minmaxproducts, error } - Retorna los productos con precios mínimos y máximos y el error si lo hubo.
+ * @description Hook para obtener productos con precios mínimos y máximos.
+ * @param {string} endpoint - Endpoint de la API a la que se desea hacer la petición.
+ * @param {Function} setter - Función para establecer el estado de los datos obtenidos.
+ * @param {any} [body] - Cuerpo de la petición (opcional).
+ * @example
+ * const { minmaxproducts, error } = useMinMaxProducts();
+ * console.log(minmaxproducts); // { min: 100, max: 500 }
+ * console.log(error); // "Error al obtener los datos del servidor."
+ */
 
 export const useMinMaxProducts = () => {
   const [minmaxproducts, setminmaxproducts] = useState<MinMaxProducts | null>(
@@ -117,7 +198,21 @@ export const useMinMaxProducts = () => {
   return { minmaxproducts, error };
 };
 
-// Hook para pagina grupales
+/**
+ * @function useProductosGrupales
+ * @returns { productos, error, handleCardClick } - Retorna los productos grupales y el error si lo hubo.
+ * @description Hook para obtener productos grupales.
+ * @param {string} endpoint - Endpoint de la API a la que se desea hacer la petición.
+ * @param {Function} setter - Función para establecer el estado de los datos obtenidos.
+ * @param {any} [body] - Cuerpo de la petición (opcional).
+ * @example
+ * const { productos, error, handleCardClick } = useProductosGrupales();
+ * console.log(productos); // [{ id: 1, name: "Tour 1" }, { id: 2, name: "Tour 2" }]
+ * console.log(error); // "Error al obtener los datos del servidor."
+ * @returns {Object} - Objeto que contiene los productos, el error y la función handleCardClick.
+ * @throws {Error} - Si ocurre un error al obtener los datos del servidor.
+ */
+
 export const useProductosGrupales = () => {
   const [productos, setProductos] = useState<Product[]>([]);
   const navigate = useNavigate();
@@ -132,6 +227,17 @@ export const useProductosGrupales = () => {
   return { productos, error, handleCardClick };
 };
 
+/**
+ * @function useProductos
+ * @param filter - Filtro para los productos del carrusel.
+ * @description Hook para obtener productos del carrusel.
+ * @returns { productos, error, swiperRef, handleCardClick } - Retorna los productos del carrusel y el error si lo hubo.
+ * @example
+ * const { productos, error, swiperRef, handleCardClick } = useProductos("new");
+ * console.log(productos); // [{ id: 1, name: "Tour 1" }, { id: 2, name: "Tour 2" }]
+ * console.log(error); // "Error al obtener los datos del servidor."
+ * @throws {Error} - Si ocurre un error al obtener los datos del servidor.
+ */
 // Hook para productos del carrusel
 export const useProductos = (filter?: string) => {
   const [productos, setProductos] = useState<Product[]>([]);
@@ -151,7 +257,10 @@ export const useProductos = (filter?: string) => {
   return { productos, error, swiperRef, handleCardClick };
 };
 
-// Hook para obtener datos de un tour
+/**
+ * @brief Hook to fetch tour data.
+ * @returns Object containing tour data and state management functions.
+ */
 export const useTourData = () => {
   const { tourName } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
@@ -306,6 +415,7 @@ export const useFetchLocations = (
   const [error, setError] = useState<string | null>(null);
 
   let endpoint = "";
+  if (level === "continents") endpoint = "productos/locations/continents";
   if (level === "countries") endpoint = "productos/locations/countries";
   if (level === "states" && country)
     endpoint = `productos/locations/states/${country}`;
@@ -339,27 +449,79 @@ export const useMegaMenuData = (type: string) => {
 // TourAvailability Sidebar
 
 export const useTourAvailability = () => {
-  const { tourName } = useParams(); // Usamos el slug del tour
+  const { tourName } = useParams();
   const [salidaDesde, setSalidaDesde] = useState<any[]>([]);
   const [horarios, setHorarios] = useState<any[]>([]);
   const [ninosAdultosCantidad, setNinosAdultosCantidad] = useState<any[]>([]);
   const [reservationDates, setReservationDates] = useState<any[]>([]);
-  const { error } = useFetchData(
-    `productos/tour/availability/${tourName}`,
-    (data: any) => {
-      // Almacenamos cada tabla por separado
-      setSalidaDesde(data.salida_desde);
-      setHorarios(data.horario);
-      setNinosAdultosCantidad(data.ninos_adultos_cantidad);
-      setReservationDates(data.reservation_date);
-    }
-  );
+  const [services, setServices] = useState<any[]>([]);
+
+  useFetchData(`productos/tour/availability/${tourName}`, (data: any) => {
+    setSalidaDesde(data.salida_desde);
+    setHorarios(data.horario);
+    setReservationDates(data.reservation_date);
+    setNinosAdultosCantidad(data.ninos_adultos_cantidad);
+  });
+
+  useFetchData(`productos/tour/services/${tourName}`, (data: any) => {
+    setServices(data.services);
+  });
+
   return {
     salidaDesde,
     horarios,
     ninosAdultosCantidad,
     reservationDates,
+    services,
+  };
+};
+
+// Filter Sidebar
+export const useFilteredTours = () => {
+  const [filteredTours, setFilteredTours] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState<any>(null);
+
+  const body = filters
+    ? { ...filters, page: currentPage, itemsPerPage: 12 }
+    : null;
+
+  const { error } = useFetchData(
+    filters ? "productos/tours/filter" : "",
+    (response: {
+      data: Product[];
+      totalPages: number;
+      currentPage: number;
+    }) => {
+      setFilteredTours(response.data || []);
+      setTotalPages(response.totalPages);
+      setCurrentPage(response.currentPage);
+    },
+    body
+  );
+
+  const applyFilters = useCallback((newFilters: any, page: number = 1) => {
+    setFilters(newFilters);
+    setCurrentPage(page);
+  }, []);
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+  }, []);
+
+  const isLoading = filters !== null && filteredTours.length === 0 && !error;
+  const filtersApplied = filters !== null;
+
+  return {
+    filteredTours,
+    filtersApplied,
+    applyFilters,
+    isLoading,
     error,
+    totalPages,
+    currentPage,
+    handlePageChange,
   };
 };
 
@@ -372,4 +534,115 @@ export const formatDate = (isoString: string) => {
     month: "long",
     year: "numeric",
   });
+};
+
+export const useAddProduct = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const addProduct = async (productData: any) => {
+    setLoading(true);
+    try {
+      let token = await getToken();
+      if (!token) {
+        throw new Error("No se pudo obtener un token válido");
+      }
+
+      const response = await fetch(
+        "http://localhost:8080/api/productos/create",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(productData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al crear el producto");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (err: any) {
+      setError(err.message || "Error desconocido");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { addProduct, loading, error };
+};
+
+/**
+ * @function fmtMXN
+ * @description Formatea un número a la moneda mexicana (MXN).
+ * @param {number} value - El valor a formatear.
+ * @returns {string} - El valor formateado como moneda mexicana.
+ * @example
+ * const formattedValue = fmtMXN.format(1234567.89);
+ * console.log(formattedValue); // "$1,234,567.89"
+ * @throws {TypeError} - Si el valor no es un número.
+ * @throws {RangeError} - Si el valor es menor que 0.
+ * @throws {Error} - Si ocurre un error al formatear el número.
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
+ */
+export const fmtMXN = new Intl.NumberFormat("es-MX", {
+  style: "currency",
+  currency: "MXN",
+  minimumFractionDigits: 0,
+});
+
+/**
+ * Hook para paginar blogs (5 por página)
+ */
+export const useBlogsPagination = () => {
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Cada vez que cambie currentPage, refetch
+  const { error } = useFetchData(
+    `blogs?page=${currentPage}`,
+    (response: {
+      data: BlogPost[];
+      totalPages: number;
+      currentPage: number;
+    }) => {
+      setBlogs(response.data);
+      setTotalPages(response.totalPages);
+      setCurrentPage(response.currentPage);
+    }
+  );
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
+
+  return { blogs, currentPage, totalPages, handlePageChange, error };
+};
+
+/**
+ * Hook para obtener los 5 posts recientes
+ */
+export const useRecentBlogs = () => {
+  const [recent, setRecent] = useState<BlogPost[]>([]);
+  const { error } = useFetchData("blogs/recent", setRecent);
+  return { recent, error };
+};
+
+/**
+ * Hook para cargar un sólo blog por ID
+ */
+export const useBlog = (blogId?: string) => {
+  const [blog, setBlog] = useState<BlogPost | null>(null);
+  const { error } = useFetchData(blogId ? `blogs/${blogId}` : "", setBlog);
+  return { blog, error };
 };

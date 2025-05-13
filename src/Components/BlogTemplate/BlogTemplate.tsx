@@ -1,53 +1,46 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+import "./BlogTemplate.css";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { Helmet as HelmetReact } from "react-helmet-async";
-import "./BlogTemplate.css";
+import { useBlog } from "../Hook";
 
 const BlogTemplate: React.FC = () => {
+  const { blogId } = useParams<{ blogId: string }>();
+  const { blog, error } = useBlog(blogId);
+
+  if (error) return <p>Error al cargar el blog.</p>;
+  if (!blog) return <p>Cargando...</p>;
+
   return (
     <>
       <HelmetReact>
-        {/* Meta etiquetas dinámicas */}
-        <title>Tours</title>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="author" content="Toursland" />
-        <meta
-          name="copyright"
-          content="© Toursland. Todos los derechos reservados."
-        />
-        <meta name="description" content="" />
-        <meta name="keywords" content="" />
-        <link rel="canonical" href="" />
-        <meta name="robots" content="" />
-
-        {/* Meta etiquetas dinámicas para redes sociales */}
-        <meta property="og:title" content="" />
-        <meta property="og:description" content="" />
-        <meta property="og:image" content="" />
-        <meta property="og:url" content="" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Toursland" />
-        <meta property="og:image:alt" content="Descripción de la imagen" />
+        <title>{blog.title}</title>
+        {/* Inyectamos CSS personalizado */}
+        {blog.custom_css && <style type="text/css">{blog.custom_css}</style>}
       </HelmetReact>
       <Header />
 
-      <div className="PortadaBlogTemplate" /*Portada para Blogs*/>
-        <h3>
-          Consejos prácticos para viajeros conscientes: reduce tu huella de
-          carbono mientras exploras el mundo
-        </h3>
+      {/* Portada con imagen de fondo */}
+      <div
+        className="PortadaBlogTemplate"
+        style={{ backgroundImage: `url(${blog.blog_header_image})` }}
+      >
+        <h3>{blog.title}</h3>
       </div>
 
+      {/* Cuerpo del post */}
       <div className="CuerpoBlog">
+        {/* Publicado */}
         <p>
-          Viajar es una experiencia enriquecedora, pero también conlleva un
-          impacto ambiental que podemos minimizar. Si buscas ser un viajero más
-          consciente y reducir tu huella de carbono, estos consejos te ayudarán
-          a disfrutar del mundo mientras cuidas el planeta.
-        </p><br />
-        
+          <em>
+            Publicado el{" "}
+            {new Date(blog.published_date).toLocaleDateString("es-MX")}
+          </em>
+        </p>
+        {/* Contenido HTML deserializado */}
+        <div dangerouslySetInnerHTML={{ __html: blog.content_html }} />
       </div>
 
       <Footer />

@@ -221,6 +221,10 @@
 }
 
 /* La lista desplegable personalizada */
+/**
+ * @brief Styles for the dropdown menu.
+ * @details Includes hover effects and responsive adjustments.
+ */
 .dropdown-menu {
   position: absolute;
   top: 100%; /* Debajo del header */

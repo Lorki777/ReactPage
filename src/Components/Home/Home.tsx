@@ -1,3 +1,11 @@
+/**
+ * @file Home.tsx
+ * @brief Home page component.
+ * @details This component serves as the landing page for the application, providing navigation and featured content.
+ * @date
+ */
+
+// TODO: La pagina principal.
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import CardsCarrusel from "../CardsCarrusel/CardsCarrusel";
@@ -45,36 +53,38 @@ const continentes = [
     area: "norteamerica",
   },
 ];
-
+/**
+ * @brief Home component.
+ * @returns JSX.Element
+ */
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
-  // Estados para controlar apertura/cierre de cada dropdown
+  // States for managing dropdown visibility
   const [openDestination, setOpenDestination] = useState(false);
   const [openActivities, setOpenActivities] = useState(false);
   const [openDuration, setOpenDuration] = useState(false);
   const [openBudget, setOpenBudget] = useState(false);
   const MinMaxProductsData = useMinMaxProducts();
 
-  // Estado para almacenar la selección actual
+  // State for storing the current selection
   const [selectedDestination, setSelectedDestination] = useState("");
   const [selectedActivity, setSelectedActivity] = useState("");
 
-  const minmaxminprecio =
-    Math.floor((MinMaxProductsData.minmaxproducts?.minprecio || 0) / 100) * 100;
-  const minmaxmaxprecio = MinMaxProductsData.minmaxproducts?.maxprecio;
-  const minmaxminduracion = MinMaxProductsData.minmaxproducts?.mindias;
-  const minmaxmaxduracion = MinMaxProductsData.minmaxproducts?.maxdias;
+  const minmaxminprecio = MinMaxProductsData.minmaxproducts?.min_price;
+  const minmaxmaxprecio = MinMaxProductsData.minmaxproducts?.max_price;
+  const minmaxminduracion = MinMaxProductsData.minmaxproducts?.min_days;
+  const minmaxmaxduracion = MinMaxProductsData.minmaxproducts?.max_days;
 
   // Para sliders
   const [duration, setDuration] = useState<[number, number]>([
     minmaxminduracion || 0,
-    minmaxmaxduracion || 10,
+    minmaxmaxduracion || 0,
   ]);
 
   const [budget, setBudget] = useState<[number, number]>([
-    minmaxminprecio || 100,
-    minmaxmaxprecio || 16000,
+    minmaxminprecio || 0,
+    minmaxmaxprecio || 0,
   ]);
 
   // Opciones de destinos (ejemplo)
@@ -409,6 +419,7 @@ const Home: React.FC = () => {
               minHeight: "25px",
               height: "auto",
             }}
+            onClick={() => handleDestinationClick("ofertas")}
           />
         </div>
 
@@ -424,6 +435,7 @@ const Home: React.FC = () => {
             alt="Icono de todos los tours"
             width="240"
             height="50"
+            onClick={() => handleDestinationClick("mejoresdestinos")}
           />
         </div>
 

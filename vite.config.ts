@@ -12,6 +12,9 @@ export default defineConfig({
         drop_console: true, // Elimina console.logs
         drop_debugger: true, // Elimina debuggers
       },
+      format: {
+        comments: false, // Elimina todos los comentarios
+      },
     },
   },
   server: {

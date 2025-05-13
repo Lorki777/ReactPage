@@ -8,11 +8,12 @@ import Grupales from "./Components/GrupalesPage/Grupales";
 import Expertos from "./Components/Expertos/Expertos";
 import Conocenos from "./Components/Conocenos/Conocenos";
 import Blog from "./Components/Blog/Blog";
-import Payment from "./Components/Payment/Payment";
 import CardsPagination from "./Components/CardsWithPagination/CardsWithPagination";
 import BlogTemplate from "./Components/BlogTemplate/BlogTemplate";
+import Payment from "./Components/Payment/Payment";
 import AvisoDePrivacidad from "./Components/AvisoDePrivacidad/AvisoDePrivacidad";
 import TerminosYCondiciones from "./Components/Terminos y Condiciones/TerminosYCondiciones";
+import CreateProduct from "./Components/CreateProduct/AddProductForm";
 
 const AppRoutes = () => {
   return (
@@ -25,6 +26,12 @@ const AppRoutes = () => {
       <Route path="/Aviso" element={<AvisoDePrivacidad />} />
       <Route path="/Grupales" element={<Grupales />} />
       <Route path="/:Type/:Param" element={<CardsPagination />} />
+      <Route path="/AvailableTours" element={<CardsPagination />} />
+      <Route
+        path="/Filtered"
+        element={<CardsPagination key={location.pathname} />}
+      />
+      <Route path="/AddTour" element={<CreateProduct />} />
       <Route path="/TOURS" element={<ToursPage key={location.pathname} />} />
       <Route
         path="/TOURS/Location"
@@ -40,9 +47,9 @@ const AppRoutes = () => {
       />
       <Route path="/Conocenos" element={<Conocenos />} />
       <Route path="/Expertos" element={<Expertos />} />
-      <Route path="/Blog" element={<Blog />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:blogId" element={<BlogTemplate />} />
       <Route path="/Payment" element={<Payment />} />
-      <Route path="/BlogTemplate" element={<BlogTemplate />} />
     </Routes>
   );
 };

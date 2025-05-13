@@ -1,3 +1,9 @@
+/**
+ * @file Tours.tsx
+ * @brief Component for displaying tour details.
+ * @details This component fetches and displays detailed information about tours, including FAQs and images.
+ */
+
 import React, { useState, useEffect, useMemo } from "react";
 import "./Tours.css";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,8 +21,9 @@ import { Helmet as HelmetReact } from "react-helmet-async";
 import {
   useTourData,
   useSidebarLogic,
-  useTourAvailability,
   formatDate,
+  useFetchData,
+  fmtMXN,
 } from "../Hook";
 import {
   FaCalendarAlt,
@@ -36,11 +43,14 @@ import {
   FaQuestionCircle,
 } from "react-icons/fa";
 import { IoPricetag } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
-import { FaqItem, FieldConfig } from "../Interfaces";
+import { useParams, useNavigate } from "react-router-dom";
+import { FaqItem, FieldConfig, TourService } from "../Interfaces";
+import CreatableSelect from "react-select/creatable";
 
-// Define interfaces para la configuración de los campos
-
+/**
+ * @brief FAQ data for the Tours page.
+ * @details Contains questions and answers related to ToursLand services.
+ */
 const faqData: FaqItem[] = [
   {
     question: "¿Cuál es la ubicación de ToursLand?",
@@ -192,6 +202,34 @@ const faqData: FaqItem[] = [
   },
 ];
 
+const useTourAvailability = () => {
+  const { tourName } = useParams();
+  const [salidaDesde, setSalidaDesde] = useState<any[]>([]);
+  const [horarios, setHorarios] = useState<any[]>([]);
+  const [ninosAdultosCantidad, setNinosAdultosCantidad] = useState<any[]>([]);
+  const [reservationDates, setReservationDates] = useState<any[]>([]);
+  const [services, setServices] = useState<any[]>([]);
+
+  useFetchData(`productos/tour/availability/${tourName}`, (data: any) => {
+    setSalidaDesde(data.salida_desde);
+    setHorarios(data.horario);
+    setReservationDates(data.reservation_date);
+    setNinosAdultosCantidad(data.ninos_adultos_cantidad);
+  });
+
+  useFetchData(`productos/tour/services/${tourName}`, (data: any) => {
+    setServices(data.services);
+  });
+
+  return {
+    salidaDesde,
+    horarios,
+    ninosAdultosCantidad,
+    reservationDates,
+    services,
+  };
+};
+
 // Componente principal
 const Tours: React.FC = () => {
   const navigate = useNavigate();
@@ -202,6 +240,8 @@ const Tours: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<"reserva" | "cotizacion">(
     "reserva"
   );
+
+  const [inputValues, setInputValues] = useState<Record<string, string>>({});
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -220,20 +260,25 @@ const Tours: React.FC = () => {
   });
 
   // Obtenemos la disponibilidad desde el backend
-  const { salidaDesde, horarios, ninosAdultosCantidad, reservationDates } =
-    useTourAvailability();
+  const {
+    salidaDesde,
+    horarios,
+    ninosAdultosCantidad,
+    reservationDates,
+    services,
+  } = useTourAvailability();
 
   // ========== DETECTAMOS SI HAY DISPONIBILIDAD PARA ADULTOS, NIÑOS, CANTIDAD Y PRECIO NIÑOS ==========
   const canHaveAdults = useMemo(() => {
-    return ninosAdultosCantidad.some((av) => av.adultos === 1);
+    return ninosAdultosCantidad.some((av) => av.adult_available === 1);
   }, [ninosAdultosCantidad]);
 
   const canHaveNinos = useMemo(() => {
-    return ninosAdultosCantidad.some((av) => av.ninos === 1);
+    return ninosAdultosCantidad.some((av) => av.child_available === 1);
   }, [ninosAdultosCantidad]);
 
   const canHaveCantidad = useMemo(() => {
-    return ninosAdultosCantidad.some((av) => av.cantidad === 1);
+    return ninosAdultosCantidad.some((av) => av.quantity_available === 1);
   }, [ninosAdultosCantidad]);
 
   // ========== FECHAS ==========
@@ -257,7 +302,7 @@ const Tours: React.FC = () => {
     const validDepartures = Array.from(
       new Set(
         salidaDesde
-          .map((av) => av.salida_desde)
+          .map((av) => av.city_name)
           .filter((val) => val && val.trim() !== "")
       )
     );
@@ -281,7 +326,7 @@ const Tours: React.FC = () => {
 
   const scheduleOptions = useMemo(() => {
     const validSchedules = Array.from(
-      new Set(horarios.map((av) => av.horario).filter((val) => val?.trim()))
+      new Set(horarios.map((av) => av.time).filter((val) => val?.trim()))
     );
     return [
       { value: "", text: "Horario" },
@@ -306,14 +351,31 @@ const Tours: React.FC = () => {
       });
     }
 
-    if (departureOptions.length > 1) {
-      newConfig.push({
-        id: "departure",
-        label: "Salida desde",
-        icon: FaPlane,
-        options: departureOptions,
-      });
-    }
+    const groupedServices = services.reduce((acc, svc) => {
+      const key = svc.service_type_name;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(svc);
+      return acc;
+    }, {} as Record<string, TourService[]>);
+
+    Object.entries(groupedServices as Record<string, TourService[]>).forEach(
+      ([typeName, group]) => {
+        const options = [
+          { value: "", text: group[0].service_type_name }, // Primera opción genérica
+          ...group.map((s) => ({
+            value: s.service_id.toString(),
+            text: s.city_name ?? s.service_name ?? "Servicio",
+          })),
+        ];
+
+        newConfig.push({
+          id: `service_${group[0].service_type_id}`,
+          label: typeName,
+          icon: FaMapMarkerAlt,
+          options,
+        });
+      }
+    );
 
     if (canHaveAdults || canHaveNinos) {
       const adultsField: FieldConfig = {
@@ -367,8 +429,6 @@ const Tours: React.FC = () => {
           { value: "1", text: "1" },
           { value: "2", text: "2" },
           { value: "3", text: "3" },
-          { value: "4", text: "4" },
-          { value: "5", text: "5" },
         ],
       });
     }
@@ -388,23 +448,18 @@ const Tours: React.FC = () => {
     canHaveAdults,
     canHaveNinos,
     canHaveCantidad,
+    services,
   ]);
 
   // Lógica para mostrar/ocultar campos según si el anterior está completado
   const shouldShowField = (i: number) => {
-    if (i === 0) return true;
-    let lastRequiredIndex = i - 1;
-    while (lastRequiredIndex >= 0) {
-      const field = dynamicFieldsConfig[lastRequiredIndex];
+    for (let j = 0; j < i; j++) {
+      const field = dynamicFieldsConfig[j];
       if (field.type !== "button" && !field.optional) {
-        break;
+        if (!formData[field.id]) return false;
       }
-      lastRequiredIndex--;
     }
-
-    if (lastRequiredIndex < 0) return true;
-    const requiredFieldId = dynamicFieldsConfig[lastRequiredIndex].id;
-    return formData[requiredFieldId] !== "";
+    return true;
   };
 
   const handleFieldChange = (id: string, value: string) => {
@@ -421,8 +476,10 @@ const Tours: React.FC = () => {
     }
 
     for (const id of fieldIds) {
-      if (isRequired(id) && !formData[id]) {
-        alert(`Por favor completa el campo ${id}`);
+      const index = dynamicFieldsConfig.findIndex((f) => f.id === id);
+      if (isRequired(id) && shouldShowField(index) && !formData[id]) {
+        const label = dynamicFieldsConfig[index]?.label || id;
+        alert(`Por favor completa el campo "${label}"`);
         return;
       }
     }
@@ -434,9 +491,9 @@ const Tours: React.FC = () => {
       adultos: adults ? parseInt(adults) : 0,
       ninos: children ? parseInt(children) : 0,
       cantidad: quantity ? parseInt(quantity) : 0,
-      tourslug: product?.TourSlug,
-      tourname: product?.TourName,
-      tourprice: product?.TourPrice,
+      tourslug: product?.tour_slug,
+      tourname: product?.tour_name,
+      tourprice: finalprice,
     };
 
     // Guardamos la info en el localStorage (u otro almacenamiento si prefieres)
@@ -444,23 +501,60 @@ const Tours: React.FC = () => {
     navigate(`/Payment`);
   };
 
-  const finalprice =
-    product?.TourPrice && (formData.adults || formData.children)
-      ? (formData.adults
-          ? parseInt(formData.adults) * (product?.TourPrice ?? 0)
-          : 0) +
-        (formData.children
-          ? parseInt(formData.children) *
-            parseFloat(formData?.precioninos ?? "0")
-          : 0)
-      : product?.TourPrice;
+  let basePrice = product?.tour_price;
+  const adultCount = parseInt(formData.adults || "0");
+  const childCount = parseInt(formData.children || "0");
+
+  if (services.length) {
+    Object.keys(formData).forEach((key) => {
+      if (key.startsWith("service_")) {
+        const selected = services.find(
+          (s) => s.service_id.toString() === formData[key]
+        );
+        if (selected) {
+          basePrice =
+            adultCount * selected.adult_price +
+            childCount * selected.child_price;
+        }
+      }
+    });
+  } else {
+    basePrice =
+      adultCount * (product?.tour_price ?? 0) +
+      childCount * parseFloat(formData?.precioninos ?? "0");
+  }
+
+  const finalprice = formData.quantity
+    ? (basePrice || 0) * parseInt(formData.quantity, 10)
+    : basePrice;
+
+  useEffect(() => {
+    let updated = false;
+    const newFormData = { ...formData };
+
+    dynamicFieldsConfig.forEach((field, i) => {
+      if (!shouldShowField(i) && formData[field.id]) {
+        newFormData[field.id] = "";
+        if (field.group) {
+          field.group.forEach((sub) => {
+            newFormData[sub.id] = "";
+          });
+        }
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      setFormData(newFormData);
+    }
+  }, [formData, dynamicFieldsConfig]);
 
   return (
     <>
       {product && (
         <>
           <HelmetReact>
-            <title>{product.MetaTitle}</title>
+            <title>{product.meta_title}</title>
             <meta charSet="UTF-8" />
             <meta
               name="viewport"
@@ -471,14 +565,13 @@ const Tours: React.FC = () => {
               name="copyright"
               content="© Toursland. Todos los derechos reservados."
             />
-            <meta name="description" content={product.MetaDescription} />
-            <meta name="keywords" content={product.MetaKeywords} />
-            <link rel="canonical" href={product.CanonicalUrl} />
-            <meta name="robots" content={product.MetaRobots} />
-            <meta property="og:title" content={product.OgTitle} />
-            <meta property="og:description" content={product.OgDescription} />
-            <meta property="og:image" content={product.OgImage} />
-            <meta property="og:url" content={product.CanonicalUrl} />
+            <meta name="description" content={product.meta_description} />
+            <link rel="canonical" href={product.canonical_url} />
+            <meta name="robots" content={product.meta_robots} />
+            <meta property="og:title" content={product.og_title} />
+            <meta property="og:description" content={product.og_description} />
+            <meta property="og:image" content={product.og_image} />
+            <meta property="og:url" content={product.canonical_url} />
             <meta property="og:type" content="website" />
             <meta property="og:site_name" content="Toursland" />
             <meta property="og:image:alt" content="Descripción de la imagen" />
@@ -486,18 +579,18 @@ const Tours: React.FC = () => {
 
           <Header />
           <div className="tourheader">
-            <h1>{product.TourName}</h1>
+            <h1>{product.tour_name}</h1>
           </div>
 
           <div className="tour-details-bar">
             <div className="tour-details2-bar">
               {/* Mostrar solo si TourDuration es un número mayor a 0 */}
-              {product.TourDuration && product.TourDuration > 0 && (
+              {product.tour_duration && product.tour_duration > 0 && (
                 <div className="detail-item">
                   <span role="img" aria-label="clock">
                     <FaClock />
                   </span>
-                  <span>Tour de: {product.TourDuration + " Días"}</span>
+                  <span>Tour de: {product.tour_duration + " Días"}</span>
                 </div>
               )}
 
@@ -518,22 +611,22 @@ const Tours: React.FC = () => {
               )}
 
               {/* Mostrar solo si Llegada existe y no está vacía */}
-              {product.Llegada && product.Llegada.trim() !== "" && (
+              {product.city_name && product.city_name.trim() !== "" && (
                 <div className="detail-item">
                   <span role="img" aria-label="ship">
                     <FaMapMarkerAlt />
                   </span>
-                  <span>Destino a: {product.Llegada}</span>
+                  <span>Destino a: {product.city_name}</span>
                 </div>
               )}
 
               {/* Mostrar solo si EdadMinima existe y, al convertirla a número, es mayor a 0 */}
-              {product.EdadMinima && Number(product.EdadMinima) > 0 && (
+              {product.min_age && Number(product.min_age) > 0 && (
                 <div className="detail-item">
                   <span role="img" aria-label="user">
                     <FaUser />
                   </span>
-                  <span>Edad Mínima: {product.EdadMinima}+</span>
+                  <span>Edad Mínima: {product.min_age}+</span>
                 </div>
               )}
             </div>
@@ -579,30 +672,30 @@ const Tours: React.FC = () => {
           <div className="tourinfo-container">
             <img src={Iconoinicio} alt="Icono de Tours" className="ToursIcon" />
             <section className="tourdetails-section">
-              {product.TourDescription.length > 0 && (
+              {product.tour_description.length > 0 && (
                 <>
                   <div id="tourdetails-section">
                     <h2>
                       <FaRegFileAlt />
                       Detalles del Paquete
                     </h2>
-                    <p>{product.TourDescription}</p>
+                    <p>{product.tour_description}</p>
                     <hr className="Tourseparation" />
                   </div>
                 </>
               )}
 
               {titles.map((title) => (
-                <div key={title.list_title}>
+                <div key={title.list_title_id}>
                   <div className="TourListSeparation">
-                    <h2 className="tourlisth2">{title.list_titletxt}</h2>
+                    <h3 className="tourlisth2">{title.list_title_text}</h3>
                     <ul>
                       {items.map((item, i) => (
                         <li key={i}>
                           <FaCheckCircle
                             style={{ color: "#0087f5", marginRight: "0.5rem" }}
                           />
-                          {item.list_item}
+                          {item.item_text}
                         </li>
                       ))}
                     </ul>
@@ -621,28 +714,33 @@ const Tours: React.FC = () => {
                       Itinerario
                     </h2>
                     <div className="touritineraryitems">
-                      {pointItinerary.map(({ day, descriptionitinerary }) => (
-                        <div
-                          key={day}
-                          className={`day ${openDay === day ? "open" : ""}`}
-                          onClick={() =>
-                            setOpenDay(openDay === day ? null : day)
-                          }
-                        >
-                          <h3>
-                            Día {day} <span>{openDay === day ? "▲" : "▼"}</span>
-                          </h3>
-                          {openDay === day && <p>{descriptionitinerary}</p>}
-                        </div>
-                      ))}
+                      {pointItinerary.map(
+                        ({ day, description: descriptionitinerary }) => (
+                          <div
+                            key={day}
+                            className={`day ${openDay === day ? "open" : ""}`}
+                            onClick={() =>
+                              setOpenDay(openDay === day ? null : day)
+                            }
+                          >
+                            <h3>
+                              Día {day}{" "}
+                              <span>{openDay === day ? "▲" : "▼"}</span>
+                            </h3>
+                            {openDay === day && <p>{descriptionitinerary}</p>}
+                          </div>
+                        )
+                      )}
                     </div>
                   </section>
                   <hr className="Tourseparation" />
                 </>
               )}
               <div id="tour-carrusel" className="tour-carrusel">
-                <FaRegImage />
-                <h2>Fotos</h2>
+                <h2>
+                  <FaRegImage />
+                  Fotos
+                </h2>
                 <Swiper
                   modules={[Pagination]}
                   slidesPerView={1}
@@ -663,15 +761,18 @@ const Tours: React.FC = () => {
                 </Swiper>
               </div>
 
-              {product.TourMap && (
+              {product.tour_map && (
                 <>
                   <hr className="Tourseparation" />
-                  <FaMap />
-                  <h2>Mapa</h2>
+
+                  <h2>
+                    <FaMap />
+                    Mapa
+                  </h2>
                   <div id="tour-mapa">
                     <div className="tour-mapa">
                       <iframe
-                        src={product.TourMap}
+                        src={product.tour_map}
                         width="100%"
                         height="100%"
                         style={{
@@ -689,8 +790,10 @@ const Tours: React.FC = () => {
               )}
 
               <div className="faq-container" id="faq-section">
-                <FaQuestionCircle />
-                <h2>Preguntas Frecuentes</h2>
+                <h2>
+                  <FaQuestionCircle />
+                  Preguntas Frecuentes
+                </h2>
                 {faqData.map((item, index) => {
                   const isOpen = activeIndex === index;
                   return (
@@ -725,9 +828,8 @@ const Tours: React.FC = () => {
                 <h3 className="tour-sidebar-title">Precio por persona</h3>
                 <div className="tour-sidebar-subtitle">
                   <IoPricetag />
-                  Desde <span>${finalprice}</span>
+                  Desde <span>{fmtMXN.format(finalprice!)}</span>
                 </div>
-
                 <div className="tour-sidebar-tabs">
                   <button
                     className={
@@ -754,9 +856,19 @@ const Tours: React.FC = () => {
                 {selectedTab === "reserva" && (
                   <div className="tour-sidebar-reservation new-layout">
                     {dynamicFieldsConfig.map((field, index) => {
+                      // Campos numéricos: "adults", "children", "quantity"
+                      const numericFields = ["adults", "children", "quantity"];
+                      const isNumberField = numericFields.includes(field.id);
+
                       if (field.type !== "button" && !shouldShowField(index)) {
                         return null;
                       }
+
+                      const numericOptions = field.options?.map((opt) => ({
+                        value: opt.value,
+                        label: opt.text,
+                      }));
+
                       return (
                         <div key={field.id} className="sidebar-step">
                           {field.icon && (
@@ -774,44 +886,224 @@ const Tours: React.FC = () => {
                               </button>
                             ) : (
                               <>
-                                <select
-                                  id={field.id}
-                                  className="tour-sidebar-select"
-                                  value={formData[field.id] || ""}
-                                  onChange={(e) =>
-                                    handleFieldChange(field.id, e.target.value)
-                                  }
-                                >
-                                  {field.options?.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>
-                                      {opt.text}
-                                    </option>
-                                  ))}
-                                </select>
-                                {field.group &&
-                                  field.group.map((subField) => (
-                                    <select
-                                      key={subField.id}
-                                      id={subField.id}
-                                      className="tour-sidebar-select"
-                                      value={formData[subField.id] || ""}
-                                      onChange={(e) =>
-                                        handleFieldChange(
-                                          subField.id,
-                                          e.target.value
-                                        )
+                                {isNumberField ? (
+                                  <CreatableSelect
+                                    inputId={field.id}
+                                    classNamePrefix="custom-select"
+                                    options={numericOptions}
+                                    value={
+                                      numericOptions?.find(
+                                        (o) =>
+                                          String(o.value) ===
+                                          String(formData[field.id])
+                                      ) ||
+                                      (formData[field.id]
+                                        ? {
+                                            value: formData[field.id],
+                                            label: formData[field.id],
+                                          }
+                                        : null)
+                                    }
+                                    // Cuando el usuario selecciona un valor existente
+                                    onChange={(selected) => {
+                                      handleFieldChange(
+                                        field.id,
+                                        selected?.value || ""
+                                      );
+                                      setInputValues((prev) => ({
+                                        ...prev,
+                                        [field.id]: "",
+                                      }));
+                                    }}
+                                    // Cuando el usuario crea un valor nuevo con Enter
+                                    onCreateOption={(newVal) => {
+                                      // Validar dígitos también aquí
+                                      if (/^[0-9]*$/.test(newVal)) {
+                                        handleFieldChange(field.id, newVal);
+                                        // Tras crearlo, limpiamos el inputValues
+                                        setInputValues((prev) => ({
+                                          ...prev,
+                                          [field.id]: "",
+                                        }));
                                       }
-                                    >
-                                      {subField.options?.map((opt) => (
-                                        <option
-                                          key={opt.value}
-                                          value={opt.value}
-                                        >
-                                          {opt.text}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  ))}
+                                      // Si no es numérico, no hacemos nada
+                                    }}
+                                    // Cada vez que escribe, solo guardamos dígitos en inputValues
+                                    onInputChange={(inputValue, { action }) => {
+                                      if (action === "input-change") {
+                                        if (/^[0-9]*$/.test(inputValue)) {
+                                          setInputValues((prev) => ({
+                                            ...prev,
+                                            [field.id]: inputValue,
+                                          }));
+                                        }
+                                      }
+                                    }}
+                                    // Al perder el foco, confirmamos si había texto pendiente en inputValues
+                                    onBlur={() => {
+                                      if (
+                                        inputValues[field.id] &&
+                                        inputValues[field.id] !==
+                                          formData[field.id]
+                                      ) {
+                                        handleFieldChange(
+                                          field.id,
+                                          inputValues[field.id]
+                                        );
+                                        setInputValues((prev) => ({
+                                          ...prev,
+                                          [field.id]: "",
+                                        }));
+                                      }
+                                    }}
+                                    // Le decimos a CreatableSelect qué mostrar
+                                    inputValue={
+                                      inputValues[field.id] !== undefined
+                                        ? inputValues[field.id]
+                                        : formData[field.id] || ""
+                                    }
+                                    isSearchable
+                                    placeholder={field.label}
+                                    isClearable
+                                  />
+                                ) : (
+                                  /* Campo normal (no numérico) */
+                                  <select
+                                    id={field.id}
+                                    className="tour-sidebar-select"
+                                    value={formData[field.id] || ""}
+                                    onChange={(e) =>
+                                      handleFieldChange(
+                                        field.id,
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    {field.options?.map((opt) => (
+                                      <option key={opt.value} value={opt.value}>
+                                        {opt.text}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+
+                                {field.group &&
+                                  field.group.map((subField) => {
+                                    // Mismo patrón para subcampos ("children", por ejemplo)
+                                    const isNumberSub = numericFields.includes(
+                                      subField.id
+                                    );
+                                    const subOptions = subField.options?.map(
+                                      (opt) => ({
+                                        value: opt.value,
+                                        label: opt.text,
+                                      })
+                                    );
+
+                                    return isNumberSub ? (
+                                      <CreatableSelect
+                                        key={subField.id}
+                                        inputId={subField.id}
+                                        classNamePrefix="custom-select"
+                                        options={subOptions}
+                                        value={
+                                          subOptions?.find(
+                                            (o) =>
+                                              String(o.value) ===
+                                              String(formData[subField.id])
+                                          ) ||
+                                          (formData[subField.id]
+                                            ? {
+                                                value: formData[subField.id],
+                                                label: formData[subField.id],
+                                              }
+                                            : null)
+                                        }
+                                        onChange={(selected) => {
+                                          handleFieldChange(
+                                            subField.id,
+                                            selected?.value || ""
+                                          );
+                                          setInputValues((prev) => ({
+                                            ...prev,
+                                            [subField.id]: "",
+                                          }));
+                                        }}
+                                        onCreateOption={(newVal) => {
+                                          if (/^[0-9]*$/.test(newVal)) {
+                                            handleFieldChange(
+                                              subField.id,
+                                              newVal
+                                            );
+                                            setInputValues((prev) => ({
+                                              ...prev,
+                                              [subField.id]: "",
+                                            }));
+                                          }
+                                        }}
+                                        onInputChange={(
+                                          inputValue,
+                                          { action }
+                                        ) => {
+                                          if (action === "input-change") {
+                                            if (/^[0-9]*$/.test(inputValue)) {
+                                              setInputValues((prev) => ({
+                                                ...prev,
+                                                [subField.id]: inputValue,
+                                              }));
+                                            }
+                                          }
+                                        }}
+                                        onBlur={() => {
+                                          if (
+                                            inputValues[subField.id] &&
+                                            inputValues[subField.id] !==
+                                              formData[subField.id]
+                                          ) {
+                                            handleFieldChange(
+                                              subField.id,
+                                              inputValues[subField.id]
+                                            );
+                                            setInputValues((prev) => ({
+                                              ...prev,
+                                              [subField.id]: "",
+                                            }));
+                                          }
+                                        }}
+                                        inputValue={
+                                          inputValues[subField.id] !== undefined
+                                            ? inputValues[subField.id]
+                                            : formData[subField.id] || ""
+                                        }
+                                        isSearchable
+                                        placeholder={subField.label}
+                                        isClearable
+                                      />
+                                    ) : (
+                                      /* Subcampo no numérico */
+                                      <select
+                                        key={subField.id}
+                                        id={subField.id}
+                                        className="tour-sidebar-select"
+                                        value={formData[subField.id] || ""}
+                                        onChange={(e) =>
+                                          handleFieldChange(
+                                            subField.id,
+                                            e.target.value
+                                          )
+                                        }
+                                      >
+                                        {subField.options?.map((opt) => (
+                                          <option
+                                            key={opt.value}
+                                            value={opt.value}
+                                          >
+                                            {opt.text}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    );
+                                  })}
                               </>
                             )}
                           </div>
@@ -848,7 +1140,6 @@ const Tours: React.FC = () => {
                     </button>
                   </div>
                 )}
-
                 <div className="tour-sidebar-wishlist">
                   <a href="#" className="tour-sidebar-link">
                     Guardar en lista de deseos
