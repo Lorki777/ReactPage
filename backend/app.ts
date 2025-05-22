@@ -7,18 +7,23 @@ import monthRoutes from "./routes/month.routes";
 import blogRoutes from "./routes/blogs.routes";
 import guestTokenRoutes from "./routes/guest-token.routes";
 import paymentRoutes from "./routes/payment.routes";
+import adminRoutes from "./routes/admin.routes";
 import cors = require("cors");
+var cookieParser = require("cookie-parser");
 import { pool } from "./connection/connection";
 
 const app: express.Application = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Permitir cookies cross-origin
   })
 );
+
+app.use(cookieParser());
 
 // Probar conexión a la base de datos
 (async () => {
@@ -77,6 +82,7 @@ app.use("/api/meses", monthRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/guest-token", guestTokenRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Ruta para servir archivos comprimidos
 const frontendPath = path.join(__dirname, "../dist");
@@ -95,12 +101,15 @@ app.use(
   })
 );
 
-// Manejo de rutas no definidas de la API
+app.use("/admin/", express.static(path.join(__dirname, "../admin-dist")));
+app.use("/", express.static(path.join(__dirname, "../public-dist")));
+
+app.get("/admin/", (_req, res) => {
+  res.sendFile(path.join(__dirname, "../admin-dist/index.html"));
+});
 app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) {
-    res.status(404).send("Esto no existe loco");
-  } else {
-    res.sendFile(path.join(frontendPath, "index.html"));
+    res.status(404).sendFile(path.join(__dirname, "../public-dist/index.html"));
   }
 });
 

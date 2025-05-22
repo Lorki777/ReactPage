@@ -9,6 +9,8 @@ lerna-debug.log*
 
 node_modules
 dist
+admin-dist
+public-dist
 dist-ssr
 *.local
 
@@ -24,3 +26,4 @@ dist-ssr
 *.sw?
 
 .env
+CreateTables.txt

@@ -1,0 +1,62 @@
+.admin-table {
+  border: 1px solid #ccc;
+  margin: 2rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #fafbfc;
+  box-shadow: 0 2px 8px #0001;
+}
+.admin-table h2 {
+  margin-top: 0;
+}
+.admin-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.admin-form input {
+  padding: 0.5rem;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+}
+.admin-form button {
+  padding: 0.5rem 1rem;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.admin-form button:hover {
+  background: #125ea2;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
+}
+th {
+  background: #f0f0f0;
+}
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+}
+.pagination button {
+  border: 1px solid #bbb;
+  background: #fff;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.pagination button.active {
+  background: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+}

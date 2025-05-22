@@ -1127,4 +1127,117 @@ router.post("/create", authenticateToken, async (req, res) => {
   }
 });
 
+// Endpoint para contar tours por filtro (continente, país, estado, ciudad)
+router.get("/tourscount", authenticateToken, async (req, res) => {
+  const { continent, country, state, city } = req.query;
+  let where = [];
+  let params: any[] = [];
+  if (continent) {
+    where.push("co.continent_name = ?");
+    params.push(continent);
+  }
+  if (country) {
+    where.push("c.country_name = ?");
+    params.push(country);
+  }
+  if (state) {
+    where.push("s.state_name = ?");
+    params.push(state);
+  }
+  if (city) {
+    where.push("ci.city_name = ?");
+    params.push(city);
+  }
+  if (where.length === 0) {
+    return res.json({ count: 0 });
+  }
+  const sql = `
+    SELECT COUNT(*) AS count
+    FROM products p
+    LEFT JOIN continents co ON co.continent_id = p.continent_id
+    LEFT JOIN countries c ON c.country_id = p.country_id
+    LEFT JOIN states s ON s.state_id = p.state_id
+    LEFT JOIN cities ci ON ci.city_id = p.city_id
+    WHERE ${where.join(" AND ")}
+  `;
+  try {
+    const rows = await executeQuery(sql, params);
+    res.json({ count: rows[0]?.count ?? 0 });
+  } catch (error) {
+    res.status(500).json({ count: 0 });
+  }
+});
+
+// Endpoint para obtener tours por filtro (con paginación)
+router.get("/toursbyfilter", authenticateToken, async (req, res) => {
+  const {
+    continent,
+    country,
+    state,
+    city,
+    page = 1,
+    itemsPerPage = 12,
+  } = req.query;
+  let where = [];
+  let params: any[] = [];
+  if (continent) {
+    where.push("co.continent_name = ?");
+    params.push(continent);
+  }
+  if (country) {
+    where.push("c.country_name = ?");
+    params.push(country);
+  }
+  if (state) {
+    where.push("s.state_name = ?");
+    params.push(state);
+  }
+  if (city) {
+    where.push("ci.city_name = ?");
+    params.push(city);
+  }
+  if (where.length === 0) {
+    return res.json({ tours: [], totalPages: 1 });
+  }
+  const sql = `
+    SELECT
+      p.tour_name,
+      p.tour_duration,
+      tb.tour_badge_name,
+      p.tour_slug,
+      tp.tour_price
+    FROM products p
+    LEFT JOIN tour_badges tb ON tb.tour_badge_id = p.tour_badge_id
+    LEFT JOIN tour_prices tp ON tp.product_id = p.product_id
+    LEFT JOIN continents co ON co.continent_id = p.continent_id
+    LEFT JOIN countries c ON c.country_id = p.country_id
+    LEFT JOIN states s ON s.state_id = p.state_id
+    LEFT JOIN cities ci ON ci.city_id = p.city_id
+    WHERE ${where.join(" AND ")}
+    ORDER BY p.tour_name
+    LIMIT ? OFFSET ?
+  `;
+  const countSql = `
+    SELECT COUNT(*) AS count
+    FROM products p
+    LEFT JOIN continents co ON co.continent_id = p.continent_id
+    LEFT JOIN countries c ON c.country_id = p.country_id
+    LEFT JOIN states s ON s.state_id = p.state_id
+    LEFT JOIN cities ci ON ci.city_id = p.city_id
+    WHERE ${where.join(" AND ")}
+  `;
+  const pageNum = parseInt(page as string, 10) || 1;
+  const perPage = parseInt(itemsPerPage as string, 10) || 12;
+  const offset = (pageNum - 1) * perPage;
+  try {
+    const tours = await executeQuery(sql, [...params, perPage, offset]);
+    const countRows = await executeQuery(countSql, params);
+    const total = countRows[0]?.count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / perPage));
+    res.json({ tours, totalPages });
+  } catch (error) {
+    res.status(500).json({ tours: [], totalPages: 1 });
+  }
+});
+
 export default router;
