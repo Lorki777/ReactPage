@@ -6,53 +6,56 @@ import cssnano from "cssnano";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-// Construimos dinámicamente el objeto de plugins
-const plugins = {
-  // Plugin oficial de Tailwind para PostCSS
-  "@tailwindcss/postcss": {},
-  // Añade prefijos para compatibilidad con navegadores
-  autoprefixer: {},
-};
-
-if (isProduction) {
-  // En producción, eliminamos CSS no usado
-  plugins["@fullhuman/postcss-purgecss"] = {
-    content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,html}"],
-    defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
-    safelist: {
-      standard: [
-        /^styles_/,
-        /^swiper-/,
-        /^bootstrap-/,
-        /^btn-/,
-        /^alert-/,
-        /^bg-/,
-        /^text-/,
-        /^border-/,
-        /^hover:bg-/,
-        /^p-/,
-        /^m-/,
-        /^flex-/,
-        /^grid-/,
-        /^gap-/,
-        /^amo-/,
-        /^buttonscollapsed/,
-        /^amo-inner-buttons/,
-      ],
-    },
-  };
-
-  // Minificación y eliminación de comentarios
-  plugins["cssnano"] = {
-    preset: [
-      "default",
-      {
-        discardComments: { removeAll: true },
-      },
-    ],
-  };
-}
-
 export default {
-  plugins,
+  plugins: {
+    // 1) Plugin oficial de Tailwind CSS v4 para PostCSS
+    "@tailwindcss/postcss": {},
+
+    // 2) Autoprefixer para compatibilidad entre navegadores
+    autoprefixer: {},
+
+    // 3) Sólo en producción, eliminamos CSS no usado
+    ...(isProduction
+      ? {
+          "@fullhuman/postcss-purgecss": {
+            content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,html}"],
+            defaultExtractor: (content) =>
+              content.match(/[\w-/:]+(?<!:)/g) || [],
+            safelist: {
+              standard: [
+                /^styles_/,
+                /^swiper-/,
+                /^bootstrap-/,
+                /^btn-/,
+                /^alert-/,
+                /^bg-/,
+                /^text-/,
+                /^border-/,
+                /^hover:bg-/,
+                /^p-/,
+                /^m-/,
+                /^flex-/,
+                /^grid-/,
+                /^gap-/,
+                /^amo-/,
+                /^buttonscollapsed/,
+                /^amo-inner-buttons/,
+                // Asegura que no se purguen variantes dark:
+                /^dark:/,
+              ],
+            },
+          },
+
+          // 4) Minificación y eliminación de comentarios con cssnano
+          cssnano: {
+            preset: [
+              "default",
+              {
+                discardComments: { removeAll: true },
+              },
+            ],
+          },
+        }
+      : {}),
+  },
 };

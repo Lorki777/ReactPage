@@ -1,11 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/admin-app/index.html",
+    "./src/admin-app/**/*.{js,ts,jsx,tsx,html}",
+  ],
+  darkMode: "class",
   theme: {
     extend: {
-      fontFamily: {
-        outfit: ["Outfit", "sans-serif"],
-      },
+      fontFamily: { outfit: ["Outfit", "sans-serif"] },
     },
   },
   plugins: [],
