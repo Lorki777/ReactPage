@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import AdminPanel from "./Components/AdminPanel";
+import AdminPanel from "./components/AdminPanel";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";

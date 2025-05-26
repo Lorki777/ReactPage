@@ -830,6 +830,10 @@ span.flatpickr-weekday,
   -webkit-box-orient: vertical;
 }
 
+.dark .card-content h3 {
+  color: #f3f4f6;
+}
+
 /* Precio en negrita y alineado a la derecha */
 .card-content .price {
   font-size: 1.5rem;
@@ -839,7 +843,10 @@ span.flatpickr-weekday,
   white-space: nowrap;
 }
 
-/* Duración alineada a la izquierda */
+.dark .card-content .price {
+  color: #38bdf8;
+}
+
 .card-content .duration {
   font-size: 0.875rem;
   color: #888;
@@ -847,6 +854,10 @@ span.flatpickr-weekday,
   align-items: center;
   gap: 0.25rem;
   white-space: nowrap;
+}
+
+.dark .card-content .duration {
+  color: #d1d5db;
 }
 
 .card-content h3 {
@@ -952,4 +963,16 @@ span.flatpickr-weekday,
   .card-content .duration {
     font-size: 0.8rem;
   }
+}
+
+/* Ejemplo: Si tienes una tarjeta personalizada */
+.card {
+  background: white;
+  /* ...otros estilos... */
+}
+
+/* Agrega esto para modo oscuro */
+.dark .card {
+  background: #18181b; /* o el color oscuro que prefieras */
+  color: #f3f4f6;
 }

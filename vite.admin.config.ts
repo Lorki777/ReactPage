@@ -1,10 +1,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import tailwindcss from "@tailwindcss/vite";
+import svgr from "vite-plugin-svgr";
+
+// Ya no importamos tailwindcss aquí ni ningún plugin PostCSS
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    svgr({
+      svgrOptions: {
+        icon: true,
+        // This will transform your SVG to a React component
+        exportType: "named",
+        namedExport: "ReactComponent",
+      },
+    }),
+    react(),
+    // elimina tailwindcss() si lo tenías aquí
+  ],
   root: "src/admin-app",
   base: "./",
   build: {
@@ -23,12 +36,13 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:8080",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        rewrite: (p) => p.replace(/^\/api/, ""),
       },
     },
   },
   css: {
-    postcss: "./postcss.config.ts",
+    // Ahora solo apuntamos a nuestro postcss.config.ts
+    postcss: "./postcss.config.mjs",
   },
   resolve: {
     alias: {
