@@ -1,6 +1,9 @@
-import { JwtPayload, VerifyErrors } from "jsonwebtoken";
+// auth.middleware.ts
+
 import { Request, Response, NextFunction } from "express";
-import jwt = require("jsonwebtoken");
+// importa todo el namespace de jsonwebtoken, incluyendo tipos
+import * as jwt from "jsonwebtoken";
+import { JwtPayload, VerifyErrors } from "jsonwebtoken";
 
 declare global {
   namespace Express {
@@ -12,18 +15,20 @@ declare global {
 
 const SECRET_KEY = process.env.JWT_SECRET || "default_secret_key";
 
-export const authenticateToken = (
+export function authenticateToken(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void {
   const token =
     req.cookies?.token ||
-    (req.headers["authorization"] &&
-      req.headers["authorization"].split(" ")[1]);
+    (req.headers["authorization"]?.startsWith("Bearer ")
+      ? req.headers["authorization"].split(" ")[1]
+      : undefined);
 
   if (!token) {
-    return res.status(401).json({ message: "Token no proporcionado" });
+    res.status(401).json({ message: "Token no proporcionado" });
+    return;
   }
 
   jwt.verify(
@@ -31,13 +36,14 @@ export const authenticateToken = (
     SECRET_KEY,
     (err: VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
       if (err) {
-        return res.status(403).json({ message: "Token no válido" });
+        res.status(403).json({ message: "Token no válido" });
+        return;
       }
       req.user = decoded ?? null;
       next();
     }
   );
-};
+}
 
 export const generateGuestToken = () => {
   return jwt.sign({ role: "guest" }, SECRET_KEY, { expiresIn: "24h" });

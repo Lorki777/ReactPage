@@ -107,7 +107,7 @@ app.use("/", express.static(path.join(__dirname, "../public-dist")));
 app.get("/admin/", (_req, res) => {
   res.sendFile(path.join(__dirname, "../admin-dist/index.html"));
 });
-app.get("*", (req, res) => {
+app.get("/{*any}", (req, res) => {
   if (req.path.startsWith("/api")) {
     res.status(404).sendFile(path.join(__dirname, "../public-dist/index.html"));
   }

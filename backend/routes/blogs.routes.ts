@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { pool } from "../connection/connection";
 import { RowDataPacket } from "mysql2";
 
@@ -58,23 +58,38 @@ router.get("/recent", async (_req, res) => {
 });
 
 // ── 3) Detalle de un post ───────────────────────────────────────────────────
-router.get("/:blogId", async (req, res) => {
-  const { blogId } = req.params;
-  try {
-    const [rows] = await pool.query<RowDataPacket[]>(
-      `SELECT *
-       FROM blogs
-       WHERE blog_id = ? AND is_public = 1`,
-      [blogId]
-    );
-    if (!rows.length) {
-      return res.status(404).json({ error: "Blog no encontrado" });
+router.get(
+  "/:blogId",
+  async (
+    req: Request<{ blogId: string }>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { blogId } = req.params;
+    try {
+      const [rows] = await pool.query<RowDataPacket[]>(
+        `SELECT *
+         FROM blogs
+         WHERE blog_id = ? AND is_public = 1`,
+        [blogId]
+      );
+
+      if (rows.length === 0) {
+        res.status(404).json({ error: "Blog no encontrado" });
+        return;
+      }
+
+      res.json(rows[0]);
+      return;
+    } catch (err) {
+      console.error(`Error al obtener blog ${blogId}:`, (err as Error).message);
+      // Si quieres que Express lo maneje con un middleware de errores:
+      next(err);
+      // O bien, responder aquí y luego `return;`
+      // res.status(500).json({ error: "Error al obtener el blog" });
+      // return;
     }
-    res.json(rows[0]);
-  } catch (err) {
-    console.error(`Error al obtener blog ${blogId}:`, err);
-    res.status(500).json({ error: "Error al obtener el blog" });
   }
-});
+);
 
 export default router;

@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { pool } from "../connection/connection";
 import { authenticateToken } from "../middlewares/auth.middleware";
 
@@ -220,17 +220,20 @@ const configs: RouteConfig[] = [
 
 // Generación dinámica de rutas
 configs.forEach((cfg) => {
-  router.get(`/${cfg.table}`, authenticateToken, (req, res) =>
-    handleGet(cfg.table, cfg.descriptor, req as Request, res as Response)
+  router.get(
+    `/${cfg.table}`,
+    authenticateToken,
+    // wrapper que NO devuelve la promesa
+    (req: Request, res: Response, next: NextFunction): void => {
+      handleGet(cfg.table, cfg.descriptor, req, res).catch(next); // si hay error, lo pasamos a next()
+    }
   );
-  router.post(`/${cfg.table}`, authenticateToken, (req, res) =>
-    handlePost(
-      cfg.table,
-      cfg.fields,
-      req as Request,
-      res as Response,
-      cfg.descriptor
-    )
+  router.post(
+    `/${cfg.table}`,
+    authenticateToken,
+    (req: Request, res: Response, next: NextFunction): void => {
+      handlePost(cfg.table, cfg.fields, req, res, cfg.descriptor).catch(next);
+    }
   );
 });
 
