@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { pool } from "../connection/connection";
 import { RowDataPacket } from "mysql2";
+import { param, validationResult } from "express-validator";
 
 const router = Router();
 
@@ -60,17 +61,21 @@ router.get("/recent", async (_req, res) => {
 // ── 3) Detalle de un post ───────────────────────────────────────────────────
 router.get(
   "/:blogId",
+  [param("blogId").isInt({ min: 1 })],
   async (
     req: Request<{ blogId: string }>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Parámetro inválido" });
+      return;
+    }
     const { blogId } = req.params;
     try {
       const [rows] = await pool.query<RowDataPacket[]>(
-        `SELECT *
-         FROM blogs
-         WHERE blog_id = ? AND is_public = 1`,
+        `SELECT * FROM blogs WHERE blog_id = ? AND is_public = 1`,
         [blogId]
       );
 
@@ -83,11 +88,7 @@ router.get(
       return;
     } catch (err) {
       console.error(`Error al obtener blog ${blogId}:`, (err as Error).message);
-      // Si quieres que Express lo maneje con un middleware de errores:
       next(err);
-      // O bien, responder aquí y luego `return;`
-      // res.status(500).json({ error: "Error al obtener el blog" });
-      // return;
     }
   }
 );

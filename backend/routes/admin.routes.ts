@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { pool } from "../connection/connection";
 import { authenticateToken } from "../middlewares/auth.middleware";
+import { query, validationResult } from "express-validator";
 
 const router = Router();
 
@@ -223,9 +224,17 @@ configs.forEach((cfg) => {
   router.get(
     `/${cfg.table}`,
     authenticateToken,
-    // wrapper que NO devuelve la promesa
+    [
+      query("page").optional().isInt({ min: 1, max: 10000 }),
+      query("itemsPerPage").optional().isInt({ min: 1, max: 100 }),
+    ],
     (req: Request, res: Response, next: NextFunction): void => {
-      handleGet(cfg.table, cfg.descriptor, req, res).catch(next); // si hay error, lo pasamos a next()
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ error: "Parámetros inválidos" });
+        return;
+      }
+      handleGet(cfg.table, cfg.descriptor, req, res).catch(next);
     }
   );
   router.post(

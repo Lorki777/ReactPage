@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { pool } from "../connection/connection";
 import { RowDataPacket } from "mysql2";
 import { authenticateToken } from "../middlewares/auth.middleware";
-import { body, validationResult } from "express-validator";
+import { body, validationResult, param, query } from "express-validator";
 
 const router = Router();
 
@@ -215,7 +215,16 @@ router.get("/carrusel", authenticateToken, async (req, res) => {
 router.get(
   "/AvailableTours/:filter/:page",
   authenticateToken,
-  async (req, res) => {
+  [
+    param("filter").isString().trim().escape().isLength({ min: 1, max: 50 }),
+    param("page").isInt({ min: 1, max: 10000 }),
+  ],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
     const { filter, page } = req.params;
     const p = Math.max(1, parseInt(page, 10));
     const ipp = 12;
@@ -243,85 +252,154 @@ router.get(
 );
 
 // --- Megamenu ------------------------------------------------------------
-router.get("/megamenu/:type", authenticateToken, async (req, res) => {
-  const t = req.params.type;
-  if (!["activity", "package", "group"].includes(t)) {
-    res.status(400).json({ error: "Tipo inválido" });
-    return;
+router.get(
+  "/megamenu/:type",
+  authenticateToken,
+  [param("type").isString().trim().isIn(["activity", "package", "group"])],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Tipo inválido" });
+      return;
+    }
+    const t = req.params.type;
+    const rows = await executeQuery(SQL.megamenu, [t]);
+    res.json(rows);
   }
-  const rows = await executeQuery(SQL.megamenu, [t]);
-  res.json(rows);
-});
+);
 
 // --- Tour detail ---------------------------------------------------------
-router.get("/tour/:slug", authenticateToken, async (req, res) => {
-  const rows = await executeQuery(SQL.tourDetail, [req.params.slug]);
-  if (!rows.length) {
-    res.status(404).json({ error: "No encontrado" });
-    return;
+router.get(
+  "/tour/:slug",
+  authenticateToken,
+  [param("slug").isString().trim().isLength({ min: 1, max: 100 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Slug inválido" });
+      return;
+    }
+    const rows = await executeQuery(SQL.tourDetail, [req.params.slug]);
+    if (!rows.length) {
+      res.status(404).json({ error: "No encontrado" });
+      return;
+    }
+    res.json(rows[0]);
   }
-  res.json(rows[0]);
-});
+);
 
 // --- Paquetes por mes ----------------------------------------------------
-router.get("/Paquetes/:month/:page", authenticateToken, async (req, res) => {
-  const { month, page } = req.params;
-  const p = Math.max(1, parseInt(page, 10));
-  const ipp = 12;
-  const rows = await executeQuery(SQL.paquetesByMonth, [
-    month,
-    ipp,
-    (p - 1) * ipp,
-  ]);
-  const cnt = await executeQuery(SQL.countPaquetesByMonth, [month]);
-  if (!rows.length) {
-    res.status(404).json({ error: "No hay paquetes" });
-    return;
+router.get(
+  "/Paquetes/:month/:page",
+  authenticateToken,
+  [
+    param("month").isString().trim().isLength({ min: 1, max: 20 }),
+    param("page").isInt({ min: 1, max: 10000 }),
+  ],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Parámetros inválidos" });
+      return;
+    }
+    const { month, page } = req.params;
+    const p = Math.max(1, parseInt(page, 10));
+    const ipp = 12;
+    const rows = await executeQuery(SQL.paquetesByMonth, [
+      month,
+      ipp,
+      (p - 1) * ipp,
+    ]);
+    const cnt = await executeQuery(SQL.countPaquetesByMonth, [month]);
+    if (!rows.length) {
+      res.status(404).json({ error: "No hay paquetes" });
+      return;
+    }
+    const total = (cnt[0] as any).total || 0;
+    res.json({
+      data: rows,
+      totalPages: Math.ceil(total / ipp),
+      currentPage: p,
+    });
   }
-  const total = (cnt[0] as any).total || 0;
-  res.json({ data: rows, totalPages: Math.ceil(total / ipp), currentPage: p });
-});
+);
 
 // --- Disponibilidad de un tour ------------------------------------------
-router.get("/tour/availability/:slug", authenticateToken, async (req, res) => {
-  const s = req.params.slug;
-  const [dep, sch, cnts, dates] = await Promise.all([
-    executeQuery(SQL.availabilityDepartures, [s]),
-    executeQuery(SQL.availabilitySchedules, [s]),
-    executeQuery(SQL.availabilityCounts, [s]),
-    executeQuery(SQL.availabilityDates, [s]),
-  ]);
-  if (![dep, sch, cnts, dates].some((a) => a.length)) {
-    res.status(404).json({ error: "No encontrado" });
-    return;
+router.get(
+  "/tour/availability/:slug",
+  authenticateToken,
+  [param("slug").isString().trim().isLength({ min: 1, max: 100 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Slug inválido" });
+      return;
+    }
+    const s = req.params.slug;
+    const [dep, sch, cnts, dates] = await Promise.all([
+      executeQuery(SQL.availabilityDepartures, [s]),
+      executeQuery(SQL.availabilitySchedules, [s]),
+      executeQuery(SQL.availabilityCounts, [s]),
+      executeQuery(SQL.availabilityDates, [s]),
+    ]);
+    if (![dep, sch, cnts, dates].some((a) => a.length)) {
+      res.status(404).json({ error: "No encontrado" });
+      return;
+    }
+    res.json({
+      salida_desde: dep,
+      horario: sch,
+      reservation_date: dates,
+      ninos_adultos_cantidad: cnts,
+    });
   }
-  res.json({
-    salida_desde: dep,
-    horario: sch,
-    reservation_date: dates,
-    ninos_adultos_cantidad: cnts,
-  });
-});
+);
 
 // --- Listas e itinerario ------------------------------------------------
-router.get("/tourlist/:slug", authenticateToken, async (req, res) => {
-  const s = req.params.slug;
-  const [titles, items] = await Promise.all([
-    executeQuery(SQL.listTitles, [s]),
-    executeQuery(SQL.listItems, [s]),
-  ]);
-  res.json({ titles, items });
-});
-router.get("/touritinerary/:slug", authenticateToken, async (req, res) => {
-  const rows = await executeQuery(SQL.itinerary, [req.params.slug]);
-  res.json(rows);
-});
+router.get(
+  "/tourlist/:slug",
+  authenticateToken,
+  [param("slug").isString().trim().isLength({ min: 1, max: 100 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Slug inválido" });
+      return;
+    }
+    const s = req.params.slug;
+    const [titles, items] = await Promise.all([
+      executeQuery(SQL.listTitles, [s]),
+      executeQuery(SQL.listItems, [s]),
+    ]);
+    res.json({ titles, items });
+  }
+);
+router.get(
+  "/touritinerary/:slug",
+  authenticateToken,
+  [param("slug").isString().trim().isLength({ min: 1, max: 100 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Slug inválido" });
+      return;
+    }
+    const rows = await executeQuery(SQL.itinerary, [req.params.slug]);
+    res.json(rows);
+  }
+);
 
 // --- Ubicaciones ---------------------------------------------------------
 router.get(
   "/locations/countries/:continent",
   authenticateToken,
-  async (req, res) => {
+  [param("continent").isString().trim().isLength({ min: 1, max: 50 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Parámetro inválido" });
+      return;
+    }
     const rows = await executeQuery(SQL.countriesByContinent, [
       req.params.continent,
     ]);
@@ -331,21 +409,47 @@ router.get(
 router.get(
   "/locations/states/:country",
   authenticateToken,
-  async (req, res) => {
+  [param("country").isString().trim().isLength({ min: 1, max: 50 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Parámetro inválido" });
+      return;
+    }
     const rows = await executeQuery(SQL.statesByCountry, [req.params.country]);
     res.json(rows);
   }
 );
-router.get("/locations/cities/:state", authenticateToken, async (req, res) => {
-  const rows = await executeQuery(SQL.citiesByState, [req.params.state]);
-  res.json(rows);
-});
+router.get(
+  "/locations/cities/:state",
+  authenticateToken,
+  [param("state").isString().trim().isLength({ min: 1, max: 50 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Parámetro inválido" });
+      return;
+    }
+    const rows = await executeQuery(SQL.citiesByState, [req.params.state]);
+    res.json(rows);
+  }
+);
 
 // --- Servicios -----------------------------------------------------------
-router.get("/tour/services/:slug", authenticateToken, async (req, res) => {
-  const rows = await executeQuery(SQL.services, [req.params.slug]);
-  res.json({ services: rows });
-});
+router.get(
+  "/tour/services/:slug",
+  authenticateToken,
+  [param("slug").isString().trim().isLength({ min: 1, max: 100 })],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Slug inválido" });
+      return;
+    }
+    const rows = await executeQuery(SQL.services, [req.params.slug]);
+    res.json({ services: rows });
+  }
+);
 
 // --- Filtros avanzados ---------------------------------------------------
 router.post(
@@ -460,20 +564,39 @@ router.post(
 );
 
 // --- Conteo y listado simple por filtros --------------------------------
-router.get("/tourscount", authenticateToken, async (req, res) => {
-  const { continent, country, state, city } = req.query as any;
-  const clauses: string[] = [],
-    params: any[] = [];
-  if (continent) clauses.push("co.continent_name = ?"), params.push(continent);
-  if (country) clauses.push("c.country_name     = ?"), params.push(country);
-  if (state) clauses.push("s.state_name       = ?"), params.push(state);
-  if (city) clauses.push("ci.city_name       = ?"), params.push(city);
-  if (!clauses.length) {
-    res.json({ count: 0 });
-    return;
-  }
+router.get(
+  "/tourscount",
+  authenticateToken,
+  [
+    query("continent")
+      .optional()
+      .isString()
+      .trim()
+      .isLength({ min: 1, max: 50 }),
+    query("country").optional().isString().trim().isLength({ min: 1, max: 50 }),
+    query("state").optional().isString().trim().isLength({ min: 1, max: 50 }),
+    query("city").optional().isString().trim().isLength({ min: 1, max: 50 }),
+  ],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Parámetros inválidos" });
+      return;
+    }
+    const { continent, country, state, city } = req.query as any;
+    const clauses: string[] = [],
+      params: any[] = [];
+    if (continent)
+      clauses.push("co.continent_name = ?"), params.push(continent);
+    if (country) clauses.push("c.country_name     = ?"), params.push(country);
+    if (state) clauses.push("s.state_name       = ?"), params.push(state);
+    if (city) clauses.push("ci.city_name       = ?"), params.push(city);
+    if (!clauses.length) {
+      res.json({ count: 0 });
+      return;
+    }
 
-  const countSql = `
+    const countSql = `
     SELECT COUNT(*) AS count FROM products p
     LEFT JOIN continents co ON co.continent_id = p.continent_id
     LEFT JOIN countries c  ON c.country_id   = p.country_id
@@ -481,34 +604,56 @@ router.get("/tourscount", authenticateToken, async (req, res) => {
     LEFT JOIN cities ci    ON ci.city_id      = p.city_id
     WHERE ${clauses.join(" AND ")}
   `;
-  const rows = await executeQuery(countSql, params);
-  res.json({ count: (rows[0] as any).count || 0 });
-});
-
-router.get("/toursbyfilter", authenticateToken, async (req, res) => {
-  const {
-    continent,
-    country,
-    state,
-    city,
-    page = "1",
-    itemsPerPage = "12",
-  } = req.query as any;
-  const clauses: string[] = [],
-    params: any[] = [];
-  if (continent) clauses.push("co.continent_name = ?"), params.push(continent);
-  if (country) clauses.push("c.country_name     = ?"), params.push(country);
-  if (state) clauses.push("s.state_name       = ?"), params.push(state);
-  if (city) clauses.push("ci.city_name       = ?"), params.push(city);
-  if (!clauses.length) {
-    res.json({ tours: [], totalPages: 1 });
-    return;
+    const rows = await executeQuery(countSql, params);
+    res.json({ count: (rows[0] as any).count || 0 });
   }
+);
 
-  const p = Math.max(1, parseInt(page, 10)),
-    ipp = Math.max(1, parseInt(itemsPerPage, 10)),
-    offset = (p - 1) * ipp;
-  const listSql = `
+router.get(
+  "/toursbyfilter",
+  authenticateToken,
+  [
+    query("continent")
+      .optional()
+      .isString()
+      .trim()
+      .isLength({ min: 1, max: 50 }),
+    query("country").optional().isString().trim().isLength({ min: 1, max: 50 }),
+    query("state").optional().isString().trim().isLength({ min: 1, max: 50 }),
+    query("city").optional().isString().trim().isLength({ min: 1, max: 50 }),
+    query("page").optional().isInt({ min: 1, max: 10000 }),
+    query("itemsPerPage").optional().isInt({ min: 1, max: 100 }),
+  ],
+  async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ error: "Parámetros inválidos" });
+      return;
+    }
+    const {
+      continent,
+      country,
+      state,
+      city,
+      page = "1",
+      itemsPerPage = "12",
+    } = req.query as any;
+    const clauses: string[] = [],
+      params: any[] = [];
+    if (continent)
+      clauses.push("co.continent_name = ?"), params.push(continent);
+    if (country) clauses.push("c.country_name     = ?"), params.push(country);
+    if (state) clauses.push("s.state_name       = ?"), params.push(state);
+    if (city) clauses.push("ci.city_name       = ?"), params.push(city);
+    if (!clauses.length) {
+      res.json({ tours: [], totalPages: 1 });
+      return;
+    }
+
+    const p = Math.max(1, parseInt(page, 10)),
+      ipp = Math.max(1, parseInt(itemsPerPage, 10)),
+      offset = (p - 1) * ipp;
+    const listSql = `
     SELECT p.tour_name,p.tour_duration,tb.tour_badge_name,p.tour_slug,tp.tour_price
     FROM products p
     LEFT JOIN tour_badges tb ON tb.tour_badge_id=p.tour_badge_id
@@ -521,7 +666,7 @@ router.get("/toursbyfilter", authenticateToken, async (req, res) => {
     ORDER BY p.tour_name
     LIMIT ? OFFSET ?
   `;
-  const countSql = `
+    const countSql = `
     SELECT COUNT(*) AS count FROM products p
     LEFT JOIN continents co ON co.continent_id=p.continent_id
     LEFT JOIN countries c  ON c.country_id=p.country_id
@@ -530,13 +675,14 @@ router.get("/toursbyfilter", authenticateToken, async (req, res) => {
     WHERE ${clauses.join(" AND ")}
   `;
 
-  const [tours, cnt] = await Promise.all([
-    executeQuery(listSql, [...params, ipp, offset]),
-    executeQuery(countSql, params),
-  ]);
+    const [tours, cnt] = await Promise.all([
+      executeQuery(listSql, [...params, ipp, offset]),
+      executeQuery(countSql, params),
+    ]);
 
-  const total = (cnt[0] as any).count || 0;
-  res.json({ tours, totalPages: Math.max(1, Math.ceil(total / ipp)) });
-});
+    const total = (cnt[0] as any).count || 0;
+    res.json({ tours, totalPages: Math.max(1, Math.ceil(total / ipp)) });
+  }
+);
 
 export default router;
