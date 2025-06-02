@@ -20,16 +20,23 @@ import { authRouter, authenticateToken } from "./middlewares/auth.middleware";
 
 const app: express.Application = express();
 
-// ── Middlewares generales ────────────────────────────────────────────────────
+// ── 0) TRUST PROXY (importante para que req.protocol reconozca HTTPS detrás de proxy) ───────
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
+// ── 1) Rate limiting general ─────────────────────────────────────────────────────────────
 app.use(
   rateLimit({
-    windowMs: 15 * 60 * 1000,
+    windowMs: 15 * 60 * 1000, // 15 minutos
     max: 200,
     standardHeaders: true,
     legacyHeaders: false,
     message: "Demasiadas peticiones, intenta más tarde.",
   })
 );
+
+// ── 2) CORS ────────────────────────────────────────────────────────────────────────────────
 app.use(
   cors({
     origin:
@@ -38,19 +45,23 @@ app.use(
         : ["http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    credentials: true, // para que el navegador envíe cookies
   })
 );
+
+// ── 3) Otros middlewares: cookies, compresión, JSON ────────────────────────────────────────
 app.use(cookieParser());
 app.use(compression());
 app.use(express.json());
+
+// ── 4) Helmet (CSP, HSTS y más) ────────────────────────────────────────────────────────────
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: [
-          "'self'          ",
+          "'self'",
           "https://maps.googleapis.com",
           "https://gso.kommo.com",
           "https://widgets.priceres.com.mx",
@@ -76,12 +87,17 @@ app.use(
         ],
       },
     },
-    /*referrerPolicy: { policy: "strict-origin-when-cross-origin" },
-    frameguard: { action: "sameorigin" }, */
+    hsts: {
+      maxAge: 63072000, // 2 años
+      includeSubDomains: true,
+      preload: true,
+    },
+    // referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    // frameguard: { action: "sameorigin" },
   })
 );
 
-// ── Test DB ───────────────────────────────────────────────────────────────────
+// ── 5) Test DB ──────────────────────────────────────────────────────────────────────────────
 (async () => {
   try {
     const c = await pool.getConnection();
@@ -92,20 +108,25 @@ app.use(
   }
 })();
 
-// ── Rutas de autenticación ────────────────────────────────────────────────────
+// ── 6) Rutas de autenticación ───────────────────────────────────────────────────────────────
 app.use("/api/auth", authRouter);
 
-// ── Tus rutas públicas ────────────────────────────────────────────────────────
+// ── 7) Rutas públicas ──────────────────────────────────────────────────────────────────────
 app.use("/api/productos", productRoutes);
 app.use("/api/meses", monthRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/guest-token", guestTokenRoutes);
 app.use("/api/payment", paymentRoutes);
 
-// ── Rutas protegidas → sólo con JWT válido ──────────────────────────────────
+// ── 8) Rutas protegidas → sólo con JWT válido ───────────────────────────────────────────────
 app.use("/api/admin", authenticateToken, adminRoutes);
 
-// ── Frontend estático ─────────────────────────────────────────────────────────
+// ── 9) Health check (App Platform lo usará para validar contenedor) ────────────────────────
+app.get("/", (_req, res) => {
+  res.send("OK desde servidor app");
+});
+
+// ── 10) Frontend estático ───────────────────────────────────────────────────────────────────
 const dist = path.join(__dirname, "../dist");
 app.use(
   express.static(dist, {
@@ -135,5 +156,4 @@ app.get("/{*any}", (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("Server en 3000"));
 export default app;

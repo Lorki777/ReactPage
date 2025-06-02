@@ -1,18 +1,17 @@
+// server.ts
+
 import * as http from "http";
-//import fs from "fs";
-import app from "./app"; // Usa `app` desde `app.ts`
+import app from "./app";
 
-// Opciones HTTPS
-// const options = {
-//   key: fs.readFileSync(
-//     "C:/Users/rbai1/Downloads/nginx-1.26.2/conf/certificates/localhost-key.pem"
-//   ),
-//   cert: fs.readFileSync(
-//     "C:/Users/rbai1/Downloads/nginx-1.26.2/conf/certificates/localhost.pem"
-//   ),
-// };
+// ────────────────────────────────────────────────────────────────────────────────
+// 1) Puerto que App Platform inyecta en producción. En local puedes usar 8080.
+// ────────────────────────────────────────────────────────────────────────────────
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
-// Servidor HTTP
-http.createServer(app).listen(8080, () => {
-  console.log("Servidor HTTPS escuchando en http://localhost:8080");
+// ────────────────────────────────────────────────────────────────────────────────
+// 2) Levantar servidor HTTP que escuche en el puerto indicado
+//    (App Platform se encargará de TLS)
+// ────────────────────────────────────────────────────────────────────────────────
+http.createServer(app).listen(PORT, () => {
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
