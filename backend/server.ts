@@ -6,7 +6,7 @@ import app from "./app";
 // ────────────────────────────────────────────────────────────────────────────────
 // 1) Puerto que App Platform inyecta en producción. En local puedes usar 8080.
 // ────────────────────────────────────────────────────────────────────────────────
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
+const PORT = 8080;
 
 // ────────────────────────────────────────────────────────────────────────────────
 // 2) Levantar servidor HTTP que escuche en el puerto indicado

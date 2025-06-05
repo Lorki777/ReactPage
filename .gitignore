@@ -26,6 +26,7 @@ dist-ssr
 *.sw?
 
 .env
+jwt_kid.txt
 private.pem
 public.pem
 CreateTables.txt

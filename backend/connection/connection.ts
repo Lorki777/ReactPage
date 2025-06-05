@@ -2,7 +2,9 @@ import * as mysql from "mysql2/promise";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-export const pool = mysql.createPool({
+interface PoolConfig extends mysql.PoolOptions {}
+
+const poolConfig: PoolConfig = {
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   user: process.env.DB_USER,
@@ -11,8 +13,13 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   queueLimit: 0,
   connectTimeout: 20000,
-  /*ssl: {
+};
+
+if (process.env.NODE_ENV === "production") {
+  poolConfig.ssl = {
     rejectUnauthorized: true,
-    ca: process.env.DB_CA_CERT, // Add CA certificate for stricter validation
-  }, */
-});
+    ca: process.env.DB_CA_CERT!,
+  };
+}
+
+export const pool = mysql.createPool(poolConfig);

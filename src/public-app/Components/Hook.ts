@@ -18,89 +18,66 @@ import {
   MinMaxProducts,
   BlogPost,
 } from "./Interfaces";
-// Hook reutilizable para obtener datos con autenticación automática
-/**
- *
- * @param token - Token JWT para verificar la expiración.
- * @returns boolean - Retorna true si el token ha expirado, false en caso contrario.
- * @description Verifica si el token JWT ha expirado. Si no se puede decodificar el token, se considera que ha expirado.
- * @throws Error - Si ocurre un error al decodificar el token.
- * @example
- * const isExpired = isTokenExpired("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVkX3N0YWdlIjoxNjY2NTY4NzQwfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c");
- * console.log(isExpired); // true o false dependiendo de la expiración del token
- * @returns {boolean} - Retorna true si el token ha expirado, false en caso contrario.
- * @throws {Error} - Si ocurre un error al decodificar el token.
- */
-const isTokenExpired = (token: string): boolean => {
-  try {
-    const payloadBase64 = token.split(".")[1];
-    const decodedPayload = JSON.parse(atob(payloadBase64));
 
-    if (!decodedPayload.exp) return true;
-
-    const expirationTime = decodedPayload.exp * 1000;
-    return Date.now() >= expirationTime;
-  } catch (error) {
-    console.error("Error al decodificar el token:", error);
-    return true;
-  }
-};
-
-/**
- * @function getToken
- * @description Obtiene un token de autenticación. Si no existe o ha expirado, genera uno nuevo.
- * @returns {Promise<string | null>} - Retorna el token o null si no se pudo obtener.
- * @throws {Error} - Si ocurre un error al generar el token de invitado.
- * @example
- * const token = await getToken();
- * console.log(token); // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVkX3N0YWdlIjoxNjY2NTY4NzQwfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
- */
-
-// Hooks.ts (extracto)
-
-// helpers.ts
+// (1) --- isTokenExpired y readCookie siguen igual ---
+// --- Función para leer la cookie que el navegador ya tiene ---
 export const readCookie = (name: string): string | null => {
   const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
   return match ? decodeURIComponent(match[2]) : null;
 };
 
-// Hook.ts (sólo la parte modificada)
+// --- Verifica si un JWT expiró (leer exp en el payload) ---
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payloadBase64 = token.split(".")[1];
+    const decoded = JSON.parse(atob(payloadBase64));
+    if (!decoded.exp) return true;
+    return Date.now() >= decoded.exp * 1000;
+  } catch {
+    return true;
+  }
+};
 
-const getToken = async (): Promise<string | null> => {
-  // 1) Si ya hay uno válido, lo devolvemos
+// --- Variable “singleton” para la promesa de fetch ---
+let tokenRequestPromise: Promise<string | null> | null = null;
+
+export const getToken = async (): Promise<string | null> => {
+  // 1) Si ya hay cookie válida, la devolvemos inmediatamente
   const existing = readCookie("token");
   if (existing && !isTokenExpired(existing)) {
+    console.log(new Date().toISOString(), "getToken: usando cookie existente");
     return existing;
   }
 
-  // 2) Si no hay o expiró, pedimos uno nuevo
-  try {
-    const res = await fetch("http://localhost:8080/api/guest-token", {
-      method: "GET",
-      credentials: "include", // para que reciba la cabecera Set-Cookie si el back la envía
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const { token } = (await res.json()) as { token?: string };
-    if (!token) {
-      console.error("Backend no devolvió token");
-      return null;
-    }
-
-    // **Aquí** guardamos en la cookie el JWT recién llegado
-    document.cookie = [
-      `token=${token}`,
-      `path=/`,
-      `max-age=${60 * 60}`, // 1 hora (igual que expiresIn)
-      /*/`secure`,// en producción, sólo HTTPS*/
-      `sameSite=strict`,
-    ].join("; ");
-
-    return token;
-  } catch (err) {
-    console.error("Error en getToken():", err);
-    return null;
+  // 2) Si ya existe una promesa de petición en curso, esperamos a ella
+  if (tokenRequestPromise) {
+    return tokenRequestPromise;
   }
+
+  // 3) Si no existe cookie (o expiró) y no hay promesa pendiente, lanzamos fetch una sola vez
+  tokenRequestPromise = (async () => {
+    try {
+      const res = await fetch("http://localhost:8080/api/guest-token", {
+        method: "GET",
+        credentials: "include", // así el navegador guardará automáticamente el Set-Cookie
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const { token } = (await res.json()) as { token?: string };
+      if (!token) {
+        console.error("Backend no devolvió token");
+        return null;
+      }
+      return token;
+    } catch (err) {
+      console.error("Error en getToken():", err);
+      return null;
+    } finally {
+      tokenRequestPromise = null;
+    }
+  })();
+
+  return tokenRequestPromise;
 };
 
 /**
@@ -537,47 +514,6 @@ export const formatDate = (isoString: string) => {
     month: "long",
     year: "numeric",
   });
-};
-
-export const useAddProduct = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const addProduct = async (productData: any) => {
-    setLoading(true);
-    try {
-      let token = await getToken();
-      if (!token) {
-        throw new Error("No se pudo obtener un token válido");
-      }
-
-      const response = await fetch(
-        "http://localhost:8080/api/productos/create",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(productData),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Error al crear el producto");
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (err: any) {
-      setError(err.message || "Error desconocido");
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { addProduct, loading, error };
 };
 
 /**

@@ -13,7 +13,6 @@ import BlogTemplate from "./Components/BlogTemplate/BlogTemplate";
 import Payment from "./Components/Payment/Payment";
 import AvisoDePrivacidad from "./Components/AvisoDePrivacidad/AvisoDePrivacidad";
 import TerminosYCondiciones from "./Components/Terminos y Condiciones/TerminosYCondiciones";
-import CreateProduct from "./Components/CreateProduct/AddProductForm";
 
 const AppRoutes = () => {
   return (
@@ -31,7 +30,6 @@ const AppRoutes = () => {
         path="/Filtered"
         element={<CardsPagination key={location.pathname} />}
       />
-      <Route path="/AddTour" element={<CreateProduct />} />
       <Route path="/TOURS" element={<ToursPage key={location.pathname} />} />
       <Route
         path="/TOURS/Location"

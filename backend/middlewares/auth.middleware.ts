@@ -111,25 +111,32 @@ export async function authenticateToken(
   }
 
   // 5.2 Extraer token de cookie “accessToken” o header Authorization
-  const token =
+  const rawToken =
     req.cookies?.accessToken ??
     (req.headers.authorization?.startsWith("Bearer ")
       ? req.headers.authorization.split(" ")[1]
       : undefined);
 
-  if (!token) {
-    res.status(401).json({ message: "Token no proporcionado" });
-    return;
+  // 5.3 Si no hay token, lo tratamos como invitado (guest) y continuamos
+  if (!rawToken) {
+    (req as any).user = {
+      sub: "guest",
+      role: "guest",
+      tokenVersion: 0,
+      scope: ["guest"],
+      jti: randomUUID(),
+    } as AppJwtPayload;
+    return next();
   }
 
-  // 5.2.1 Rechazar alg="none"
-  const decodedHeader = jwt.decode(token, { complete: true }) as any;
+  // 5.4 Rechazar alg="none"
+  const decodedHeader = jwt.decode(rawToken, { complete: true }) as any;
   if (decodedHeader?.header?.alg === "none") {
     res.status(403).json({ message: "Algoritmo inválido" });
     return;
   }
 
-  // 5.2.2 Determine qué llave usar para verificar:
+  // 5.5 Determinar qué llave usar para verificar:
   let keyToVerify: Buffer | string | undefined;
   if (JWT_ALG === "HS256") {
     keyToVerify = SECRET_KEY as string;
@@ -150,7 +157,7 @@ export async function authenticateToken(
     keyToVerify = pubKey;
   }
 
-  // 5.2.3 Si Redis no está disponible en producción, fallar seguro
+  // 5.6 Si Redis no está disponible en producción, fallar seguro
   if (!redisClient && process.env.NODE_ENV === "production") {
     console.error(
       "Redis no disponible, cancelando autenticación por seguridad."
@@ -159,9 +166,9 @@ export async function authenticateToken(
     return;
   }
 
-  // 5.3 Verificar y decodificar el token
+  // 5.7 Verificar y decodificar el token
   jwt.verify(
-    token,
+    rawToken,
     keyToVerify!,
     {
       algorithms: [JWT_ALG],
@@ -180,7 +187,7 @@ export async function authenticateToken(
         return res.status(401).json({ message: "Credenciales inválidas" });
       }
 
-      // 5.4 Validar estructura mínima del payload
+      // 5.8 Validar estructura mínima del payload
       if (
         !decoded ||
         typeof decoded !== "object" ||
@@ -191,29 +198,32 @@ export async function authenticateToken(
       }
       const payload = decoded as AppJwtPayload;
 
-      // 5.5 Validar tokenVersion
-      try {
-        const currentVersion = await getUserTokenVersion(payload.sub);
-        if (payload.tokenVersion !== currentVersion) {
-          return res.status(401).json({ message: "Token desactualizado" });
+      // 5.9 Si no es “guest”, validamos versión y revocación
+      if (payload.role !== "guest") {
+        // 5.9.1 Validar tokenVersion
+        try {
+          const currentVersion = await getUserTokenVersion(payload.sub);
+          if (payload.tokenVersion !== currentVersion) {
+            return res.status(401).json({ message: "Token desactualizado" });
+          }
+        } catch {
+          return res
+            .status(401)
+            .json({ message: "Error validando tokenVersion" });
         }
-      } catch {
-        return res
-          .status(401)
-          .json({ message: "Error validando tokenVersion" });
+
+        // 5.9.2 Revocación con Redis (access tokens)
+        if (payload.jti && redisClient) {
+          const blacklisted = await redisClient.get(
+            `${ACCESS_BLACKLIST_PREFIX}:${payload.jti}`
+          );
+          if (blacklisted) {
+            return res.status(401).json({ message: "Token revocado" });
+          }
+        }
       }
 
-      // 5.6 Revocación con Redis (access tokens)
-      if (payload.jti && redisClient) {
-        const blacklisted = await redisClient.get(
-          `${ACCESS_BLACKLIST_PREFIX}:${payload.jti}`
-        );
-        if (blacklisted) {
-          return res.status(401).json({ message: "Token revocado" });
-        }
-      }
-
-      // 5.7 Validación de scopes/roles para rutas /api/admin
+      // 5.10 Validación de scopes/roles para rutas /api/admin
       if (
         payload.scope &&
         !payload.scope.includes("admin") &&
@@ -222,7 +232,7 @@ export async function authenticateToken(
         return res.status(403).json({ message: "Permiso insuficiente" });
       }
 
-      // 5.8 Inyectar usuario en req y continuar
+      // 5.11 Inyectar usuario en req y continuar
       (req as any).user = payload;
       next();
     }
